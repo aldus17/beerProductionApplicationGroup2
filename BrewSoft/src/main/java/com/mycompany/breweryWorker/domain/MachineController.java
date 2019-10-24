@@ -6,8 +6,9 @@ import java.util.logging.Logger;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
+import com.mycompany.breweryWorker.domain.interfaces.IMachineControl;
 
-public class MachineController {
+public class MachineController implements IMachineControl{
 
     private final MachineConnection mconn;
 

@@ -7,8 +7,8 @@ package com.mycompany.breweryWorker.presentation;
 
 //import com.mycompany.brewsoft.breweryWorker.domain.machineControls.MachineController;
 //import com.mycompany.brewsoft.breweryWorker.domain.interfaces.IBrewerDomain;
-import com.mycompany.brewsoft.breweryWorker.domain.interfaces.IBrewerDomain;
-import com.mycompany.breweryWorker.domain.machineControls.MachineController;
+import com.mycompany.breweryWorker.domain.MachineController;
+import com.mycompany.breweryWorker.domain.MachineSubscriber;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -17,6 +17,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
+import com.mycompany.breweryWorker.domain.interfaces.IMachineControl;
+import com.mycompany.breweryWorker.domain.interfaces.IMachineSubscribe;
 
 /**
  * FXML Controller class
@@ -42,7 +44,8 @@ public class BrewWorker_UI_Controller implements Initializable {
     @FXML
     private ProgressBar pb_Maintenance;
     
-    IBrewerDomain controls = new MachineController();
+    IMachineControl controls = new MachineController();
+    IMachineSubscribe subscriber = new MachineSubscriber();
 
     
     /**
@@ -50,13 +53,13 @@ public class BrewWorker_UI_Controller implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
+        subscriber.subscribe();
     }    
 
     @FXML
     private void OnControlAction(ActionEvent event) {
         if(event.getSource()==btn_Start){
-            controls.startProduction(1, 1, 100, 100);
+            controls.startProduction(1, 1, 11000, 100);
         } else if(event.getSource() == btn_Reset){
             controls.resetMachine();
         } else if(event.getSource()== btn_Clear){
