@@ -8,14 +8,15 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" prefHeight="900.0" prefWidth="1200.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.management.presentation.ManagementController">
+<AnchorPane id="AnchorPane" prefHeight="900.0" prefWidth="1200.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="com.mycompany.management.presentation.ManagementController">
    <children>
       <GridPane alignment="TOP_CENTER" layoutY="6.0" prefHeight="900.0" prefWidth="1200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <columnConstraints>
@@ -30,26 +31,25 @@
               <menus>
                 <Menu mnemonicParsing="false" text="Search">
                   <items>
-                    <MenuItem fx:id="mi_ProductionList" mnemonicParsing="false" text="Production List" />
-                        <MenuItem fx:id="mi_BatchReport" mnemonicParsing="false" text="Batch Report" />
+                    <MenuItem fx:id="mi_ProductionQueue" mnemonicParsing="false" onAction="#MenuItemChangesAction" text="Production Queue" />
+                        <MenuItem fx:id="mi_CompletedBatches" mnemonicParsing="false" onAction="#MenuItemChangesAction" text="Completed Batches" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="OEE">
                   <items>
-                        <MenuItem fx:id="mi_Show" mnemonicParsing="false" text="Show" />
-                    <MenuItem fx:id="mi_Calculate" mnemonicParsing="false" text="Calculate" />
+                        <MenuItem fx:id="mi_Show" mnemonicParsing="false" onAction="#MenuItemChangesAction" text="Show" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Batch">
                   <items>
-                    <MenuItem fx:id="mi_PlanBatch" mnemonicParsing="false" text="Plan Batch" />
+                    <MenuItem fx:id="mi_CreateBatchOrder" mnemonicParsing="false" onAction="#MenuItemChangesAction" text="Create Batch Order" />
                   </items>
                 </Menu>
               </menus>
             </MenuBar>
             <AnchorPane GridPane.rowIndex="1">
                <children>
-                  <AnchorPane fx:id="ap_ProductionListLayout" prefHeight="872.0" prefWidth="1200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-806.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="ap_ProductionQueueLayout" prefHeight="872.0" prefWidth="1200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-806.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <GridPane alignment="TOP_CENTER" prefHeight="872.0" prefWidth="1200.0">
                           <columnConstraints>
@@ -65,23 +65,23 @@
                             <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <TableView fx:id="tw_SearchTable" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
+                              <TableView fx:id="tw_SearchTableProductionQueue" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
                                 <columns>
-                                  <TableColumn fx:id="tc_ProductionList_BatchID" prefWidth="75.0" text="Batch ID" />
-                                  <TableColumn fx:id="tc_ProductionList_DateOfCreation" prefWidth="110.99996948242188" text="Date of creation" />
-                                    <TableColumn fx:id="tc_ProductionList_Amount" prefWidth="61.0" text="Amount" />
-                                    <TableColumn fx:id="tc_ProductionList_Type" prefWidth="53.0" text="Type" />
-                                    <TableColumn fx:id="tc_ProductionList_Deadline" prefWidth="75.0" text="Deadline" />
-                                    <TableColumn fx:id="tc_ProductionList_SpeedForProduction" prefWidth="141.0" text="Speed for Production" />
+                                  <TableColumn fx:id="tc_ProductionQueue_BatchID" prefWidth="75.0" text="Batch ID" />
+                                  <TableColumn fx:id="tc_ProductionQueue_DateOfCreation" prefWidth="110.99996948242188" text="Date of creation" />
+                                    <TableColumn fx:id="tc_ProductionQueue_Amount" prefWidth="61.0" text="Amount" />
+                                    <TableColumn fx:id="tc_ProductionQueue_Type" prefWidth="53.0" text="Type" />
+                                    <TableColumn fx:id="tc_ProductionQueue_Deadline" prefWidth="75.0" text="Deadline" />
+                                    <TableColumn fx:id="tc_ProductionQueue_SpeedForProduction" prefWidth="141.0" text="Speed for Production" />
                                 </columns>
                               </TableView>
-                              <TextField fx:id="text_SearchProductionList" prefHeight="25.0" prefWidth="947.0" GridPane.columnIndex="2" />
-                              <Button fx:id="btn_SearchProductionList" mnemonicParsing="false" prefHeight="25.0" prefWidth="71.0" text="Search" GridPane.columnIndex="1" />
+                              <TextField fx:id="text_SearchProductionQueue" prefHeight="25.0" prefWidth="947.0" GridPane.columnIndex="2" />
+                              <Button fx:id="btn_SearchProductionQueue" mnemonicParsing="false" onAction="#OnSearchAction" prefHeight="25.0" prefWidth="71.0" text="Search" GridPane.columnIndex="1" />
                            </children>
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="ap_BatchReportLayout" layoutX="10.0" layoutY="10.0" prefHeight="872.0" prefWidth="1200.0">
+                  <AnchorPane fx:id="ap_CompletedBatchesLayout" layoutX="10.0" layoutY="10.0" prefHeight="872.0" prefWidth="1200.0">
                      <children>
                         <GridPane prefHeight="872.0" prefWidth="1200.0">
                            <columnConstraints>
@@ -93,42 +93,56 @@
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="821.0" minHeight="10.0" prefHeight="821.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="821.0" minHeight="10.0" prefHeight="781.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="821.0" minHeight="9.0" prefHeight="9.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="821.0" minHeight="10.0" prefHeight="28.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <TableView fx:id="tw_SearchTable1" prefHeight="795.0" prefWidth="1150.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
+                              <TableView fx:id="tw_SearchTableCompletedBatches" prefHeight="795.0" prefWidth="1150.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
                                  <columns>
-                                    <TableColumn fx:id="tc_BatchReport_batchID" prefWidth="75.0" text="Batch ID" />
-                                    <TableColumn fx:id="tc_BatchReport_MacineID" prefWidth="75.0" text="Machine ID" />
-                                    <TableColumn fx:id="tc_BatchReport_Type" prefWidth="53.0" text="Type" />
-                                    <TableColumn fx:id="tc_BatchReport_DateOfCreation" prefWidth="110.99996948242188" text="Date of creation" />
-                                    <TableColumn fx:id="tc_BatchReport_Deadline" prefWidth="75.0" text="Deadline" />
-                                    <TableColumn fx:id="tc_BatchReport_DateOfCompletion" prefWidth="123.0" text="Date of completion" />
-                                    <TableColumn fx:id="tc_BatchReport_SpeedForProduction" prefWidth="135.0" text="Speed for Production" />
-                                    <TableColumn fx:id="tc_BatchReport_TotalAmount" prefWidth="86.0" text="Total Amount" />
-                                    <TableColumn fx:id="tc_BatchReport_GoodAmount" prefWidth="92.0" text="Good Amount" />
-                                    <TableColumn fx:id="tc_BatchReport_DefectAmount" prefWidth="108.0" text="Defect Amount" />
+                                    <TableColumn fx:id="tc_CompletedBatches_batchID" prefWidth="75.0" text="Batch ID" />
+                                    <TableColumn fx:id="tc_CompletedBatches_MacineID" prefWidth="75.0" text="Machine ID" />
+                                    <TableColumn fx:id="tc_CompletedBatches_Type" prefWidth="53.0" text="Type" />
+                                    <TableColumn fx:id="tc_CompletedBatches_DateOfCreation" prefWidth="110.99996948242188" text="Date of creation" />
+                                    <TableColumn fx:id="tc_CompletedBatches_Deadline" prefWidth="75.0" text="Deadline" />
+                                    <TableColumn fx:id="tc_CompletedBatches_DateOfCompletion" prefWidth="123.0" text="Date of completion" />
+                                    <TableColumn fx:id="tc_CompletedBatches_SpeedForProduction" prefWidth="135.0" text="Speed for Production" />
+                                    <TableColumn fx:id="tc_CompletedBatches_TotalAmount" prefWidth="86.0" text="Total Amount" />
+                                    <TableColumn fx:id="tc_CompletedBatches_GoodAmount" prefWidth="92.0" text="Good Amount" />
+                                    <TableColumn fx:id="tc_CompletedBatches_DefectAmount" prefWidth="108.0" text="Defect Amount" />
                                  </columns>
                               </TableView>
-                              <TextField fx:id="text_SearchBatchReport" prefHeight="25.0" prefWidth="947.0" GridPane.columnIndex="2" />
-                              <Button fx:id="btn_SearchBatchReport" mnemonicParsing="false" prefHeight="25.0" prefWidth="71.0" text="Search" GridPane.columnIndex="1" />
-                              <Button mnemonicParsing="false" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <TextField fx:id="text_SearchCompletedBarches" prefHeight="25.0" prefWidth="947.0" GridPane.columnIndex="2" />
+                              <Button fx:id="btn_SearchCompletedBatches" mnemonicParsing="false" onAction="#OnSearchAction" prefHeight="25.0" prefWidth="71.0" text="Search" GridPane.columnIndex="1" />
+                              <Button fx:id="btn_GenerateBatchreportCompletedBatches" mnemonicParsing="false" onAction="#GeneratingBatchreportAction" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                            </children>
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="ap_PlanBatch" layoutY="5.0" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
+                  <AnchorPane fx:id="ap_CreateBatchOrder" layoutY="5.0" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="5.0">
                      <children>
-                        <Button layoutX="280.0" layoutY="348.0" mnemonicParsing="false" text="Create" />
+                        <Button fx:id="btn_CreateBatchOrder_Create" layoutX="280.0" layoutY="348.0" mnemonicParsing="false" onAction="#CreateBatchAction" text="Create" />
                         <Label layoutX="282.0" layoutY="130.0" text="Amount to Produce" />
                         <Label layoutX="282.0" layoutY="60.0" text="Type of product" />
                         <Label layoutX="282.0" layoutY="201.0" text="Speed" />
                         <Label layoutX="282.0" layoutY="282.0" text="Deadline" />
-                        <TextField layoutX="80.0" layoutY="56.0" />
-                        <TextField layoutX="80.0" layoutY="126.0" />
-                        <TextField layoutX="80.0" layoutY="197.0" />
-                        <DatePicker layoutX="80.0" layoutY="278.0" />
+                        <TextField fx:id="textf_CreateBatchOrder_AmountToProduces" layoutX="80.0" layoutY="126.0" text="Amount to Produce" />
+                        <TextField fx:id="textf_CreateBatchOrder_TypeofProduct" layoutX="80.0" layoutY="56.0" text="Type of Product" />
+                        <TextField fx:id="textf_CreateBatchOrder_Speed" layoutX="80.0" layoutY="197.0" text="Speed" />
+                        <DatePicker fx:id="dp_CreateBatchOrder" layoutX="80.0" layoutY="278.0" />
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="ap_ShowOEE" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="14.0" text="Show OEE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <DatePicker fx:id="dp_ShowOEE" layoutX="55.0" layoutY="58.0" />
+                        <Button fx:id="btn_ShowOEE_GenerateOEE" layoutX="242.0" layoutY="58.0" mnemonicParsing="false" onAction="#GenerateOEEAction" text="Generate OEE" />
+                        <TextArea fx:id="Texta_ShowOEE_Text" layoutX="55.0" layoutY="95.0" prefHeight="537.0" prefWidth="1114.0" />
                      </children>
                   </AnchorPane>
                </children>
