@@ -39,7 +39,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private static final AtomicLong clientHandles = new AtomicLong(1L);
     private MachineConnection mconn;
-    private Map<String,Consumer<String>> consumerMap;
+    private Map<String, Consumer<String>> consumerMap;
 
     //TODO: pull ip and port from DB
     public MachineSubscriber() {
@@ -49,7 +49,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     public MachineSubscriber(String hostname, int port) {
         mconn = new MachineConnection(hostname, port);
         mconn.connect();
-        consumerMap = new HashMap(); 
+        consumerMap = new HashMap();
     }
 
     public void subscribe() {
@@ -59,10 +59,10 @@ public class MachineSubscriber implements IMachineSubscribe {
         NodeId humidityNode = new NodeId(6, "::Program:Cube.Status.Parameter[3].Value");
         NodeId vibrationNode = new NodeId(6, "::Program:Cube.Status.Parameter[4].Value");
         NodeId producedCountNode = new NodeId(6, "::Program:Cube.Admin.ProdProcessedCount");
-        NodeId failedCountNode = new NodeId(6, "::Program:Cube.Admin.ProdDefectiveCount");
+        NodeId defectCountNode = new NodeId(6, "::Program:Cube.Admin.ProdDefectiveCount");
         NodeId stopReasonNode = new NodeId(6, "::Program:Cube.Admin.StopReason.Id");
         NodeId stateCurrentNode = new NodeId(6, "::Program:Cube.Status.StateCurrent");
-        NodeId machSpeedNode = new NodeId(6, "::Program:Cube.Status.MachSpeed");
+        NodeId productsPrMinuteNode = new NodeId(6, "::Program:Cube.Status.MachSpeed");
 
         NodeId barleyNode = new NodeId(6, "::Program:Inventory.Barley");
         NodeId hopsNode = new NodeId(6, "::Program:Inventory.Hops");
@@ -111,15 +111,15 @@ public class MachineSubscriber implements IMachineSubscribe {
         UInteger tempClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         UInteger humidityClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         UInteger vibrationClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
-        UInteger producedClientHandle = Unsigned.uint(clientHandles.getAndIncrement());  
+        UInteger producedClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         UInteger failedClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         UInteger stopReasonClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         UInteger stateClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         //UInteger t = clientHandles.getAndIncrement();
         UInteger productsPrMinuteHandle = Unsigned.uint(clientHandles.getAndIncrement());
-        
+
         System.out.println(clientHandles.getAndIncrement());
-        
+
         System.out.println(batchIdClientHandle);
         System.out.println(totalProductsClientHandle);
         System.out.println(tempClientHandle);
@@ -196,7 +196,7 @@ public class MachineSubscriber implements IMachineSubscribe {
                 Unsigned.uint(10), // queue size
                 true // discard oldest
         );
-/*
+        /*
         MonitoringParameters stopReasonParameters = new MonitoringParameters(
                 stopReasonClientHandle,
                 1000.0, // sampling interval
@@ -212,7 +212,7 @@ public class MachineSubscriber implements IMachineSubscribe {
                 Unsigned.uint(10), // queue size
                 true // discard oldest
         );
-*/
+         */
         MonitoringParameters productsPrMinuteParameters = new MonitoringParameters(
                 productsPrMinuteHandle,
                 1000.0, // sampling interval
@@ -315,7 +315,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         //requestList.add(new MonitoredItemCreateRequest(stopReasonReadValueId, MonitoringMode.Reporting, stopReasonParameters));
         //requestList.add(new MonitoredItemCreateRequest(stateReadValueId, MonitoringMode.Reporting, stateParameters));
         requestList.add(new MonitoredItemCreateRequest(productsPrMinuteValueId, MonitoringMode.Reporting, productsPrMinuteParameters));
-        
+
         Consumer<DataValue> onBatchIdItem = (dataValue) -> batchIdConsumerStarter(dataValue);
         Consumer<DataValue> onTotalProductsItem = (dataValue) -> totalProductsConsumerStarter(dataValue);
         Consumer<DataValue> onTempratureItem = (dataValue) -> temperatureConsumerStarter(dataValue);
@@ -326,8 +326,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         Consumer<DataValue> onStopReasonItem = (dataValue) -> stopReasonConsumerStarter(dataValue);
         Consumer<DataValue> onStateReadItem = (dataValue) -> stateConsumerStarter(dataValue);
         Consumer<DataValue> onProductsPrMinuteReadItem = (dataValue) -> productsPrMinuteConsumerStarter(dataValue);
-        
-        
+
 //        BiConsumer<UaMonitoredItem, DataValue> onBatchIdItem = (item, id) -> item.setValueConsumer(MachineSubscriber::onBatchIdParameter);
 //        BiConsumer<UaMonitoredItem, DataValue> onQuantityItem = (item, id) -> item.setValueConsumer(MachineSubscriber::onQuantityParameter);
 //        BiConsumer<UaMonitoredItem, DataValue> onTempratureItem = (item, id) -> item.setValueConsumer(MachineSubscriber::onTempratureParameter);
@@ -377,6 +376,26 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void setConsumer(Consumer<String> consumer, String itemName) {
         consumerMap.put(itemName, consumer);
         System.out.println(itemName);
+    }
+
+    private void barleyConsumerStarter(DataValue dataValue) {
+        consumerMap.get(BARLEY_NODENAME).accept(dataValue.getValue().getValue().toString());
+    }
+
+    private void hopsConsumerStarter(DataValue dataValue) {
+        consumerMap.get(HOPS_NODENAME).accept(dataValue.getValue().getValue().toString());
+    }
+
+    private void maltConsumerStarter(DataValue dataValue) {
+        consumerMap.get(MALT_NODENAME).accept(dataValue.getValue().getValue().toString());
+    }
+
+    private void wheatConsumerStarter(DataValue dataValue) {
+        consumerMap.get(WHEAT_NODENAME).accept(dataValue.getValue().getValue().toString());
+    }
+
+    private void yeastConsumerStarter(DataValue dataValue) {
+        consumerMap.get(YEAST_NODENAME).accept(dataValue.getValue().getValue().toString());
     }
 
     private void batchIdConsumerStarter(DataValue dataValue) {

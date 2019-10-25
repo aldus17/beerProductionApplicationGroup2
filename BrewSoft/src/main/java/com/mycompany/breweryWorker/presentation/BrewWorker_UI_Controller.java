@@ -71,6 +71,8 @@ public class BrewWorker_UI_Controller implements Initializable {
         Consumer<String> acceptableUpdater = text -> Platform.runLater(()-> lbl_Acceptable.setText(text));
         Consumer<String> vibrationUpdater = text -> Platform.runLater(()-> lbl_Vibration.setText(text));
         Consumer<String> productsPrMinuteUpdater = text -> Platform.runLater(()-> lbl_ProductsPrMinute.setText(text));
+        //Consumer<String> stopReasonUpdater = text -> Platform.runLater(()-> lbl_StopReason.setText(text));
+        //Consumer<String> stateUpdater = text -> Platform.runLater(()-> lbl_State.setText(text));
         Consumer<String> defectUpdater = text -> Platform.runLater(()-> lbl_Defect.setText(text));
         
         subscriber.setConsumer(batchIdUpdater, subscriber.BATCHID_NODENAME);
@@ -81,6 +83,9 @@ public class BrewWorker_UI_Controller implements Initializable {
         //subscriber.setConsumer(acceptableUpdater, subscriber.ACCEPTABLE_PRODUCTS_NODENAME);
         subscriber.setConsumer(vibrationUpdater, subscriber.VIBRATION_NODENAME);
         subscriber.setConsumer(productsPrMinuteUpdater, subscriber.PRODUCTS_PR_MINUTE_NODENAME);
+        
+        //subscriber.setConsumer(stopReasonUpdater, subscriber.STOP_REASON_NODENAME);
+        //subscriber.setConsumer(stateUpdater, subscriber.PRODUCTS_PR_MINUTE_NODENAME);
         subscriber.setConsumer(defectUpdater, subscriber.DEFECT_PRODUCTS_NODENAME);
         
         subscriber.subscribe();

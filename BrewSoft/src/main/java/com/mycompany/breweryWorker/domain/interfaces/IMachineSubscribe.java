@@ -17,6 +17,12 @@ public interface IMachineSubscribe {
     
     public void setConsumer(Consumer<String> consumer, String itemName);
     
+    public final static String BARLEY_NODENAME = "Barley";
+    public final static String HOPS_NODENAME = "Hops";
+    public final static String MALT_NODENAME = "Malt";
+    public final static String WHEAT_NODENAME = "Wheat";
+    public final static String YEAST_NODENAME = "Yeast";
+    
     public final static String BATCHID_NODENAME = "BatchID";
     public final static String TOTAL_PRODUCTS_NODENAME = "TotalProducts";
     public final static String TEMPERATURE_NODENAME = "Temperature";

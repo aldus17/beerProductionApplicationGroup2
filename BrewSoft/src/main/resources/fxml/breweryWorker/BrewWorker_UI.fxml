@@ -6,12 +6,14 @@
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane id="AnchorPane" minHeight="400.0" minWidth="600.0" prefHeight="1040.0" prefWidth="1900.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="com.mycompany.breweryWorker.presentation.BrewWorker_UI_Controller">
+<AnchorPane id="AnchorPane" minHeight="400.0" minWidth="600.0" prefHeight="1040.0" prefWidth="1900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.breweryWorker.presentation.BrewWorker_UI_Controller">
    <children>
       <BorderPane layoutX="186.0" layoutY="50.0" prefHeight="405.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>
@@ -115,170 +117,211 @@
                               <Insets left="20.0" right="20.0" top="40.0" />
                            </padding>
                         </HBox>
-                        <HBox alignment="TOP_CENTER" centerShape="false" prefHeight="100.0" prefWidth="477.0">
+                        <GridPane prefHeight="979.0" prefWidth="1629.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
                            <children>
-                              <VBox prefHeight="200.0" prefWidth="450.0">
-                                 <children>
-                                    <Label text="Temprature:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_Temprature" text="TempV">
-                                       <font>
-                                          <Font size="36.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                              <VBox prefHeight="0.0" prefWidth="450.0">
-                                 <children>
-                                    <Label text="Batch ID:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_BatchID" text="BatchV">
-                                       <font>
-                                          <Font size="36.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                              <VBox prefHeight="200.0" prefWidth="450.0">
-                                 <children>
-                                    <Label text="Produced:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_Produced" text="ProducedV">
-                                       <font>
-                                          <Font size="36.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                           </children>
-                           <padding>
-                              <Insets left="40.0" top="40.0" />
-                           </padding>
-                        </HBox>
-                        <HBox alignment="TOP_CENTER" centerShape="false" prefHeight="100.0" prefWidth="200.0">
-                           <children>
-                              <VBox prefHeight="200.0" prefWidth="450.0">
-                                 <children>
-                                    <Label text="Humidity:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_Humidity" text="HumidV">
-                                       <font>
-                                          <Font size="36.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                              <VBox prefHeight="200.0" prefWidth="450.0">
-                                 <children>
-                                    <Label text="To be produced:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_TotalProducts" text="TotalV">
-                                       <font>
-                                          <Font size="36.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                              <VBox prefHeight="200.0" prefWidth="450.0">
-                                 <children>
-                                    <Label text="Acceptable products:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_Acceptable" text="AcceptableV">
-                                       <font>
-                                          <Font size="36.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                           </children>
-                           <padding>
-                              <Insets left="40.0" top="40.0" />
-                           </padding>
-                        </HBox>
-                        <HBox alignment="TOP_CENTER" centerShape="false" prefHeight="100.0" prefWidth="200.0">
-                           <padding>
-                              <Insets left="40.0" top="40.0" />
-                           </padding>
-                           <children>
-                              <VBox prefHeight="200.0" prefWidth="450.0">
-                                 <children>
-                                    <Label text="Vibration:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_Vibration" text="VibrationV">
-                                       <font>
-                                          <Font size="36.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                              <VBox prefHeight="200.0" prefWidth="450.0">
-                                 <children>
-                                    <Label text="Products p/m:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_ProductsPrMinute" text="PPMV">
-                                       <font>
-                                          <Font size="36.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                              <VBox prefHeight="200.0" prefWidth="450.0">
-                                 <children>
-                                    <Label text="Defect products:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_Defect" text="DefectV">
-                                       <font>
-                                          <Font size="36.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                           </children>
-                        </HBox>
-                        <VBox alignment="TOP_CENTER" prefHeight="430.0" prefWidth="1612.0">
-                           <children>
-                              <ProgressBar fx:id="pb_Maintenance" prefHeight="78.0" prefWidth="421.0" progress="0.0">
+                              <Label text="Temprature:">
+                                 <font>
+                                    <Font size="48.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lbl_Temprature" text="TempV" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Batch ID:" GridPane.columnIndex="1">
+                                 <font>
+                                    <Font size="48.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lbl_BatchID" text="BatchV" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Produced:" GridPane.columnIndex="2">
+                                 <font>
+                                    <Font size="48.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lbl_Produced" text="ProducedV" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Humidity:" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="48.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lbl_Humidity" text="HumidV" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="To be produced:" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="48.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lbl_TotalProducts" text="TotalV" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Acceptable products:" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                 <font>
+                                    <Font size="48.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lbl_Acceptable" text="AcceptableV" GridPane.columnIndex="2" GridPane.rowIndex="3">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Vibration:" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font size="48.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lbl_Vibration" text="VibrationV" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Products p/m:" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font size="48.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lbl_ProductsPrMinute" text="PPMV" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Defect products:" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                 <font>
+                                    <Font size="48.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lbl_Defect" text="DefectV" GridPane.columnIndex="2" GridPane.rowIndex="5">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Stop Reason:" GridPane.rowIndex="6">
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                                 <font>
+                                    <Font size="48.0" />
+                                 </font>
+                              </Label>
+                              <Label text="State:" GridPane.columnIndex="2" GridPane.rowIndex="6">
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                                 <font>
+                                    <Font size="48.0" />
+                                 </font>
+                              </Label>
+                              <ProgressBar fx:id="pb_Maintenance" prefHeight="18.0" prefWidth="362.0" progress="0.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
                                  <opaqueInsets>
                                     <Insets />
                                  </opaqueInsets>
-                                 <VBox.margin>
-                                    <Insets top="150.0" />
-                                 </VBox.margin>
                               </ProgressBar>
-                              <Label text="Maintenance status">
+                              <Label text="Maintenance status" GridPane.columnIndex="1" GridPane.rowIndex="7">
                                  <font>
                                     <Font size="24.0" />
                                  </font>
                               </Label>
+                              <Label fx:id="lbl_StopReason" text="StopV" GridPane.rowIndex="7">
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                              </Label>
+                              <Label fx:id="lbl_State" text="StateV" GridPane.columnIndex="2" GridPane.rowIndex="7">
+                                 <font>
+                                    <Font size="36.0" />
+                                 </font>
+                                 <GridPane.margin>
+                                    <Insets left="60.0" right="60.0" />
+                                 </GridPane.margin>
+                              </Label>
                            </children>
-                        </VBox>
+                        </GridPane>
                      </children>
                   </VBox>
                </children>
