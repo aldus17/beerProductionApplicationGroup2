@@ -58,8 +58,6 @@ public class BrewWorker_UI_Controller implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-       
         Consumer<String> barleyUpdater = text -> Platform.runLater(()-> lbl_Barley.setText(text));
         Consumer<String> hopsUpdater = text -> Platform.runLater(()-> lbl_Hops.setText(text));
         Consumer<String> maltUpdater = text -> Platform.runLater(()-> lbl_Malt.setText(text));
@@ -74,8 +72,8 @@ public class BrewWorker_UI_Controller implements Initializable {
         Consumer<String> acceptableUpdater = text -> Platform.runLater(()-> lbl_Acceptable.setText(text));
         Consumer<String> vibrationUpdater = text -> Platform.runLater(()-> lbl_Vibration.setText(text));
         Consumer<String> productsPrMinuteUpdater = text -> Platform.runLater(()-> lbl_ProductsPrMinute.setText(text));
-        Consumer<String> stopReasonUpdater = text -> Platform.runLater(()-> lbl_StopReason.setText(text));
-        Consumer<String> stateUpdater = text -> Platform.runLater(()-> lbl_State.setText(text));
+        Consumer<String> stopReasonUpdater = text -> Platform.runLater(()-> lbl_StopReason.setText(subscriber.stopReasonTranslator(text)));
+        Consumer<String> stateUpdater = text -> Platform.runLater(()-> lbl_State.setText(subscriber.stateTranslator(text)));
         Consumer<String> defectUpdater = text -> Platform.runLater(()-> lbl_Defect.setText(text));
         
         Consumer<String> maintenanceCounterUpdater = text -> Platform.runLater(()-> {
@@ -111,6 +109,7 @@ public class BrewWorker_UI_Controller implements Initializable {
 
     @FXML
     private void OnControlAction(ActionEvent event) {
+        
         if(event.getSource()==btn_Start){
             controls.startProduction(1, 1, 11000, 100);
         } else if(event.getSource() == btn_Reset){

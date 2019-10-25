@@ -402,7 +402,7 @@ public class MachineSubscriber implements IMachineSubscribe {
             Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     private static void onSubscribeValue(UaMonitoredItem item, DataValue value) {
         System.out.println("Item: " + item.getReadValueId().getNodeId() + " Value: " + value.getValue());
     }
@@ -489,6 +489,64 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
     private void maintenanceCounterConsumerStarter(DataValue dataValue) {
         consumerMap.get(MAINTENANCE_COUNTER_NODENAME).accept(dataValue.getValue().getValue().toString());
+    }
+    
+    public String stopReasonTranslator(String stopReason){
+        switch(stopReason){
+            case UNDEFINED:
+                return "";
+            case EMPTY_INVENTORY:
+                return "Empty inventory";
+            case MAINTENANCE:
+                return "Maintenance";
+            case MANUAL_STOP:
+                return "Manual Stop";
+            case MOTOR_POWER_LOSS:
+                return "Motor power loss";
+            case MANUAL_ABORT:
+                return "Manual abort";
+        }
+        return "Unknown stop code " + stopReason;
+    }
+    
+    public String stateTranslator(String state){
+        switch(state){
+            case DEACTIVATED:
+                return "Deactivated";
+            case CLEARING:
+                return "Clearing";
+            case STOPPED:
+                return "Stopped";
+            case STARTING:
+                return "Starting";
+            case IDLE:
+                return "Idle";
+            case SUSPENDED:
+                return "Suspended";
+            case EXECUTE:
+                return "Execute";
+            case STOPPING:
+                return "Stopping";    
+            case ABORTING:
+                return "Aborting";
+            case ABORTED:
+                return "Aborted";
+            case HOLDING:
+                return "Holding";
+            case HELD:
+                return "Held";
+            case RESETTING:
+                return "Resetting";
+            case COMPLETING:
+                return "Completing";
+            case COMPLETE:
+                return "Complete";
+            case DEACTIVATING:
+                return "Deactivating";
+            case ACTIVATING:
+                return "Activating";
+        }       
+        return "Unknown State code: " + state;
     }
 
 }
