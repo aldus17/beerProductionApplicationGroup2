@@ -1,19 +1,28 @@
 package com.mycompany.management.presentation;
 
+import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.management.domain.Test;
 import com.mycompany.management.interfaces.IManagermentDomain;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 
 public class ManagementController implements Initializable {
@@ -51,27 +60,27 @@ public class ManagementController implements Initializable {
     @FXML
     private AnchorPane ap_CompletedBatchesLayout;
     @FXML
-    private TableView<?> tw_SearchTableCompletedBatches;
+    private TableView<Batch> tw_SearchTableCompletedBatches;
     @FXML
-    private TableColumn<?, ?> tc_CompletedBatches_batchID;
+    private TableColumn<Batch, String> tc_CompletedBatches_batchID;
     @FXML
-    private TableColumn<?, ?> tc_CompletedBatches_MacineID;
+    private TableColumn<Batch, String> tc_CompletedBatches_MacineID;
     @FXML
-    private TableColumn<?, ?> tc_CompletedBatches_Type;
+    private TableColumn<Batch, String> tc_CompletedBatches_Type;
     @FXML
-    private TableColumn<?, ?> tc_CompletedBatches_DateOfCreation;
+    private TableColumn<Batch, String> tc_CompletedBatches_DateOfCreation;
     @FXML
-    private TableColumn<?, ?> tc_CompletedBatches_Deadline;
+    private TableColumn<Batch, String> tc_CompletedBatches_Deadline;
     @FXML
-    private TableColumn<?, ?> tc_CompletedBatches_DateOfCompletion;
+    private TableColumn<Batch, String> tc_CompletedBatches_DateOfCompletion;
     @FXML
-    private TableColumn<?, ?> tc_CompletedBatches_SpeedForProduction;
+    private TableColumn<Batch, String> tc_CompletedBatches_SpeedForProduction;
     @FXML
-    private TableColumn<?, ?> tc_CompletedBatches_TotalAmount;
+    private TableColumn<Batch, String> tc_CompletedBatches_TotalAmount;
     @FXML
-    private TableColumn<?, ?> tc_CompletedBatches_GoodAmount;
+    private TableColumn<Batch, String> tc_CompletedBatches_GoodAmount;
     @FXML
-    private TableColumn<?, ?> tc_CompletedBatches_DefectAmount;
+    private TableColumn<Batch, String> tc_CompletedBatches_DefectAmount;
     @FXML
     private TextField text_SearchCompletedBarches;
     @FXML
@@ -97,13 +106,23 @@ public class ManagementController implements Initializable {
     @FXML
     private AnchorPane ap_ShowOEE;
 
-    IManagermentDomain imd;
+    // Add Class
+    IManagermentDomain imd = new Test();
+    ObservableList<Batch> BatcheObservableList;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
+        BatcheObservableList = FXCollections.observableArrayList();
+        tw_SearchTableCompletedBatches.setPlaceholder(new Label());
+        tw_SearchTableCompletedBatches.setItems(BatcheObservableList);
+        tc_CompletedBatches_batchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
+
+        
         ap_CompletedBatchesLayout.setVisible(false);
         ap_CreateBatchOrder.setVisible(false);
         ap_ShowOEE.setVisible(false);
+        ap_ProductionQueueLayout.setVisible(true);
         ap_ProductionQueueLayout.toFront();
     }
 
@@ -141,6 +160,17 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void OnSearchAction(ActionEvent event) {
+
+        if (event.getSource() == btn_SearchCompletedBatches) {
+            for (Batch batch : imd.BatchReportSearch()) {
+                BatcheObservableList.add(batch);
+            }
+            System.out.println(BatcheObservableList.get(0).getBatchID());
+            tw_SearchTableCompletedBatches.refresh();
+        }
+        if (event.getSource() == btn_SearchProductionQueue) {
+
+        }
     }
 
     @FXML
@@ -152,9 +182,9 @@ public class ManagementController implements Initializable {
         int typeofProduct = Integer.parseInt(textf_CreateBatchOrder_TypeofProduct.getText());
         int amounttoProduce = Integer.parseInt(textf_CreateBatchOrder_AmountToProduces.getText());
         float speed = Float.parseFloat(textf_CreateBatchOrder_Speed.getText());
-        LocalDate date = dp_CreateBatchOrder.getValue();
+        LocalDate deadline = dp_CreateBatchOrder.getValue();
 
-        imd.CreateBatch(typeofProduct, amounttoProduce, speed, date);
+        imd.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
     }
 
     @FXML

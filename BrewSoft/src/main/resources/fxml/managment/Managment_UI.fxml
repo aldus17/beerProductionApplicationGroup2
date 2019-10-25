@@ -49,7 +49,7 @@
             </MenuBar>
             <AnchorPane GridPane.rowIndex="1">
                <children>
-                  <AnchorPane fx:id="ap_ProductionQueueLayout" prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="ap_ProductionQueueLayout" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <GridPane alignment="TOP_CENTER" prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
@@ -60,12 +60,13 @@
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" />
                           </columnConstraints>
                           <rowConstraints>
+                              <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES" />
                             <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <TableView fx:id="tw_SearchTableProductionQueue" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
+                              <TableView fx:id="tw_SearchTableProductionQueue" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
                                 <columns>
                                   <TableColumn fx:id="tc_ProductionQueue_BatchID" prefWidth="75.0" text="Batch ID" />
                                   <TableColumn fx:id="tc_ProductionQueue_DateOfCreation" prefWidth="110.99996948242188" text="Date of creation" />
@@ -75,13 +76,18 @@
                                     <TableColumn fx:id="tc_ProductionQueue_SpeedForProduction" prefWidth="141.0" text="Speed for Production" />
                                 </columns>
                               </TableView>
-                              <TextField fx:id="text_SearchProductionQueue" prefHeight="25.0" prefWidth="947.0" GridPane.columnIndex="2" />
-                              <Button fx:id="btn_SearchProductionQueue" mnemonicParsing="false" onAction="#OnSearchAction" prefHeight="25.0" prefWidth="71.0" text="Search" GridPane.columnIndex="1" />
+                              <TextField fx:id="text_SearchProductionQueue" prefHeight="25.0" prefWidth="947.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <Button fx:id="btn_SearchProductionQueue" mnemonicParsing="false" onAction="#OnSearchAction" prefHeight="25.0" prefWidth="71.0" text="Search" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label text="Production Queue" GridPane.columnIndex="1" GridPane.columnSpan="2">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="ap_CompletedBatchesLayout" layoutX="10.0" layoutY="10.0" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="ap_CompletedBatchesLayout" layoutX="10.0" layoutY="10.0" prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <GridPane prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columnConstraints>
@@ -93,13 +99,14 @@
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <TableView fx:id="tw_SearchTableCompletedBatches" prefHeight="795.0" prefWidth="1150.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
+                              <TableView fx:id="tw_SearchTableCompletedBatches" prefHeight="795.0" prefWidth="1150.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
                                  <columns>
                                     <TableColumn fx:id="tc_CompletedBatches_batchID" prefWidth="75.0" text="Batch ID" />
                                     <TableColumn fx:id="tc_CompletedBatches_MacineID" prefWidth="75.0" text="Machine ID" />
@@ -113,36 +120,104 @@
                                     <TableColumn fx:id="tc_CompletedBatches_DefectAmount" prefWidth="108.0" text="Defect Amount" />
                                  </columns>
                               </TableView>
-                              <TextField fx:id="text_SearchCompletedBarches" prefHeight="25.0" prefWidth="947.0" GridPane.columnIndex="2" />
-                              <Button fx:id="btn_SearchCompletedBatches" mnemonicParsing="false" onAction="#OnSearchAction" prefHeight="25.0" prefWidth="71.0" text="Search" GridPane.columnIndex="1" />
-                              <Button fx:id="btn_GenerateBatchreportCompletedBatches" mnemonicParsing="false" onAction="#GeneratingBatchreportAction" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <TextField fx:id="text_SearchCompletedBarches" prefHeight="25.0" prefWidth="947.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <Button fx:id="btn_SearchCompletedBatches" mnemonicParsing="false" onAction="#OnSearchAction" prefHeight="25.0" prefWidth="71.0" text="Search" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Button fx:id="btn_GenerateBatchreportCompletedBatches" mnemonicParsing="false" onAction="#GeneratingBatchreportAction" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Label text="Completed Batches" GridPane.columnIndex="1" GridPane.columnSpan="2">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
                            </children>
                         </GridPane>
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="ap_CreateBatchOrder" layoutY="5.0" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Button fx:id="btn_CreateBatchOrder_Create" layoutX="280.0" layoutY="348.0" mnemonicParsing="false" onAction="#CreateBatchAction" text="Create" />
-                        <Label layoutX="282.0" layoutY="130.0" text="Amount to Produce" />
-                        <Label layoutX="282.0" layoutY="60.0" text="Type of product" />
-                        <Label layoutX="282.0" layoutY="201.0" text="Speed" />
-                        <Label layoutX="282.0" layoutY="282.0" text="Deadline" />
-                        <TextField fx:id="textf_CreateBatchOrder_AmountToProduces" layoutX="80.0" layoutY="126.0" text="Amount to Produce" />
-                        <TextField fx:id="textf_CreateBatchOrder_TypeofProduct" layoutX="80.0" layoutY="56.0" text="Type of Product" />
-                        <TextField fx:id="textf_CreateBatchOrder_Speed" layoutX="80.0" layoutY="197.0" text="Speed" />
-                        <DatePicker fx:id="dp_CreateBatchOrder" layoutX="80.0" layoutY="278.0" />
+                        <GridPane prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="25.0" minWidth="25.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="115.0" minWidth="115.0" prefWidth="115.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="182.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="5.0" minWidth="5.0" prefWidth="5.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                              <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="230.0" minHeight="230.0" prefHeight="230.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <TextField fx:id="textf_CreateBatchOrder_TypeofProduct" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <TextField fx:id="textf_CreateBatchOrder_AmountToProduces" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <TextField fx:id="textf_CreateBatchOrder_Speed" GridPane.columnIndex="2" GridPane.rowIndex="6" />
+                              <DatePicker fx:id="dp_CreateBatchOrder" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                              <Button fx:id="btn_CreateBatchOrder_Create" mnemonicParsing="false" onAction="#CreateBatchAction" text="Create" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+                              <TableView prefHeight="777.0" prefWidth="743.0" GridPane.columnIndex="4" GridPane.rowIndex="2" GridPane.rowSpan="12">
+                                <columns>
+                                  <TableColumn prefWidth="75.0" text="Batch ID" />
+                                  <TableColumn prefWidth="131.0" text="Date of creation" />
+                                    <TableColumn prefWidth="82.0" text="Amount" />
+                                    <TableColumn prefWidth="57.0" text="Type" />
+                                    <TableColumn prefWidth="88.0" text="Deadline" />
+                                    <TableColumn prefWidth="156.0" text="Speed for Production" />
+                                    <TableColumn prefWidth="141.0" text="Production Time" />
+                                </columns>
+                              </TableView>
+                              <Label text="Create Batch Order" GridPane.columnIndex="1" GridPane.columnSpan="2">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <Label text="Speed" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                              <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="12" />
+                              <Label text="Amount to Produce" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Label text="Deadline" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                              <Label text="Type of product" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="ap_ShowOEE" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Label layoutX="14.0" layoutY="14.0" text="Show OEE">
-                           <font>
-                              <Font size="18.0" />
-                           </font>
-                        </Label>
-                        <DatePicker fx:id="dp_ShowOEE" layoutX="55.0" layoutY="58.0" />
-                        <Button fx:id="btn_ShowOEE_GenerateOEE" layoutX="242.0" layoutY="58.0" mnemonicParsing="false" onAction="#GenerateOEEAction" text="Generate OEE" />
-                        <TextArea fx:id="Texta_ShowOEE_Text" layoutX="55.0" layoutY="95.0" prefHeight="537.0" prefWidth="1114.0" />
+                        <GridPane prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="180.0" minWidth="180.0" prefWidth="180.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="90.0" minWidth="90.0" prefWidth="90.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="25.0" minWidth="25.0" prefWidth="25.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="1.7976931348623157E308" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="Show OEE" GridPane.columnIndex="1">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                              </Label>
+                              <DatePicker fx:id="dp_ShowOEE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Button fx:id="btn_ShowOEE_GenerateOEE" mnemonicParsing="false" onAction="#GenerateOEEAction" text="Generate OEE" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <TextArea fx:id="Texta_ShowOEE_Text" prefHeight="537.0" prefWidth="1114.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+                           </children>
+                        </GridPane>
                      </children>
                   </AnchorPane>
                </children>
