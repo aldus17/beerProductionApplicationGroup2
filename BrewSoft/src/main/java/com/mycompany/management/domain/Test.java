@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.management.domain;
 
 import com.mycompany.crossCutting.objects.Batch;
@@ -11,10 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author a_hen
- */
 public class Test implements IManagermentDomain{
 
     private Batch batch;
@@ -23,12 +14,12 @@ public class Test implements IManagermentDomain{
     }
     
     @Override
-    public void CreateBatch(int typeofProduct, int amounttoProduce, double speed, LocalDate deadline) {
+    public void CreateBatch(int typeofProduct, int amountToProduce, double speed, LocalDate deadline) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Batch> BatchReportSearch() {
+    public List<Batch> BatchObjects(String key, String value) {
         
         List<Batch> list = new ArrayList<>();
         
@@ -40,8 +31,7 @@ public class Test implements IManagermentDomain{
     }
 
     @Override
-    public List<Object> ProductQueueSearch(String searchString) {
+    public double CalulateOEE(LocalDate searchDate) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
 }

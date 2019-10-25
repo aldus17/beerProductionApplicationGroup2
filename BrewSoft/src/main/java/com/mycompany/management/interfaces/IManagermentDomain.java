@@ -6,8 +6,8 @@ import java.util.List;
 
 public interface IManagermentDomain {
 
-    public void CreateBatch(int typeofProduct, int amounttoProduce, double speed, LocalDate deadline);
-    public List<Batch> BatchReportSearch ();
-    public List<Object> ProductQueueSearch (String searchString);
+    public void CreateBatch(int typeofProduct, int amountToProduce, double speed, LocalDate deadline);
+    public List<Batch> BatchObjects (String searchKey, String searchValue);
+    public double CalulateOEE(LocalDate searchDate);
     
 }

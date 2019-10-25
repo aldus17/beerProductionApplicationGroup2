@@ -2,18 +2,17 @@ package com.mycompany.management.presentation;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.management.domain.Test;
+import com.mycompany.management.interfaces.IBatchReportGenerate;
 import com.mycompany.management.interfaces.IManagermentDomain;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -22,7 +21,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 
 public class ManagementController implements Initializable {
@@ -40,19 +38,19 @@ public class ManagementController implements Initializable {
     @FXML
     private AnchorPane ap_ProductionQueueLayout;
     @FXML
-    private TableView<?> tw_SearchTableProductionQueue;
+    private TableView<Batch> tw_SearchTableProductionQueue;
     @FXML
-    private TableColumn<?, ?> tc_ProductionQueue_BatchID;
+    private TableColumn<Batch, String> tc_ProductionQueue_BatchID;
     @FXML
-    private TableColumn<?, ?> tc_ProductionQueue_DateOfCreation;
+    private TableColumn<Batch, String> tc_ProductionQueue_DateOfCreation;
     @FXML
-    private TableColumn<?, ?> tc_ProductionQueue_Amount;
+    private TableColumn<Batch, String> tc_ProductionQueue_Amount;
     @FXML
-    private TableColumn<?, ?> tc_ProductionQueue_Type;
+    private TableColumn<Batch, String> tc_ProductionQueue_Type;
     @FXML
-    private TableColumn<?, ?> tc_ProductionQueue_Deadline;
+    private TableColumn<Batch, String> tc_ProductionQueue_Deadline;
     @FXML
-    private TableColumn<?, ?> tc_ProductionQueue_SpeedForProduction;
+    private TableColumn<Batch, String> tc_ProductionQueue_SpeedForProduction;
     @FXML
     private TextField text_SearchProductionQueue;
     @FXML
@@ -86,9 +84,9 @@ public class ManagementController implements Initializable {
     @FXML
     private Button btn_SearchCompletedBatches;
     @FXML
-    private Button btn_GenerateBatchreportCompletedBatches;
+    private Button btn_GenerateBatchreportCompletedBatches; // TODO Consider delete, attributte is never used
     @FXML
-    private Button btn_CreateBatchOrder_Create;
+    private Button btn_CreateBatchOrder_Create; // TODO Consider delete, attributte is never used
     @FXML
     private TextField textf_CreateBatchOrder_AmountToProduces;
     @FXML
@@ -100,25 +98,24 @@ public class ManagementController implements Initializable {
     @FXML
     private DatePicker dp_ShowOEE;
     @FXML
-    private Button btn_ShowOEE_GenerateOEE;
+    private Button btn_ShowOEE_GenerateOEE; // TODO Consider delete, attributte is never used
     @FXML
     private TextArea Texta_ShowOEE_Text;
     @FXML
     private AnchorPane ap_ShowOEE;
 
-    // Add Class
     IManagermentDomain imd = new Test();
-    ObservableList<Batch> BatcheObservableList;
+    IBatchReportGenerate ibrg;
+
+    private List<Batch> batches;
+    private ObservableList<Batch> batcheObservableList;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        BatcheObservableList = FXCollections.observableArrayList();
-        tw_SearchTableCompletedBatches.setPlaceholder(new Label());
-        tw_SearchTableCompletedBatches.setItems(BatcheObservableList);
-        tc_CompletedBatches_batchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
+        batcheObservableList = FXCollections.observableArrayList();
+        InitializeObservableBatchList();
+        InitializeObservableQueueList();
 
-        
         ap_CompletedBatchesLayout.setVisible(false);
         ap_CreateBatchOrder.setVisible(false);
         ap_ShowOEE.setVisible(false);
@@ -150,31 +147,40 @@ public class ManagementController implements Initializable {
             ap_ShowOEE.setVisible(false);
         }
         if (event.getSource() == mi_Show) {
-            ap_ShowOEE.setVisible(true);
-            ap_ShowOEE.toFront();
             ap_ProductionQueueLayout.setVisible(false);
             ap_CompletedBatchesLayout.setVisible(false);
             ap_CreateBatchOrder.setVisible(false);
+            ap_ShowOEE.setVisible(true);
+            Texta_ShowOEE_Text.appendText("Date            | OEE in Procentes \n");
+            ap_ShowOEE.toFront();
         }
     }
 
     @FXML
     private void OnSearchAction(ActionEvent event) {
-
+        
+        batcheObservableList.clear();
+        
         if (event.getSource() == btn_SearchCompletedBatches) {
-            for (Batch batch : imd.BatchReportSearch()) {
-                BatcheObservableList.add(batch);
-            }
-            System.out.println(BatcheObservableList.get(0).getBatchID());
-            tw_SearchTableCompletedBatches.refresh();
+            batches = imd.BatchObjects("CompletedBatches", text_SearchCompletedBarches.getText());
+            
         }
+        
         if (event.getSource() == btn_SearchProductionQueue) {
-
+            batches = imd.BatchObjects("BatchesinQueue", text_SearchProductionQueue.getText());
         }
+        
+        for (Batch batch : batches) {
+            batcheObservableList.add(batch);
+        }
+        
+        tw_SearchTableCompletedBatches.refresh();
     }
 
     @FXML
     private void GeneratingBatchreportAction(ActionEvent event) {
+        tw_SearchTableCompletedBatches.getSelectionModel().getSelectedItem();
+        ibrg.GeneratePDFDocument(); // TODO Find out witch part the batch should be found on.
     }
 
     @FXML
@@ -189,5 +195,40 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void GenerateOEEAction(ActionEvent event) {
+        LocalDate dateToCreateOEE = dp_ShowOEE.getValue();
+        double oee = imd.CalulateOEE(dateToCreateOEE);
+        
+        Texta_ShowOEE_Text.appendText(dateToCreateOEE.toString());
+        Texta_ShowOEE_Text.appendText(" | ");
+        Texta_ShowOEE_Text.appendText(String.valueOf(oee) + "\n");
+    }
+
+    private void InitializeObservableBatchList() {
+        tw_SearchTableCompletedBatches.setPlaceholder(new Label());
+        tw_SearchTableCompletedBatches.setItems(batcheObservableList);
+
+        tc_CompletedBatches_batchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
+        tc_CompletedBatches_MacineID.setCellValueFactory(callData -> callData.getValue().getMachineID());
+        tc_CompletedBatches_Type.setCellValueFactory(callData -> callData.getValue().getType());
+        tc_CompletedBatches_DateOfCreation.setCellValueFactory(callData -> callData.getValue().getDateofCreation());
+        tc_CompletedBatches_Deadline.setCellValueFactory(callData -> callData.getValue().getDeadline());
+        tc_CompletedBatches_DateOfCompletion.setCellValueFactory(callData -> callData.getValue().getDateofCompletion());
+        tc_CompletedBatches_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
+        tc_CompletedBatches_TotalAmount.setCellValueFactory(callData -> callData.getValue().getTotalAmount());
+        tc_CompletedBatches_GoodAmount.setCellValueFactory(callData -> callData.getValue().getGoodAmount());
+        tc_CompletedBatches_DefectAmount.setCellValueFactory(callData -> callData.getValue().getDefectAmount());
+
+    }
+
+    private void InitializeObservableQueueList() {
+        tw_SearchTableProductionQueue.setPlaceholder(new Label());
+        tw_SearchTableProductionQueue.setItems(batcheObservableList);
+
+        tc_ProductionQueue_BatchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
+        tc_ProductionQueue_Type.setCellValueFactory(callData -> callData.getValue().getType());
+        tc_ProductionQueue_DateOfCreation.setCellValueFactory(callData -> callData.getValue().getDateofCreation());
+        tc_ProductionQueue_Deadline.setCellValueFactory(callData -> callData.getValue().getDeadline());
+        tc_ProductionQueue_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
+        tc_ProductionQueue_Amount.setCellValueFactory(callData -> callData.getValue().getTotalAmount());
     }
 }
