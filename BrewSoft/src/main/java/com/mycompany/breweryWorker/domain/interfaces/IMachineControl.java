@@ -1,6 +1,6 @@
-package com.mycompany.brewsoft.breweryWorker.domain.interfaces;
+package com.mycompany.breweryWorker.domain.interfaces;
 
-public interface IBrewerDomain {
+public interface IMachineControl {
 
     public void startProduction(float batchID, float productID, float quantity, float machSpeed);
     

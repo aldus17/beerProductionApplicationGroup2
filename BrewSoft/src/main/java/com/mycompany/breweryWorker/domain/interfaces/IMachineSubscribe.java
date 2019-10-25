@@ -5,6 +5,8 @@
  */
 package com.mycompany.breweryWorker.domain.interfaces;
 
+import java.util.function.Consumer;
+
 /**
  *
  * @author jacob
@@ -12,4 +14,27 @@ package com.mycompany.breweryWorker.domain.interfaces;
 public interface IMachineSubscribe {
     
     public void subscribe();
+    
+    public void setConsumer(Consumer<String> consumer, String itemName);
+    
+    public final static String BATCHID_NODENAME = "BatchID";
+    public final static String TOTAL_PRODUCTS_NODENAME = "TotalProducts";
+    public final static String TEMPERATURE_NODENAME = "Temperature";
+    public final static String HUMIDITY_NODENAME = "Humidity";
+    public final static String VIBRATION_NODENAME = "Vibration";
+    public final static String PRODUCED_PRODUCTS_NODENAME = "ProducedAmount";
+    public final static String DEFECT_PRODUCTS_NODENAME = "DefectProducts";
+    public final static String STOP_REASON_NODENAME = "StopReason";
+    public final static String STATE_CURRENT_NODENAME = "StateCurrent";
+    public final static String PRODUCTS_PR_MINUTE_NODENAME = "ProductsPrMinute";
+    //public final static String ACCEPTABLE_PRODUCTS_NODENAME = "AcceptableProducts";
+
+    
+
+    
+    
+    
+    
+    
+    
 }
