@@ -33,7 +33,9 @@ public interface IMachineSubscribe {
     public final static String STOP_REASON_NODENAME = "StopReason";
     public final static String STATE_CURRENT_NODENAME = "StateCurrent";
     public final static String PRODUCTS_PR_MINUTE_NODENAME = "ProductsPrMinute";
-    //public final static String ACCEPTABLE_PRODUCTS_NODENAME = "AcceptableProducts";
+    public final static String ACCEPTABLE_PRODUCTS_NODENAME = "AcceptableProducts";
+    
+    public final static String MAINTENANCE_COUNTER_NODENAME = "MaintenanceCounter";
 
     
 

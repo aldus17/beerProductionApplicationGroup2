@@ -41,14 +41,17 @@ public class BrewWorker_UI_Controller implements Initializable {
     @FXML
     private Label lbl_Temprature, lbl_BatchID, lbl_Produced, lbl_Humidity, lbl_TotalProducts, lbl_Acceptable,
             lbl_Vibration,lbl_ProductsPrMinute, lbl_Defect;
-
+ 
+    //Label Machine specific
+    @FXML
+    private Label lbl_StopReason, lbl_State, lbl_MaintenancePercent;
+    
     //ProgressBar
     @FXML
     private ProgressBar pb_Maintenance;
     
     IMachineControl controls = new MachineController();
     IMachineSubscribe subscriber = new MachineSubscriber();
-
     
     /**
      * Initializes the controller class.
@@ -71,22 +74,37 @@ public class BrewWorker_UI_Controller implements Initializable {
         Consumer<String> acceptableUpdater = text -> Platform.runLater(()-> lbl_Acceptable.setText(text));
         Consumer<String> vibrationUpdater = text -> Platform.runLater(()-> lbl_Vibration.setText(text));
         Consumer<String> productsPrMinuteUpdater = text -> Platform.runLater(()-> lbl_ProductsPrMinute.setText(text));
-        //Consumer<String> stopReasonUpdater = text -> Platform.runLater(()-> lbl_StopReason.setText(text));
-        //Consumer<String> stateUpdater = text -> Platform.runLater(()-> lbl_State.setText(text));
+        Consumer<String> stopReasonUpdater = text -> Platform.runLater(()-> lbl_StopReason.setText(text));
+        Consumer<String> stateUpdater = text -> Platform.runLater(()-> lbl_State.setText(text));
         Consumer<String> defectUpdater = text -> Platform.runLater(()-> lbl_Defect.setText(text));
+        
+        Consumer<String> maintenanceCounterUpdater = text -> Platform.runLater(()-> {
+            pb_Maintenance.setProgress(Double.valueOf(text)/30000);
+            lbl_MaintenancePercent.setText(String.valueOf((Double.valueOf(text)/30000)*100) + "%");
+        });
+                         
         
         subscriber.setConsumer(batchIdUpdater, subscriber.BATCHID_NODENAME);
         subscriber.setConsumer(temperatureUpdater, subscriber.TEMPERATURE_NODENAME);
         subscriber.setConsumer(producedUpdater, subscriber.PRODUCED_PRODUCTS_NODENAME);
         subscriber.setConsumer(humidityUpdater, subscriber.HUMIDITY_NODENAME);
         subscriber.setConsumer(totalProductsUpdater, subscriber.TOTAL_PRODUCTS_NODENAME);
-        //subscriber.setConsumer(acceptableUpdater, subscriber.ACCEPTABLE_PRODUCTS_NODENAME);
+        subscriber.setConsumer(acceptableUpdater, subscriber.ACCEPTABLE_PRODUCTS_NODENAME);
         subscriber.setConsumer(vibrationUpdater, subscriber.VIBRATION_NODENAME);
         subscriber.setConsumer(productsPrMinuteUpdater, subscriber.PRODUCTS_PR_MINUTE_NODENAME);
         
-        //subscriber.setConsumer(stopReasonUpdater, subscriber.STOP_REASON_NODENAME);
-        //subscriber.setConsumer(stateUpdater, subscriber.PRODUCTS_PR_MINUTE_NODENAME);
+        subscriber.setConsumer(stopReasonUpdater, subscriber.STOP_REASON_NODENAME);
+        subscriber.setConsumer(stateUpdater, subscriber.STATE_CURRENT_NODENAME);
         subscriber.setConsumer(defectUpdater, subscriber.DEFECT_PRODUCTS_NODENAME);
+        
+        subscriber.setConsumer(barleyUpdater, subscriber.BARLEY_NODENAME);
+        subscriber.setConsumer(hopsUpdater, subscriber.HOPS_NODENAME);
+        subscriber.setConsumer(maltUpdater, subscriber.MALT_NODENAME);
+        subscriber.setConsumer(wheatUpdater, subscriber.WHEAT_NODENAME);
+        subscriber.setConsumer(yeastUpdater, subscriber.YEAST_NODENAME);
+        
+        subscriber.setConsumer(maintenanceCounterUpdater, subscriber.MAINTENANCE_COUNTER_NODENAME);
+        
         
         subscriber.subscribe();
     }    

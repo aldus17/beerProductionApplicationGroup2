@@ -2,6 +2,7 @@ package com.mycompany.breweryWorker.presentation;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -21,6 +22,8 @@ public class BrewWorker extends Application {
         
         stage.setScene(scene);
         stage.show();
+        root.styleProperty().bind(Bindings.format("-fx-font-size: %.2fpt;", stage.widthProperty().divide(60)));
+        
     }
 
     /**

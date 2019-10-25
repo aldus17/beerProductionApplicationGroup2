@@ -8,10 +8,9 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
 <AnchorPane id="AnchorPane" minHeight="400.0" minWidth="600.0" prefHeight="1040.0" prefWidth="1900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.breweryWorker.presentation.BrewWorker_UI_Controller">
    <children>
@@ -19,15 +18,16 @@
          <left>
             <VBox prefHeight="1040.0" prefWidth="271.0" BorderPane.alignment="CENTER_LEFT">
                <children>
-                  <Button fx:id="btn_Start" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="279.0" text="Start" VBox.vgrow="ALWAYS" />
-                  <Button fx:id="btn_Reset" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="309.0" text="Reset" VBox.vgrow="ALWAYS" />
-                  <Button fx:id="btn_Clear" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="338.0" text="Clear" VBox.vgrow="ALWAYS" />
-                  <Button fx:id="btn_Stop" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="549.0" text="Stop" VBox.vgrow="ALWAYS">
+                  <Button fx:id="btn_Start" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="279.0" text="Start" VBox.vgrow="NEVER" />
+                  <Button fx:id="btn_Reset" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="309.0" text="Reset" VBox.vgrow="NEVER" />
+                  <Button fx:id="btn_Clear" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="338.0" text="Clear" VBox.vgrow="NEVER" />
+                  <Region prefHeight="205.0" prefWidth="271.0" VBox.vgrow="ALWAYS" />
+                  <Button fx:id="btn_Stop" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="549.0" text="Stop" VBox.vgrow="NEVER">
                      <VBox.margin>
-                        <Insets top="440.0" />
+                        <Insets />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="btn_Abort" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="430.0" text="Abort" VBox.vgrow="ALWAYS">
+                  <Button fx:id="btn_Abort" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="430.0" text="Abort" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
@@ -40,83 +40,38 @@
                <children>
                   <VBox prefHeight="400.0" prefWidth="477.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <HBox alignment="TOP_CENTER" centerShape="false" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #d0e3a6;">
+                        <GridPane prefHeight="349.0" prefWidth="1629.0" style="-fx-background-color: #c9e320;">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="40.0" prefHeight="30.0" vgrow="ALWAYS" />
+                            <RowConstraints minHeight="40.0" prefHeight="30.0" vgrow="ALWAYS" />
+                          </rowConstraints>
                            <children>
-                              <VBox prefHeight="200.0" prefWidth="200.0">
-                                 <children>
-                                    <Label text="Barley:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_Barley" text="BarleyV">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                              <VBox prefHeight="200.0" prefWidth="200.0">
-                                 <children>
-                                    <Label text="Hops:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_Hops" text="HopsV">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                              <VBox prefHeight="200.0" prefWidth="200.0">
-                                 <children>
-                                    <Label text="Malt:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_Malt" text="MaltV">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                              <VBox prefHeight="200.0" prefWidth="200.0">
-                                 <children>
-                                    <Label text="Wheat:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_Wheat" text="WheatV">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
-                              <VBox prefHeight="200.0" prefWidth="200.0">
-                                 <children>
-                                    <Label text="Yeast:">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                    <Label fx:id="lbl_Yeast" text="YeastV">
-                                       <font>
-                                          <Font size="48.0" />
-                                       </font>
-                                    </Label>
-                                 </children>
-                              </VBox>
+                              <Label text="Barley:" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
+                              <Label fx:id="lbl_Barley" text="BarleyV" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label text="Hops:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
+                              <Label fx:id="lbl_Hops" text="HopsV" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                              <Label text="Malt:" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
+                              <Label fx:id="lbl_Malt" text="MaltV" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                              <Label text="Wheat:" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
+                              <Label fx:id="lbl_Wheat" text="WheatV" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                              <Label text="Yeast:" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
+                              <Label fx:id="lbl_Yeast" text="YeastV" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
                            </children>
-                           <padding>
-                              <Insets left="20.0" right="20.0" top="40.0" />
-                           </padding>
-                        </HBox>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                        </GridPane>
                         <GridPane prefHeight="979.0" prefWidth="1629.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -134,191 +89,133 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="Temprature:">
-                                 <font>
-                                    <Font size="48.0" />
-                                 </font>
+                              <Label text="Temprature:" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_Temprature" text="TempV" GridPane.rowIndex="1">
-                                 <font>
-                                    <Font size="36.0" />
-                                 </font>
+                              <Label fx:id="lbl_Temprature" text="TempV" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label text="Batch ID:" GridPane.columnIndex="1">
-                                 <font>
-                                    <Font size="48.0" />
-                                 </font>
+                              <Label text="Batch ID:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_BatchID" text="BatchV" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                                 <font>
-                                    <Font size="36.0" />
-                                 </font>
+                              <Label fx:id="lbl_BatchID" text="BatchV" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label text="Produced:" GridPane.columnIndex="2">
-                                 <font>
-                                    <Font size="48.0" />
-                                 </font>
+                              <Label text="Produced:" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_Produced" text="ProducedV" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                                 <font>
-                                    <Font size="36.0" />
-                                 </font>
+                              <Label fx:id="lbl_Produced" text="ProducedV" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label text="Humidity:" GridPane.rowIndex="2">
-                                 <font>
-                                    <Font size="48.0" />
-                                 </font>
+                              <Label text="Humidity:" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_Humidity" text="HumidV" GridPane.rowIndex="3">
-                                 <font>
-                                    <Font size="36.0" />
-                                 </font>
+                              <Label fx:id="lbl_Humidity" text="HumidV" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label text="To be produced:" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                                 <font>
-                                    <Font size="48.0" />
-                                 </font>
+                              <Label text="To be produced:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_TotalProducts" text="TotalV" GridPane.columnIndex="1" GridPane.rowIndex="3">
-                                 <font>
-                                    <Font size="36.0" />
-                                 </font>
+                              <Label fx:id="lbl_TotalProducts" text="TotalV" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label text="Acceptable products:" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                                 <font>
-                                    <Font size="48.0" />
-                                 </font>
+                              <Label text="Acceptable products:" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_Acceptable" text="AcceptableV" GridPane.columnIndex="2" GridPane.rowIndex="3">
-                                 <font>
-                                    <Font size="36.0" />
-                                 </font>
+                              <Label fx:id="lbl_Acceptable" text="AcceptableV" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label text="Vibration:" GridPane.rowIndex="4">
-                                 <font>
-                                    <Font size="48.0" />
-                                 </font>
+                              <Label text="Vibration:" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_Vibration" text="VibrationV" GridPane.rowIndex="5">
-                                 <font>
-                                    <Font size="36.0" />
-                                 </font>
+                              <Label fx:id="lbl_Vibration" text="VibrationV" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label text="Products p/m:" GridPane.columnIndex="1" GridPane.rowIndex="4">
-                                 <font>
-                                    <Font size="48.0" />
-                                 </font>
+                              <Label text="Products p/m:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_ProductsPrMinute" text="PPMV" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                                 <font>
-                                    <Font size="36.0" />
-                                 </font>
+                              <Label fx:id="lbl_ProductsPrMinute" text="PPMV" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label text="Defect products:" GridPane.columnIndex="2" GridPane.rowIndex="4">
-                                 <font>
-                                    <Font size="48.0" />
-                                 </font>
+                              <Label text="Defect products:" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_Defect" text="DefectV" GridPane.columnIndex="2" GridPane.rowIndex="5">
-                                 <font>
-                                    <Font size="36.0" />
-                                 </font>
+                              <Label fx:id="lbl_Defect" text="DefectV" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label text="Stop Reason:" GridPane.rowIndex="6">
+                              <Label text="Stop Reason:" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
-                                 <font>
-                                    <Font size="48.0" />
-                                 </font>
                               </Label>
-                              <Label text="State:" GridPane.columnIndex="2" GridPane.rowIndex="6">
+                              <Label text="State:" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
-                                 <font>
-                                    <Font size="48.0" />
-                                 </font>
                               </Label>
-                              <ProgressBar fx:id="pb_Maintenance" prefHeight="18.0" prefWidth="362.0" progress="0.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+                              <ProgressBar fx:id="pb_Maintenance" prefHeight="18.0" prefWidth="362.0" progress="0.0" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="6" GridPane.valignment="BOTTOM">
                                  <opaqueInsets>
                                     <Insets />
                                  </opaqueInsets>
                               </ProgressBar>
-                              <Label text="Maintenance status" GridPane.columnIndex="1" GridPane.rowIndex="7">
-                                 <font>
-                                    <Font size="24.0" />
-                                 </font>
-                              </Label>
-                              <Label fx:id="lbl_StopReason" text="StopV" GridPane.rowIndex="7">
+                              <Label text="Maintenance status" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="TOP">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
-                                 <font>
-                                    <Font size="36.0" />
-                                 </font>
                               </Label>
-                              <Label fx:id="lbl_State" text="StateV" GridPane.columnIndex="2" GridPane.rowIndex="7">
-                                 <font>
-                                    <Font size="36.0" />
-                                 </font>
+                              <Label fx:id="lbl_StopReason" text="StopV" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="TOP">
                                  <GridPane.margin>
-                                    <Insets left="60.0" right="60.0" />
+                                    <Insets />
                                  </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lbl_State" text="StateV" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="TOP">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label fx:id="lbl_MaintenancePercent" text="MaintenanceV" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="TOP">
+                                 <GridPane.margin>
+                                    <Insets />
+                                 </GridPane.margin>
+                                 <padding>
+                                    <Insets top="30.0" />
+                                 </padding>
                               </Label>
                            </children>
                         </GridPane>

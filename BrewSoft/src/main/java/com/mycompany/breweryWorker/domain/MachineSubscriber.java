@@ -53,41 +53,47 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
 
     public void subscribe() {
-        NodeId batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
-        NodeId quantityNode = new NodeId(6, "::Program:Cube.Status.Parameter[1].Value");
-        NodeId tempNode = new NodeId(6, "::Program:Cube.Status.Parameter[2].Value");
-        NodeId humidityNode = new NodeId(6, "::Program:Cube.Status.Parameter[3].Value");
-        NodeId vibrationNode = new NodeId(6, "::Program:Cube.Status.Parameter[4].Value");
-        NodeId producedCountNode = new NodeId(6, "::Program:Cube.Admin.ProdProcessedCount");
-        NodeId defectCountNode = new NodeId(6, "::Program:Cube.Admin.ProdDefectiveCount");
-        NodeId stopReasonNode = new NodeId(6, "::Program:Cube.Admin.StopReason.Id");
-        NodeId stateCurrentNode = new NodeId(6, "::Program:Cube.Status.StateCurrent");
-        NodeId productsPrMinuteNode = new NodeId(6, "::Program:Cube.Status.MachSpeed");
 
+        //Production detail nodes
+        NodeId batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");         //+
+        NodeId totalProductsNode = new NodeId(6, "::Program:Cube.Status.Parameter[1].Value");   //+
+        NodeId tempNode = new NodeId(6, "::Program:Cube.Status.Parameter[2].Value");            //+
+        NodeId humidityNode = new NodeId(6, "::Program:Cube.Status.Parameter[3].Value");        //+
+        NodeId vibrationNode = new NodeId(6, "::Program:Cube.Status.Parameter[4].Value");       //+
+        NodeId producedCountNode = new NodeId(6, "::Program:Cube.Admin.ProdProcessedCount");    //+
+        NodeId defectCountNode = new NodeId(6, "::Program:Cube.Admin.ProdDefectiveCount");      //+
+        NodeId productsPrMinuteNode = new NodeId(6, "::Program:Cube.Status.MachSpeed");         //+
+        NodeId acceptableCountNode = new NodeId(6, "::Program:product.good");                   //+     
+        
+        //Production detail nodes. Not used.
+        NodeId productBadNode = new NodeId(6, "::Program:product.bad");
+        NodeId productProducedAmountNode = new NodeId(6, "::Program:product.produce_amount");
+        NodeId productProducedNode = new NodeId(6, "::Program:product.produced");
+
+        //Machine specific nodes
+        NodeId stopReasonNode = new NodeId(6, "::Program:Cube.Admin.StopReason.ID");
+        NodeId stateCurrentNode = new NodeId(6, "::Program:Cube.Status.StateCurrent");
+        NodeId maintenanceCounterNode = new NodeId(6, "::Program:Maintenance.Counter");
+        NodeId maintenanceStateNode = new NodeId(6, "::Program:Maintenance.State");
+        NodeId maintenanceTriggerNode = new NodeId(6, "::Program:Maintenance.Trigger");
+
+        //Material nodes
         NodeId barleyNode = new NodeId(6, "::Program:Inventory.Barley");
         NodeId hopsNode = new NodeId(6, "::Program:Inventory.Hops");
         NodeId maltNode = new NodeId(6, "::Program:Inventory.Malt");
         NodeId wheatNode = new NodeId(6, "::Program:Inventory.Wheat");
         NodeId yeastNode = new NodeId(6, "::Program:Inventory.Yeast");
 
-        NodeId maintenanceCounterNode = new NodeId(6, "::Program:Maintenance.Counter");
-        NodeId maintenanceStateNode = new NodeId(6, "::Program:Maintenance.State");
-        NodeId maintenanceTriggerNode = new NodeId(6, "::Program:Maintenance.Trigger");
-
-        NodeId productBadNode = new NodeId(6, "::Program:product.bad");
-        NodeId productGoodNode = new NodeId(6, "::Program:product.good");
-        NodeId productProducedAmountNode = new NodeId(6, "::Program:product.produce_amount");
-        NodeId productProducedNode = new NodeId(6, "::Program:product.produced");
-
         ReadValueId batchIdReadValueId = new ReadValueId(batchIdNode, AttributeId.Value.uid(), null, null);
-        ReadValueId quantityReadValueId = new ReadValueId(quantityNode, AttributeId.Value.uid(), null, null);
+        ReadValueId totalProductsReadValueId = new ReadValueId(totalProductsNode, AttributeId.Value.uid(), null, null);
         ReadValueId tempReadValueId = new ReadValueId(tempNode, AttributeId.Value.uid(), null, null);
         ReadValueId humidityReadValueId = new ReadValueId(humidityNode, AttributeId.Value.uid(), null, null);
         ReadValueId vibrationReadValueId = new ReadValueId(vibrationNode, AttributeId.Value.uid(), null, null);
         ReadValueId producedReadValueId = new ReadValueId(producedCountNode, AttributeId.Value.uid(), null, null);
-        ReadValueId failedReadValueId = new ReadValueId(defectCountNode, AttributeId.Value.uid(), null, null);
-        //ReadValueId stopReasonReadValueId = new ReadValueId(stopReasonNode, AttributeId.Value.uid(), null, null);
-        //ReadValueId stateReadValueId = new ReadValueId(stateCurrentNode, AttributeId.Value.uid(), null, null);
+        ReadValueId defectReadValueId = new ReadValueId(defectCountNode, AttributeId.Value.uid(), null, null);
+        ReadValueId acceptableReadValueId = new ReadValueId(acceptableCountNode, AttributeId.Value.uid(), null, null);
+        ReadValueId stopReasonReadValueId = new ReadValueId(stopReasonNode, AttributeId.Value.uid(), null, null);
+        ReadValueId stateReadValueId = new ReadValueId(stateCurrentNode, AttributeId.Value.uid(), null, null);
         ReadValueId productsPrMinuteValueId = new ReadValueId(productsPrMinuteNode, AttributeId.Value.uid(), null, null);
 
         ReadValueId barleyReadValueId = new ReadValueId(barleyNode, AttributeId.Value.uid(), null, null);
@@ -101,7 +107,6 @@ public class MachineSubscriber implements IMachineSubscribe {
         ReadValueId maintenanceTriggerReadValueId = new ReadValueId(maintenanceTriggerNode, AttributeId.Value.uid(), null, null);
 
         ReadValueId productBadReadValueId = new ReadValueId(productBadNode, AttributeId.Value.uid(), null, null);
-        ReadValueId productGoodReadValueId = new ReadValueId(productGoodNode, AttributeId.Value.uid(), null, null);
         ReadValueId productProducedAmountReadValueId = new ReadValueId(productProducedAmountNode, AttributeId.Value.uid(), null, null);
         ReadValueId productProducedReadValueId = new ReadValueId(productProducedNode, AttributeId.Value.uid(), null, null);
 
@@ -112,24 +117,24 @@ public class MachineSubscriber implements IMachineSubscribe {
         UInteger humidityClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         UInteger vibrationClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         UInteger producedClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
-        UInteger failedClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
+        UInteger defectClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         UInteger stopReasonClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         UInteger stateClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         //UInteger t = clientHandles.getAndIncrement();
         UInteger productsPrMinuteHandle = Unsigned.uint(clientHandles.getAndIncrement());
 
-        System.out.println(clientHandles.getAndIncrement());
-
-        System.out.println(batchIdClientHandle);
-        System.out.println(totalProductsClientHandle);
-        System.out.println(tempClientHandle);
-        System.out.println(humidityClientHandle);
-        System.out.println(vibrationClientHandle);
-        System.out.println(producedClientHandle);
-        System.out.println(failedClientHandle);
-        System.out.println(stopReasonClientHandle);
-        System.out.println(stateClientHandle);
-        System.out.println(productsPrMinuteHandle);
+//        System.out.println(clientHandles.getAndIncrement());
+//
+//        System.out.println(batchIdClientHandle);
+//        System.out.println(totalProductsClientHandle);
+//        System.out.println(tempClientHandle);
+//        System.out.println(humidityClientHandle);
+//        System.out.println(vibrationClientHandle);
+//        System.out.println(producedClientHandle);
+//        System.out.println(defectClientHandle);
+//        System.out.println(stopReasonClientHandle);
+//        System.out.println(stateClientHandle);
+//        System.out.println(productsPrMinuteHandle);
 
         UInteger barleyClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         UInteger hopsClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
@@ -142,7 +147,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         UInteger maintenanceTriggerClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
 
         UInteger productBadClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
-        UInteger productGoodClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
+        UInteger acceptableClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         UInteger productProducedAmountClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
         UInteger productProducedClientHandle = Unsigned.uint(clientHandles.getAndIncrement());
 
@@ -189,30 +194,37 @@ public class MachineSubscriber implements IMachineSubscribe {
                 Unsigned.uint(10), // queue size
                 true // discard oldest
         );
-        MonitoringParameters failedParameters = new MonitoringParameters(
-                failedClientHandle,
+        MonitoringParameters defectParameters = new MonitoringParameters(
+                defectClientHandle,
                 1000.0, // sampling interval
                 null, // filter, null means use default
                 Unsigned.uint(10), // queue size
                 true // discard oldest
         );
-        /*
-        MonitoringParameters stopReasonParameters = new MonitoringParameters(
+        MonitoringParameters acceptableParameters = new MonitoringParameters(
+                acceptableClientHandle,
+                1000.0,
+                null,
+                Unsigned.uint(10),
+                true
+        );
+        
+         MonitoringParameters stopReasonParameters = new MonitoringParameters(
                 stopReasonClientHandle,
                 1000.0, // sampling interval
                 null, // filter, null means use default
                 Unsigned.uint(10), // queue size
                 true // discard oldest
-        );
+         );
 
-        MonitoringParameters stateParameters = new MonitoringParameters(
+         MonitoringParameters stateParameters = new MonitoringParameters(
                 stateClientHandle,
                 1000.0, // sampling interval
                 null, // filter, null means use default
                 Unsigned.uint(10), // queue size
                 true // discard oldest
-        );
-         */
+         );
+       
         MonitoringParameters productsPrMinuteParameters = new MonitoringParameters(
                 productsPrMinuteHandle,
                 1000.0, // sampling interval
@@ -283,13 +295,6 @@ public class MachineSubscriber implements IMachineSubscribe {
                 Unsigned.uint(10),
                 true
         );
-        MonitoringParameters productGoodParameters = new MonitoringParameters(
-                productGoodClientHandle,
-                1000.0,
-                null,
-                Unsigned.uint(10),
-                true
-        );
         MonitoringParameters productProducedAmountParameters = new MonitoringParameters(
                 productProducedAmountClientHandle,
                 1000.0,
@@ -306,15 +311,24 @@ public class MachineSubscriber implements IMachineSubscribe {
         );
         List<MonitoredItemCreateRequest> requestList = new ArrayList();
         requestList.add(new MonitoredItemCreateRequest(batchIdReadValueId, MonitoringMode.Reporting, batchIdParameters));
-        requestList.add(new MonitoredItemCreateRequest(quantityReadValueId, MonitoringMode.Reporting, totalProductsParameters));
+        requestList.add(new MonitoredItemCreateRequest(totalProductsReadValueId, MonitoringMode.Reporting, totalProductsParameters));
         requestList.add(new MonitoredItemCreateRequest(tempReadValueId, MonitoringMode.Reporting, tempParameters));
         requestList.add(new MonitoredItemCreateRequest(humidityReadValueId, MonitoringMode.Reporting, humidityParameters));
         requestList.add(new MonitoredItemCreateRequest(vibrationReadValueId, MonitoringMode.Reporting, vibrationParameters));
         requestList.add(new MonitoredItemCreateRequest(producedReadValueId, MonitoringMode.Reporting, producedParameters));
-        requestList.add(new MonitoredItemCreateRequest(failedReadValueId, MonitoringMode.Reporting, failedParameters));
-        //requestList.add(new MonitoredItemCreateRequest(stopReasonReadValueId, MonitoringMode.Reporting, stopReasonParameters));
-        //requestList.add(new MonitoredItemCreateRequest(stateReadValueId, MonitoringMode.Reporting, stateParameters));
+        requestList.add(new MonitoredItemCreateRequest(defectReadValueId, MonitoringMode.Reporting, defectParameters));
+        requestList.add(new MonitoredItemCreateRequest(acceptableReadValueId, MonitoringMode.Reporting, acceptableParameters));
+        requestList.add(new MonitoredItemCreateRequest(stopReasonReadValueId, MonitoringMode.Reporting, stopReasonParameters));
+        requestList.add(new MonitoredItemCreateRequest(stateReadValueId, MonitoringMode.Reporting, stateParameters));
         requestList.add(new MonitoredItemCreateRequest(productsPrMinuteValueId, MonitoringMode.Reporting, productsPrMinuteParameters));
+        requestList.add(new MonitoredItemCreateRequest(barleyReadValueId, MonitoringMode.Reporting, barleyParameters));
+        requestList.add(new MonitoredItemCreateRequest(hopsReadValueId, MonitoringMode.Reporting, hopsParameters));
+        requestList.add(new MonitoredItemCreateRequest(maltReadValueId, MonitoringMode.Reporting, maltParameters));
+        requestList.add(new MonitoredItemCreateRequest(wheatReadValueId, MonitoringMode.Reporting, wheatParameters));
+        requestList.add(new MonitoredItemCreateRequest(yeastReadValueId, MonitoringMode.Reporting, yeastParameters));
+        requestList.add(new MonitoredItemCreateRequest(maintenanceCounterReadValueId, MonitoringMode.Reporting, maintenanceCounterParameters));
+        
+        
 
         Consumer<DataValue> onBatchIdItem = (dataValue) -> batchIdConsumerStarter(dataValue);
         Consumer<DataValue> onTotalProductsItem = (dataValue) -> totalProductsConsumerStarter(dataValue);
@@ -322,10 +336,21 @@ public class MachineSubscriber implements IMachineSubscribe {
         Consumer<DataValue> onHumidityItem = (dataValue) -> humidityConsumerStarter(dataValue);
         Consumer<DataValue> onVibrationItem = (dataValue) -> vibrationConsumerStarter(dataValue);
         Consumer<DataValue> onProducedItem = (dataValue) -> producedConsumerStarter(dataValue);
-        Consumer<DataValue> onFailedItem = (dataValue) -> failedConsumerStarter(dataValue);
+        Consumer<DataValue> onDefectItem = (dataValue) -> defectConsumerStarter(dataValue);
+        Consumer<DataValue> onAcceptableItem = (dataValue) -> acceptableConsumerStarter(dataValue);
         Consumer<DataValue> onStopReasonItem = (dataValue) -> stopReasonConsumerStarter(dataValue);
         Consumer<DataValue> onStateReadItem = (dataValue) -> stateConsumerStarter(dataValue);
         Consumer<DataValue> onProductsPrMinuteReadItem = (dataValue) -> productsPrMinuteConsumerStarter(dataValue);
+        
+        Consumer<DataValue> onBarleyReadItem = (dataValue) -> barleyConsumerStarter(dataValue);
+        Consumer<DataValue> onHopsReadItem = (dataValue) -> hopsConsumerStarter(dataValue);
+        Consumer<DataValue> onMaltReadItem = (dataValue) -> maltConsumerStarter(dataValue);
+        Consumer<DataValue> onWheatReadItem = (dataValue) -> wheatConsumerStarter(dataValue);
+        Consumer<DataValue> onYeastReadItem = (dataValue) -> yeastConsumerStarter(dataValue);
+        
+        Consumer<DataValue> onMaintenanceCounterReadItem = (dataValue) -> maintenanceCounterConsumerStarter(dataValue);
+        
+        
 
 //        BiConsumer<UaMonitoredItem, DataValue> onBatchIdItem = (item, id) -> item.setValueConsumer(MachineSubscriber::onBatchIdParameter);
 //        BiConsumer<UaMonitoredItem, DataValue> onQuantityItem = (item, id) -> item.setValueConsumer(MachineSubscriber::onQuantityParameter);
@@ -349,10 +374,20 @@ public class MachineSubscriber implements IMachineSubscribe {
             items.get(3).setValueConsumer(onHumidityItem);
             items.get(4).setValueConsumer(onVibrationItem);
             items.get(5).setValueConsumer(onProducedItem);
-            items.get(6).setValueConsumer(onFailedItem);
-            //items.get(7).setValueConsumer(onStopReasonItem);
-            //items.get(8).setValueConsumer(onStateReadItem);
-            items.get(7).setValueConsumer(onProductsPrMinuteReadItem);
+            items.get(6).setValueConsumer(onDefectItem);
+            items.get(7).setValueConsumer(onAcceptableItem);
+            items.get(8).setValueConsumer(onStopReasonItem);
+            items.get(9).setValueConsumer(onStateReadItem);
+            items.get(10).setValueConsumer(onProductsPrMinuteReadItem);
+            items.get(11).setValueConsumer(onBarleyReadItem);
+            items.get(12).setValueConsumer(onHopsReadItem);
+            items.get(13).setValueConsumer(onMaltReadItem);
+            items.get(14).setValueConsumer(onWheatReadItem);
+            items.get(15).setValueConsumer(onYeastReadItem);
+            items.get(16).setValueConsumer(onMaintenanceCounterReadItem);
+            
+            
+            
 
             for (UaMonitoredItem item : items) {
                 if (item.getStatusCode().isGood()) {
@@ -419,9 +454,13 @@ public class MachineSubscriber implements IMachineSubscribe {
         consumerMap.get(STOP_REASON_NODENAME).accept(dataValue.getValue().getValue().toString());
     }
 
-    private void failedConsumerStarter(DataValue dataValue) {
+    private void defectConsumerStarter(DataValue dataValue) {
         System.out.println(DEFECT_PRODUCTS_NODENAME);
         consumerMap.get(DEFECT_PRODUCTS_NODENAME).accept(dataValue.getValue().getValue().toString());
+    }
+
+    private void acceptableConsumerStarter(DataValue dataValue) {
+        consumerMap.get(ACCEPTABLE_PRODUCTS_NODENAME).accept(dataValue.getValue().getValue().toString());
     }
 
     private void producedConsumerStarter(DataValue dataValue) {
@@ -447,6 +486,9 @@ public class MachineSubscriber implements IMachineSubscribe {
     private void totalProductsConsumerStarter(DataValue dataValue) {
         System.out.println(TOTAL_PRODUCTS_NODENAME);
         consumerMap.get(TOTAL_PRODUCTS_NODENAME).accept(dataValue.getValue().getValue().toString());
+    }
+    private void maintenanceCounterConsumerStarter(DataValue dataValue) {
+        consumerMap.get(MAINTENANCE_COUNTER_NODENAME).accept(dataValue.getValue().getValue().toString());
     }
 
 }
