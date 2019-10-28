@@ -1,7 +1,7 @@
 package com.mycompany.management.presentation;
 
 import com.mycompany.crossCutting.objects.Batch;
-import com.mycompany.management.domain.Test;
+import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.management.interfaces.IBatchReportGenerate;
 import com.mycompany.management.interfaces.IManagermentDomain;
 import java.net.URL;
@@ -16,6 +16,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -26,7 +27,7 @@ import javafx.scene.layout.AnchorPane;
 public class ManagementController implements Initializable {
 
     @FXML
-    private MenuItem mi_Show;
+    private MenuItem mi_ShowOEE;
     @FXML
     private AnchorPane ap_CreateBatchOrder;
     @FXML
@@ -84,10 +85,6 @@ public class ManagementController implements Initializable {
     @FXML
     private Button btn_SearchCompletedBatches;
     @FXML
-    private Button btn_GenerateBatchreportCompletedBatches; // TODO Consider delete, attributte is never used
-    @FXML
-    private Button btn_CreateBatchOrder_Create; // TODO Consider delete, attributte is never used
-    @FXML
     private TextField textf_CreateBatchOrder_AmountToProduces;
     @FXML
     private TextField textf_CreateBatchOrder_TypeofProduct;
@@ -96,25 +93,51 @@ public class ManagementController implements Initializable {
     @FXML
     private DatePicker dp_CreateBatchOrder;
     @FXML
-    private DatePicker dp_ShowOEE;
+    private ListView<BeerTypes> lv_CreateBatchOrder_TypeofBeer;
     @FXML
-    private Button btn_ShowOEE_GenerateOEE; // TODO Consider delete, attributte is never used
+    private TableView<Batch> tw_CreateBatchOrder_BatchesOnSpecificDay;
+    @FXML
+    private TableColumn<Batch, String> tc_CreatBatchOrder_BatchID;
+    @FXML
+    private TableColumn<Batch, String> tc_CreatBatchOrder_DateofCreation;
+    @FXML
+    private TableColumn<Batch, String> tc_CreatBatchOrder_Amount;
+    @FXML
+    private TableColumn<Batch, String> tc_CreatBatchOrder_Type;
+    @FXML
+    private TableColumn<Batch, String> tc_CreatBatchOrder_Deadline;
+    @FXML
+    private TableColumn<Batch, String> tc_CreatBatchOrder_SpeedForProduction;
+    @FXML
+    private TableColumn<Batch, String> tc_CreatBatchOrder_ProductionTime;
+    @FXML
+    private DatePicker dp_ShowOEE;
     @FXML
     private TextArea Texta_ShowOEE_Text;
     @FXML
     private AnchorPane ap_ShowOEE;
 
-    IManagermentDomain imd = new Test();
-    IBatchReportGenerate ibrg;
+    // Class calls
+    private IManagermentDomain imd; // TODO Get class ..
+    private IBatchReportGenerate ibrg; // TODO Get class ..
 
+    // Variables
     private List<Batch> batches;
+    private List<BeerTypes> beerTypes;
     private ObservableList<Batch> batcheObservableList;
+    private ObservableList<BeerTypes> beerTypesObservableList;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
         batcheObservableList = FXCollections.observableArrayList();
+        
         InitializeObservableBatchList();
         InitializeObservableQueueList();
+        InitializeObervableOrderList();
+        
+        lv_CreateBatchOrder_TypeofBeer.setPlaceholder(new Label());
+        lv_CreateBatchOrder_TypeofBeer.setItems(beerTypesObservableList);
 
         ap_CompletedBatchesLayout.setVisible(false);
         ap_CreateBatchOrder.setVisible(false);
@@ -145,36 +168,43 @@ public class ManagementController implements Initializable {
             ap_ProductionQueueLayout.setVisible(false);
             ap_CompletedBatchesLayout.setVisible(false);
             ap_ShowOEE.setVisible(false);
+            
+            beerTypesObservableList.clear();
+            beerTypes = imd.GetBeerTypes();
+            
+            beerTypes.forEach((beer) -> {
+                beerTypesObservableList.add(beer);
+            });
+            lv_CreateBatchOrder_TypeofBeer.refresh();
         }
-        if (event.getSource() == mi_Show) {
+        if (event.getSource() == mi_ShowOEE) {
             ap_ProductionQueueLayout.setVisible(false);
             ap_CompletedBatchesLayout.setVisible(false);
             ap_CreateBatchOrder.setVisible(false);
             ap_ShowOEE.setVisible(true);
-            Texta_ShowOEE_Text.appendText("Date            | OEE in Procentes \n");
+            Texta_ShowOEE_Text.appendText("Date            | OEE in Procentes" + "\n");
             ap_ShowOEE.toFront();
         }
     }
 
     @FXML
     private void OnSearchAction(ActionEvent event) {
-        
+
         batcheObservableList.clear();
-        
+
         if (event.getSource() == btn_SearchCompletedBatches) {
             batches = imd.BatchObjects("CompletedBatches", text_SearchCompletedBarches.getText());
-            
+            tw_SearchTableCompletedBatches.refresh();
         }
-        
+
         if (event.getSource() == btn_SearchProductionQueue) {
             batches = imd.BatchObjects("BatchesinQueue", text_SearchProductionQueue.getText());
+            tw_SearchTableProductionQueue.refresh();
         }
         
-        for (Batch batch : batches) {
+        batches.forEach((batch) -> {
             batcheObservableList.add(batch);
-        }
-        
-        tw_SearchTableCompletedBatches.refresh();
+        });
     }
 
     @FXML
@@ -182,12 +212,18 @@ public class ManagementController implements Initializable {
         tw_SearchTableCompletedBatches.getSelectionModel().getSelectedItem();
         ibrg.GeneratePDFDocument(); // TODO Find out witch part the batch should be found on.
     }
+    
+    @FXML
+    private void GetOrdersForSpecificDay(ActionEvent event) {
+        LocalDate orderDay = dp_CreateBatchOrder.getValue();
+        imd.BatchObjects("OrderDay", orderDay.toString());
+    }
 
     @FXML
     private void CreateBatchAction(ActionEvent event) {
         int typeofProduct = Integer.parseInt(textf_CreateBatchOrder_TypeofProduct.getText());
         int amounttoProduce = Integer.parseInt(textf_CreateBatchOrder_AmountToProduces.getText());
-        float speed = Float.parseFloat(textf_CreateBatchOrder_Speed.getText());
+        double speed = Double.parseDouble(textf_CreateBatchOrder_Speed.getText());
         LocalDate deadline = dp_CreateBatchOrder.getValue();
 
         imd.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
@@ -197,13 +233,14 @@ public class ManagementController implements Initializable {
     private void GenerateOEEAction(ActionEvent event) {
         LocalDate dateToCreateOEE = dp_ShowOEE.getValue();
         double oee = imd.CalulateOEE(dateToCreateOEE);
-        
+
         Texta_ShowOEE_Text.appendText(dateToCreateOEE.toString());
         Texta_ShowOEE_Text.appendText(" | ");
         Texta_ShowOEE_Text.appendText(String.valueOf(oee) + "\n");
     }
 
     private void InitializeObservableBatchList() {
+        
         tw_SearchTableCompletedBatches.setPlaceholder(new Label());
         tw_SearchTableCompletedBatches.setItems(batcheObservableList);
 
@@ -217,10 +254,10 @@ public class ManagementController implements Initializable {
         tc_CompletedBatches_TotalAmount.setCellValueFactory(callData -> callData.getValue().getTotalAmount());
         tc_CompletedBatches_GoodAmount.setCellValueFactory(callData -> callData.getValue().getGoodAmount());
         tc_CompletedBatches_DefectAmount.setCellValueFactory(callData -> callData.getValue().getDefectAmount());
-
     }
 
     private void InitializeObservableQueueList() {
+        
         tw_SearchTableProductionQueue.setPlaceholder(new Label());
         tw_SearchTableProductionQueue.setItems(batcheObservableList);
 
@@ -231,4 +268,20 @@ public class ManagementController implements Initializable {
         tc_ProductionQueue_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
         tc_ProductionQueue_Amount.setCellValueFactory(callData -> callData.getValue().getTotalAmount());
     }
+    
+    private void InitializeObervableOrderList() {
+        
+        tw_CreateBatchOrder_BatchesOnSpecificDay.setPlaceholder(new Label());
+        tw_CreateBatchOrder_BatchesOnSpecificDay.setItems(batcheObservableList);
+        
+        tc_CreatBatchOrder_BatchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
+        tc_CreatBatchOrder_DateofCreation.setCellValueFactory(callData -> callData.getValue().getDateofCreation());
+        tc_CreatBatchOrder_Amount.setCellValueFactory(callData -> callData.getValue().getGoodAmount());
+        tc_CreatBatchOrder_Type.setCellValueFactory(callData -> callData.getValue().getType());
+        tc_CreatBatchOrder_Deadline.setCellValueFactory(callData -> callData.getValue().getDeadline());
+        tc_CreatBatchOrder_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
+        tc_CreatBatchOrder_ProductionTime.setCellValueFactory(callData -> callData.getValue().CalulateProductionTime());
+    }
+    
+    
 }

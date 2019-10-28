@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -37,7 +38,7 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="OEE">
                   <items>
-                        <MenuItem fx:id="mi_Show" mnemonicParsing="false" onAction="#MenuItemChangesAction" text="Show" />
+                        <MenuItem fx:id="mi_ShowOEE" mnemonicParsing="false" onAction="#MenuItemChangesAction" text="Show" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Batch">
@@ -87,7 +88,7 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="ap_CompletedBatchesLayout" layoutX="10.0" layoutY="10.0" prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="ap_CompletedBatchesLayout" layoutX="10.0" layoutY="10.0" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <GridPane prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columnConstraints>
@@ -122,7 +123,7 @@
                               </TableView>
                               <TextField fx:id="text_SearchCompletedBarches" prefHeight="25.0" prefWidth="947.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                               <Button fx:id="btn_SearchCompletedBatches" mnemonicParsing="false" onAction="#OnSearchAction" prefHeight="25.0" prefWidth="71.0" text="Search" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Button fx:id="btn_GenerateBatchreportCompletedBatches" mnemonicParsing="false" onAction="#GeneratingBatchreportAction" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Button mnemonicParsing="false" onAction="#GeneratingBatchreportAction" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <Label text="Completed Batches" GridPane.columnIndex="1" GridPane.columnSpan="2">
                                  <font>
                                     <Font size="18.0" />
@@ -132,7 +133,7 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="ap_CreateBatchOrder" layoutY="5.0" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="ap_CreateBatchOrder" layoutY="5.0" prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <GridPane prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
@@ -164,17 +165,17 @@
                               <TextField fx:id="textf_CreateBatchOrder_TypeofProduct" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                               <TextField fx:id="textf_CreateBatchOrder_AmountToProduces" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <TextField fx:id="textf_CreateBatchOrder_Speed" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                              <DatePicker fx:id="dp_CreateBatchOrder" GridPane.columnIndex="2" GridPane.rowIndex="8" />
-                              <Button fx:id="btn_CreateBatchOrder_Create" mnemonicParsing="false" onAction="#CreateBatchAction" text="Create" GridPane.columnIndex="2" GridPane.rowIndex="10" />
-                              <TableView prefHeight="777.0" prefWidth="743.0" GridPane.columnIndex="4" GridPane.rowIndex="2" GridPane.rowSpan="12">
+                              <DatePicker fx:id="dp_CreateBatchOrder" onAction="#GetOrdersForSpecificDay" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                              <Button mnemonicParsing="false" onAction="#CreateBatchAction" text="Create" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+                              <TableView fx:id="tw_CreateBatchOrder_BatchesOnSpecificDay" prefHeight="777.0" prefWidth="743.0" GridPane.columnIndex="4" GridPane.rowIndex="2" GridPane.rowSpan="12">
                                 <columns>
-                                  <TableColumn prefWidth="75.0" text="Batch ID" />
-                                  <TableColumn prefWidth="131.0" text="Date of creation" />
-                                    <TableColumn prefWidth="82.0" text="Amount" />
-                                    <TableColumn prefWidth="57.0" text="Type" />
-                                    <TableColumn prefWidth="88.0" text="Deadline" />
-                                    <TableColumn prefWidth="156.0" text="Speed for Production" />
-                                    <TableColumn prefWidth="141.0" text="Production Time" />
+                                  <TableColumn fx:id="tc_CreatBatchOrder_BatchID" prefWidth="75.0" text="Batch ID" />
+                                  <TableColumn fx:id="tc_CreatBatchOrder_DateofCreation" prefWidth="131.0" text="Date of creation" />
+                                    <TableColumn fx:id="tc_CreatBatchOrder_Amount" prefWidth="82.0" text="Amount" />
+                                    <TableColumn fx:id="tc_CreatBatchOrder_Type" prefWidth="57.0" text="Type" />
+                                    <TableColumn fx:id="tc_CreatBatchOrder_Deadline" prefWidth="88.0" text="Deadline" />
+                                    <TableColumn fx:id="tc_CreatBatchOrder_SpeedForProduction" prefWidth="156.0" text="Speed for Production" />
+                                    <TableColumn fx:id="tc_CreatBatchOrder_ProductionTime" prefWidth="141.0" text="Production Time" />
                                 </columns>
                               </TableView>
                               <Label text="Create Batch Order" GridPane.columnIndex="1" GridPane.columnSpan="2">
@@ -183,10 +184,10 @@
                                  </font>
                               </Label>
                               <Label text="Speed" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <TextArea prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="12" />
                               <Label text="Amount to Produce" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Label text="Deadline" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                               <Label text="Type of product" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <ListView fx:id="lv_CreateBatchOrder_TypeofBeer" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="12" />
                            </children>
                         </GridPane>
                      </children>
@@ -214,7 +215,7 @@
                                  </font>
                               </Label>
                               <DatePicker fx:id="dp_ShowOEE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Button fx:id="btn_ShowOEE_GenerateOEE" mnemonicParsing="false" onAction="#GenerateOEEAction" text="Generate OEE" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <Button mnemonicParsing="false" onAction="#GenerateOEEAction" text="Generate OEE" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                               <TextArea fx:id="Texta_ShowOEE_Text" prefHeight="537.0" prefWidth="1114.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>

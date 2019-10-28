@@ -4,6 +4,6 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 
 public interface IBatchReportGenerate {
     
-    public PDDocument GeneratePDFDocument();
+    public PDDocument GeneratePDFDocument(); // TODO needs parameters
     
 }

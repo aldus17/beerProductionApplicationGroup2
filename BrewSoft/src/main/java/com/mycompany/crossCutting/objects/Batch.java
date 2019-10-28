@@ -1,20 +1,30 @@
 package com.mycompany.crossCutting.objects;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Batch {
-    
-    private final StringProperty BatchID;
-    private final StringProperty MachineID;
-    private final StringProperty type;
-    private final StringProperty dateofCreation;
-    private final StringProperty deadline;
-    private final StringProperty dateofCompletion;
-    private final StringProperty speedforProduction;
-    private final StringProperty totalAmount;
-    private final StringProperty goodAmount;
-    private final StringProperty defectAmount;
+
+    private StringProperty BatchID;
+    private StringProperty MachineID;
+    private StringProperty type;
+    private StringProperty dateofCreation;
+    private StringProperty deadline;
+    private StringProperty dateofCompletion;
+    private StringProperty speedforProduction;
+    private StringProperty totalAmount;
+    private StringProperty goodAmount;
+    private StringProperty defectAmount;
+
+    public Batch(StringProperty BatchID, StringProperty type, StringProperty dateofCreation, StringProperty speedforProduction, StringProperty totalAmount) {
+        this.BatchID = BatchID;
+        this.type = type;
+        this.dateofCreation = dateofCreation;
+        this.speedforProduction = speedforProduction;
+        this.totalAmount = totalAmount;
+    }
 
     public Batch(String BatchID, String MachineID, String type,
             String dateofCreation, String deadline, String dateofCompletion,
@@ -31,7 +41,7 @@ public class Batch {
         this.goodAmount = new SimpleStringProperty(goodAmount);
         this.defectAmount = new SimpleStringProperty(defectAmount);
     }
-    
+
     public StringProperty getBatchID() {
         return BatchID;
     }
@@ -70,5 +80,12 @@ public class Batch {
 
     public StringProperty getDefectAmount() {
         return defectAmount;
+    }
+
+    public StringProperty CalulateProductionTime() {
+
+        int productionTime = (int) (Double.parseDouble(totalAmount.toString()) / Double.parseDouble(speedforProduction.toString()));
+
+        return new SimpleStringProperty(String.valueOf(productionTime));
     }
 }
