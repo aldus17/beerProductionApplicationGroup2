@@ -9,14 +9,6 @@ package com.mycompany.data.dataAccess;
  *
  * @author ALEKSTUD
  */
-public class MachineConnection {
-
-    DBConnection dbconn;
-
-    public MachineConnection() {
-        dbconn = new DBConnection();
-
-    }
-
+public class Batch {
     
 }

@@ -5,7 +5,10 @@
  */
 package com.mycompany.data.dataAccess;
 
+import com.mycompany.crossCutting.Object.Machine;
+import com.mycompany.data.dataAccess.Connect.DBConnections;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,34 +17,65 @@ import java.util.logging.Logger;
  *
  * @author ALEKSTUD
  */
-public class MachineData {
+public class MachineData extends DBConnections {
 
-    DBConnection dbconn;
+    DBConnections dbconn;
 
     public MachineData() {
-        dbconn = new DBConnection();
+        dbconn = new DBConnections();
     }
 
-    public void saveMachine() {
-        String query = "INSERT INTO Machine "
-                + "(hostname, port)"
-                + "VALUES"
-                + "(?, ?)";
-        
-    }
+    public void insertMachine(Object machine) {
 
-    public void selectMachine(String machineHostName, int port) {
-
-        PreparedStatement fetchMachine = null;
+        PreparedStatement storeMachine;
 
         try {
-            String query = "SELECT * FROM Machine";
-            fetchMachine = dbconn.dbConnection.prepareStatement(query);
-            dbconn.connect();
-
+            String query = "INSERT INTO Machine "
+                    + "(hostname, port)"
+                    + "VALUES"
+                    + "(?, ?)";
+            storeMachine = dbConnection.prepareStatement(query);
+            if (machine instanceof Machine) {
+                storeMachine.setString(1, ((Machine) machine).getHostname());
+                storeMachine.setInt(2, ((Machine) machine).getPort());
+            }
         } catch (SQLException ex) {
-            Logger.getLogger(DBConnection.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MachineData.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    }
+
+    public void readMachine(int machineID) {
+
+        PreparedStatement fetchMachine = null;
+        String hostname = "";
+        int port = 0;
+        try {
+            connect();
+            String query = "SELECT * "
+                    + "FROM Machine "
+                    + "WHERE machineID = ?"
+                    + ";";
+            fetchMachine = dbConnection.prepareStatement(query);
+            fetchMachine.setInt(1, machineID);
+            dbResultSet = fetchMachine.executeQuery(query);
+
+            while (dbResultSet.next()) {
+                hostname = dbResultSet.getString("hostname");
+                port = dbResultSet.getInt("port");
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DBConnections.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+    public static void main(String[] args) {
+        Machine m = new Machine("tek-mmmi-db0a.tek.c.sdu.dk", 5432);
+        
+        MachineData md = new MachineData();
+        md.insertMachine(m);
+        
+        
     }
 }
