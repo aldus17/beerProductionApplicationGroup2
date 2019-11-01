@@ -182,7 +182,7 @@ public class ManagementController implements Initializable {
             ap_CompletedBatchesLayout.setVisible(false);
             ap_CreateBatchOrder.setVisible(false);
             ap_ShowOEE.setVisible(true);
-            Texta_ShowOEE_Text.appendText("Date            | OEE in Procentes" + "\n");
+            Texta_ShowOEE_Text.setText("Date\t\t | OEE in Procentes" + "\n");
             ap_ShowOEE.toFront();
         }
     }
