@@ -44,6 +44,8 @@ public interface IMachineSubscribe {
     public final static String STATE_CURRENT_NODENAME = "StateCurrent";
     public final static String MAINTENANCE_COUNTER_NODENAME = "MaintenanceCounter";
     
+    
+    // TODO Get this data from database
     //Machine state constants
     public final static String DEACTIVATED = "0";
     public final static String CLEARING = "1";
