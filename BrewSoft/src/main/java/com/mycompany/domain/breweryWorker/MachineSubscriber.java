@@ -40,7 +40,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     private NodeId productsPrMinuteNode;
     private NodeId acceptableCountNode;
 
-    // TODO Production detail nodes. Not used.
+    // Production detail nodes. Not used.
     private NodeId productBadNode;
     private NodeId productProducedAmountNode;
     private NodeId productProducedNode;
@@ -77,31 +77,31 @@ public class MachineSubscriber implements IMachineSubscribe {
         machineNodes();
         materialNodes();
 
-        ReadValueId batchIdReadValueId = new ReadValueId(batchIdNode, AttributeId.Value.uid(), null, null);
-        ReadValueId totalProductsReadValueId = new ReadValueId(totalProductsNode, AttributeId.Value.uid(), null, null);
-        ReadValueId tempReadValueId = new ReadValueId(tempNode, AttributeId.Value.uid(), null, null);
-        ReadValueId humidityReadValueId = new ReadValueId(humidityNode, AttributeId.Value.uid(), null, null);
-        ReadValueId vibrationReadValueId = new ReadValueId(vibrationNode, AttributeId.Value.uid(), null, null);
-        ReadValueId producedReadValueId = new ReadValueId(producedCountNode, AttributeId.Value.uid(), null, null);
-        ReadValueId defectReadValueId = new ReadValueId(defectCountNode, AttributeId.Value.uid(), null, null);
-        ReadValueId acceptableReadValueId = new ReadValueId(acceptableCountNode, AttributeId.Value.uid(), null, null);
-        ReadValueId stopReasonReadValueId = new ReadValueId(stopReasonNode, AttributeId.Value.uid(), null, null);
-        ReadValueId stateReadValueId = new ReadValueId(stateCurrentNode, AttributeId.Value.uid(), null, null);
-        ReadValueId productsPrMinuteValueId = new ReadValueId(productsPrMinuteNode, AttributeId.Value.uid(), null, null);
+        ReadValueId batchIdReadValueId = readValueId(batchIdNode);
+        ReadValueId totalProductsReadValueId = readValueId(totalProductsNode);
+        ReadValueId tempReadValueId = readValueId(tempNode);
+        ReadValueId humidityReadValueId = readValueId(humidityNode);
+        ReadValueId vibrationReadValueId = readValueId(vibrationNode);
+        ReadValueId producedReadValueId = readValueId(producedCountNode);
+        ReadValueId defectReadValueId = readValueId(defectCountNode);
+        ReadValueId acceptableReadValueId = readValueId(acceptableCountNode);
+        ReadValueId stopReasonReadValueId = readValueId(stopReasonNode);
+        ReadValueId stateReadValueId = readValueId(stateCurrentNode);
+        ReadValueId productsPrMinuteValueId = readValueId(productsPrMinuteNode);
 
-        ReadValueId barleyReadValueId = new ReadValueId(barleyNode, AttributeId.Value.uid(), null, null);
-        ReadValueId hopsReadValueId = new ReadValueId(hopsNode, AttributeId.Value.uid(), null, null);
-        ReadValueId maltReadValueId = new ReadValueId(maltNode, AttributeId.Value.uid(), null, null);
-        ReadValueId wheatReadValueId = new ReadValueId(wheatNode, AttributeId.Value.uid(), null, null);
-        ReadValueId yeastReadValueId = new ReadValueId(yeastNode, AttributeId.Value.uid(), null, null);
+        ReadValueId barleyReadValueId = readValueId(barleyNode);
+        ReadValueId hopsReadValueId = readValueId(hopsNode);
+        ReadValueId maltReadValueId = readValueId(maltNode);
+        ReadValueId wheatReadValueId = readValueId(wheatNode);
+        ReadValueId yeastReadValueId = readValueId(yeastNode);
 
-        ReadValueId maintenanceCounterReadValueId = new ReadValueId(maintenanceCounterNode, AttributeId.Value.uid(), null, null);
-        ReadValueId maintenanceStateReadValueId = new ReadValueId(maintenanceStateNode, AttributeId.Value.uid(), null, null);
-        ReadValueId maintenanceTriggerReadValueId = new ReadValueId(maintenanceTriggerNode, AttributeId.Value.uid(), null, null);
+        ReadValueId maintenanceCounterReadValueId = readValueId(maintenanceCounterNode);
+        ReadValueId maintenanceStateReadValueId = readValueId(maintenanceStateNode);
+        ReadValueId maintenanceTriggerReadValueId = readValueId(maintenanceTriggerNode);
 
-        ReadValueId productBadReadValueId = new ReadValueId(productBadNode, AttributeId.Value.uid(), null, null);
-        ReadValueId productProducedAmountReadValueId = new ReadValueId(productProducedAmountNode, AttributeId.Value.uid(), null, null);
-        ReadValueId productProducedReadValueId = new ReadValueId(productProducedNode, AttributeId.Value.uid(), null, null);
+        ReadValueId productBadReadValueId = readValueId(productBadNode);
+        ReadValueId productProducedAmountReadValueId = readValueId(productProducedAmountNode);
+        ReadValueId productProducedReadValueId = readValueId(productProducedNode);
 
         MonitoringParameters batchIdParameters = monitoringParameters();
         MonitoringParameters totalProductsParameters = monitoringParameters();
@@ -125,7 +125,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         MonitoringParameters productBadParameters = monitoringParameters();
         MonitoringParameters productProducedAmountParameters = monitoringParameters();
         MonitoringParameters productProducedParameters = monitoringParameters();
-        
+
         List<MonitoredItemCreateRequest> requestList = new ArrayList();
         requestList.add(new MonitoredItemCreateRequest(batchIdReadValueId, MonitoringMode.Reporting, batchIdParameters));
         requestList.add(new MonitoredItemCreateRequest(totalProductsReadValueId, MonitoringMode.Reporting, totalProductsParameters));
@@ -202,6 +202,11 @@ public class MachineSubscriber implements IMachineSubscribe {
         }
     }
 
+    @Override
+    public void setConsumer(Consumer<String> consumer, String itemName) {
+        consumerMap.put(itemName, consumer);
+    }
+
     private void productionNodes() {
 
         batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
@@ -237,7 +242,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         wheatNode = new NodeId(6, "::Program:Inventory.Wheat");
         yeastNode = new NodeId(6, "::Program:Inventory.Yeast");
     }
-    
+
     private MonitoringParameters monitoringParameters() {
         return new MonitoringParameters(
                 Unsigned.uint(clientHandles.getAndIncrement()),
@@ -246,11 +251,10 @@ public class MachineSubscriber implements IMachineSubscribe {
                 Unsigned.uint(10), // queue size
                 true // discard oldest
         );
-    } 
-       
-    @Override
-    public void setConsumer(Consumer<String> consumer, String itemName) {
-        consumerMap.put(itemName, consumer);
+    }
+    
+    private ReadValueId readValueId(NodeId name) {
+        return new ReadValueId(name, AttributeId.Value.uid(), null, null);
     }
 
     private void barleyConsumerStarter(DataValue dataValue) {

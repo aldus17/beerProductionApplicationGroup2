@@ -1,34 +1,25 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.domain.breweryWorker.interfaces;
 
 import java.util.function.Consumer;
 
-/**
- *
- * @author jacob
- */
 public interface IMachineSubscribe {
-    
+
     public void subscribe();
-    
+
     public void setConsumer(Consumer<String> consumer, String itemName);
-    
+
     public String stateTranslator(String state);
-    
+
     public String stopReasonTranslator(String stopReason);
-    
+
     // Node names production materials.
     public final static String BARLEY_NODENAME = "Barley";
     public final static String HOPS_NODENAME = "Hops";
     public final static String MALT_NODENAME = "Malt";
     public final static String WHEAT_NODENAME = "Wheat";
     public final static String YEAST_NODENAME = "Yeast";
-    
-    //Node names production data.
+
+    // Node names production data.
     public final static String BATCHID_NODENAME = "BatchID";
     public final static String TOTAL_PRODUCTS_NODENAME = "TotalProducts";
     public final static String TEMPERATURE_NODENAME = "Temperature";
@@ -38,15 +29,14 @@ public interface IMachineSubscribe {
     public final static String DEFECT_PRODUCTS_NODENAME = "DefectProducts";
     public final static String PRODUCTS_PR_MINUTE_NODENAME = "ProductsPrMinute";
     public final static String ACCEPTABLE_PRODUCTS_NODENAME = "AcceptableProducts";
-    
-    //Node names machine specific data.
+
+    // Node names machine specific data.
     public final static String STOP_REASON_NODENAME = "StopReason";
     public final static String STATE_CURRENT_NODENAME = "StateCurrent";
     public final static String MAINTENANCE_COUNTER_NODENAME = "MaintenanceCounter";
-    
-    
+
     // TODO Get this data from database
-    //Machine state constants
+    // Machine state constants
     public final static String DEACTIVATED = "0";
     public final static String CLEARING = "1";
     public final static String STOPPED = "2";
@@ -64,15 +54,13 @@ public interface IMachineSubscribe {
     public final static String COMPLETE = "17";
     public final static String DEACTIVATING = "18";
     public final static String ACTIVATING = "19";
-    
-    //Stop reason constants
+
+    // Stop reason constants
     public final static String UNDEFINED = "0";
     public final static String EMPTY_INVENTORY = "10";
     public final static String MAINTENANCE = "11";
     public final static String MANUAL_STOP = "12";
     public final static String MOTOR_POWER_LOSS = "13";
     public final static String MANUAL_ABORT = "14";
-    
-    
-    
+
 }
