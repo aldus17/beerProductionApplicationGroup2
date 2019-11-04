@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package com.mycompany.breweryWorker.domain;
+package com.mycompany.domain.breweryWorker;
 
 import java.net.URI;
 import java.net.URISyntaxException;

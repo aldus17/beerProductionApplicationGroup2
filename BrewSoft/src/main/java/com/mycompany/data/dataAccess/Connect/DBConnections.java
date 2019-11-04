@@ -5,7 +5,7 @@
  */
 package com.mycompany.data.dataAccess.Connect;
 
-import com.mycompany.breweryWorker.domain.MachineConnection;
+import com.mycompany.domain.breweryWorker.MachineConnection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

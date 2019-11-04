@@ -1,4 +1,4 @@
-package com.mycompany.management.interfaces;
+package com.mycompany.domain.management.interfaces;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
