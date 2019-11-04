@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.mycompany.breweryWorker.domain;
+package com.mycompany.domain.breweryWorker;
 
-import com.mycompany.breweryWorker.domain.interfaces.IMachineSubscribe;
+import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

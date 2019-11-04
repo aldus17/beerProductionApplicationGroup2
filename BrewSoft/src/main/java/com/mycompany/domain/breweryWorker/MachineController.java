@@ -1,4 +1,4 @@
-package com.mycompany.breweryWorker.domain;
+package com.mycompany.domain.breweryWorker;
 
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
-import com.mycompany.breweryWorker.domain.interfaces.IMachineControl;
+import com.mycompany.domain.breweryWorker.interfaces.IMachineControl;
 
 public class MachineController implements IMachineControl{
 

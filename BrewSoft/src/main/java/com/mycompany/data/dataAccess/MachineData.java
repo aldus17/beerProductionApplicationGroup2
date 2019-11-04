@@ -5,7 +5,7 @@
  */
 package com.mycompany.data.dataAccess;
 
-import com.mycompany.crossCutting.Object.Machine;
+import com.mycompany.crossCutting.objects.Machine;
 import com.mycompany.data.dataAccess.Connect.DBConnections;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

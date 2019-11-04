@@ -1,9 +1,9 @@
-package com.mycompany.management.presentation;
+package com.mycompany.presentation.management;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
-import com.mycompany.management.interfaces.IBatchReportGenerate;
-import com.mycompany.management.interfaces.IManagermentDomain;
+import com.mycompany.domain.management.interfaces.IBatchReportGenerate;
+import com.mycompany.domain.management.interfaces.IManagermentDomain;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.mycompany.management.presentation;
+package com.mycompany.presentation.management;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

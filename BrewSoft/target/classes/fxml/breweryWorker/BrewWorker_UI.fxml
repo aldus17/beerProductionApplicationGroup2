@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane id="AnchorPane" minHeight="400.0" minWidth="600.0" prefHeight="1040.0" prefWidth="1900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.breweryWorker.presentation.BrewWorker_UI_Controller">
+<AnchorPane id="AnchorPane" minHeight="400.0" minWidth="600.0" prefHeight="1040.0" prefWidth="1900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.presentation.breweryWorker.BrewWorker_UI_Controller">
    <children>
       <BorderPane layoutX="186.0" layoutY="50.0" prefHeight="405.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <left>

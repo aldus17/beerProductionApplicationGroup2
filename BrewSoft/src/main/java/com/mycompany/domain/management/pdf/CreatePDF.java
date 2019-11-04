@@ -1,4 +1,4 @@
-package com.mycompany.management.domain.pdf;
+package com.mycompany.domain.management.pdf;
 
 import java.io.IOException;
 import java.util.ArrayList;

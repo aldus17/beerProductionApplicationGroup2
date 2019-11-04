@@ -5,8 +5,6 @@
  */
 package com.mycompany.crossCutting.interfaces;
 
-import com.mycompany.breweryWorker.domain.*;
-
 /**
  *
  * @author a_hen
