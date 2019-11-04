@@ -2,8 +2,8 @@ package com.mycompany.presentation.management;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
+import com.mycompany.domain.management.ManagementDomain;
 import com.mycompany.domain.management.interfaces.IBatchReportGenerate;
-import com.mycompany.domain.management.interfaces.IManagermentDomain;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.List;
@@ -23,6 +23,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import com.mycompany.domain.management.interfaces.IManagementDomain;
 
 public class ManagementController implements Initializable {
 
@@ -118,7 +119,7 @@ public class ManagementController implements Initializable {
     private AnchorPane ap_ShowOEE;
 
     // Class calls
-    private IManagermentDomain imd; // TODO Get class ..
+    private IManagementDomain managementDomain;
     private IBatchReportGenerate ibrg; // TODO Get class ..
 
     // Variables
@@ -144,6 +145,8 @@ public class ManagementController implements Initializable {
         ap_ShowOEE.setVisible(false);
         ap_ProductionQueueLayout.setVisible(true);
         ap_ProductionQueueLayout.toFront();
+        
+        managementDomain = new ManagementDomain();
     }
 
     @FXML
@@ -170,7 +173,7 @@ public class ManagementController implements Initializable {
             ap_ShowOEE.setVisible(false);
             
             beerTypesObservableList.clear();
-            beerTypes = imd.GetBeerTypes();
+            beerTypes = managementDomain.GetBeerTypes();
             
             beerTypes.forEach((beer) -> {
                 beerTypesObservableList.add(beer);
@@ -193,12 +196,12 @@ public class ManagementController implements Initializable {
         batcheObservableList.clear();
 
         if (event.getSource() == btn_SearchCompletedBatches) {
-            batches = imd.BatchObjects("CompletedBatches", text_SearchCompletedBarches.getText());
+            batches = managementDomain.BatchObjects("CompletedBatches", text_SearchCompletedBarches.getText());
             tw_SearchTableCompletedBatches.refresh();
         }
 
         if (event.getSource() == btn_SearchProductionQueue) {
-            batches = imd.BatchObjects("BatchesinQueue", text_SearchProductionQueue.getText());
+            batches = managementDomain.BatchObjects("BatchesinQueue", text_SearchProductionQueue.getText());
             tw_SearchTableProductionQueue.refresh();
         }
         
@@ -216,7 +219,7 @@ public class ManagementController implements Initializable {
     @FXML
     private void GetOrdersForSpecificDay(ActionEvent event) {
         LocalDate orderDay = dp_CreateBatchOrder.getValue();
-        imd.BatchObjects("OrderDay", orderDay.toString());
+        managementDomain.BatchObjects("OrderDay", orderDay.toString());
     }
 
     @FXML
@@ -225,14 +228,13 @@ public class ManagementController implements Initializable {
         int amounttoProduce = Integer.parseInt(textf_CreateBatchOrder_AmountToProduces.getText());
         double speed = Double.parseDouble(textf_CreateBatchOrder_Speed.getText());
         LocalDate deadline = dp_CreateBatchOrder.getValue();
-
-        imd.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
+        managementDomain.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
     }
 
     @FXML
     private void GenerateOEEAction(ActionEvent event) {
         LocalDate dateToCreateOEE = dp_ShowOEE.getValue();
-        double oee = imd.CalulateOEE(dateToCreateOEE);
+        double oee = managementDomain.CalulateOEE(dateToCreateOEE);
 
         Texta_ShowOEE_Text.appendText(dateToCreateOEE.toString());
         Texta_ShowOEE_Text.appendText(" | ");
