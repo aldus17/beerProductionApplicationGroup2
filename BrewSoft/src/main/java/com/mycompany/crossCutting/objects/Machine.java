@@ -15,11 +15,14 @@ public class Machine {
     private int port;
     private int machineID;
 
-    public Machine(String hostname, int port) {
+    public Machine(int machineID, String hostname, int port) {
+        this.machineID = machineID;
         this.hostname = hostname;
         this.port = port;
-        
+    }
 
+    public int getMachineID() {
+        return machineID;
     }
 
     public String getHostname() {

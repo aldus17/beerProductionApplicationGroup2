@@ -8,7 +8,6 @@ package com.mycompany.data.dataAccess;
 import com.mycompany.crossCutting.objects.Machine;
 import com.mycompany.data.dataAccess.Connect.DBConnections;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,10 +70,9 @@ public class MachineData extends DBConnections {
 
     }
     public static void main(String[] args) {
-        Machine m = new Machine("tek-mmmi-db0a.tek.c.sdu.dk", 5432);
+        Machine m = new Machine(1, "tek-mmmi-db0a.tek.c.sdu.dk", 5432);
         
-        MachineData md = new MachineData();
-        md.insertMachine(m);
+        
         
         
     }
