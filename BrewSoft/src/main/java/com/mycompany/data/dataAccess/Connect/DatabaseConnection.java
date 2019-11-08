@@ -36,7 +36,7 @@ public class DatabaseConnection {
         return statement;
     }
 
-        public int queryUpdate(String query, Object... values) {
+    public int queryUpdate(String query, Object... values) {
         int affectedRows = 0;
         try (PreparedStatement statement = prepareStatement(query, values)) {
 
@@ -48,17 +48,6 @@ public class DatabaseConnection {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             return affectedRows;
-        }
-    }
-    
-    public static void main(String[] args) {
-        DatabaseConnection conn = new DatabaseConnection();
-        try {
-            conn.connect();
-        } catch (SQLException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }
