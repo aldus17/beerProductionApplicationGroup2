@@ -7,6 +7,7 @@ package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Machine;
 import com.mycompany.data.dataAccess.Connect.DBConnections;
+import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
@@ -19,38 +20,46 @@ public class MachineSubscribeDataHandler extends DBConnections {
     private Machine machine;
     private Batch batch;
 
+    public DatabaseConnection connection;
+
     public MachineSubscribeDataHandler() {
-
+        connection = new DatabaseConnection();
     }
 
-    public boolean insertProductionInfoData(int machineID, int batchID) {
-
-        Boolean insertProdInfoUpdated = false;
-        String insertIntoQuery = "INSERT INTO ProductionInfo";
-        String valuesQuery = "VALUES (?,?,?,?,?)";
-        String query = insertIntoQuery + valuesQuery;
-
-        try {
-            PreparedStatement pstProdInfo = dbConnection.prepareStatement(query);
-            pstProdInfo.setInt(1, productionInfoID()); // TODO: Define what productionInfoID actually is, taken from a class via getter?
-            pstProdInfo.setInt(2, batchID);
-            pstProdInfo.setInt(3, machineID);
-            pstProdInfo.setFloat(4, 999); // TODO: get humidity subscription data 
-            pstProdInfo.setFloat(4, 999); // TODO: get temperature subscription data
-
-            int updateResult = pstProdInfo.executeUpdate();
-
-            if (updateResult > 0) {
-                insertProdInfoUpdated = true;
-            }
-        } catch (SQLException e) {
-            System.out.println("a database access error occurs on insertProductionInfoData");
-            return insertProdInfoUpdated;
-        }
-        return insertProdInfoUpdated;
-
+    public void insertProductionInfoData(int machineID, int batchID, float humidity, float temperature) {
+        connection.queryUpdate("INSERT INTO ProductionInfo(batchID, machineID, humidity, temperature) VALUES (?,?,?,?)", machineID, batchID, humidity, temperature);
     }
 
+    public void insert
+//    
+//    public boolean insertProductionInfoData(int machineID, int batchID) {
+//
+//        Boolean insertProdInfoUpdated = false;
+//        String insertIntoQuery = "INSERT INTO ProductionInfo";
+//        String valuesQuery = "VALUES (?,?,?,?,?)";
+//        String query = insertIntoQuery + valuesQuery;
+//        
+//        
+//        try {
+//            PreparedStatement pstProdInfo = dbConnection.prepareStatement(query);
+//            pstProdInfo.setInt(1, productionInfoID()); // TODO: Define what productionInfoID actually is, taken from a class via getter?
+//            pstProdInfo.setInt(2, batchID);
+//            pstProdInfo.setInt(3, machineID);
+//            pstProdInfo.setFloat(4, 999); // TODO: get humidity subscription data 
+//            pstProdInfo.setFloat(4, 999); // TODO: get temperature subscription data
+//
+//            int updateResult = pstProdInfo.executeUpdate();
+//
+//            if (updateResult > 0) {
+//                insertProdInfoUpdated = true;
+//            }
+//        } catch (SQLException e) {
+//            System.out.println("a database access error occurs on insertProductionInfoData");
+//            return insertProdInfoUpdated;
+//        }
+//        return insertProdInfoUpdated;
+//
+//    }
     public boolean updateProductionInfoData(int machineID, int batchID) {
 
         Boolean prodInfoUpdated = false;
@@ -120,10 +129,15 @@ public class MachineSubscribeDataHandler extends DBConnections {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
     }
+
     /*
     public MachineState readMachineStates(int machineID) {
         
     }
      */
+    public static void main(String[] args) {
+        MachineSubscribeDataHandler mspaint = new MachineSubscribeDataHandler();
+        mspaint.insertProductionInfoData(1, 2, 10.6f, 15.2f);
+    }
 
 }
