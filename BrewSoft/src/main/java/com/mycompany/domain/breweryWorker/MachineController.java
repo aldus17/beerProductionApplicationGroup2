@@ -31,30 +31,28 @@ public class MachineController implements IMachineControl {
             NodeId batchIDNode = new NodeId(6, "::Program:Cube.Command.Parameter[0].Value");
             DataValue dv = new DataValue(new Variant((float) batchID), null, null, null);
             mconn.getClient().writeValue(batchIDNode, dv).get();
-            
+
             // Set parameter[1], Product id [0..5]
             NodeId productIdNode = new NodeId(6, "::Program:Cube.Command.Parameter[1].Value");
-            
             mconn.getClient().writeValue(productIdNode, DataValue.valueOnly(new Variant((float) productID))).get();
-            
+
             // Set parameter[2], Amount >65536
             NodeId quantityNode = new NodeId(6, "::Program:Cube.Command.Parameter[2].Value");
             mconn.getClient().writeValue(quantityNode, DataValue.valueOnly(new Variant((float) quantity))).get();
-            
+
             // Set the speed of production, table for speeds in projektoplæg.pdf
             // Need to calculate the "right" speeds, maybe in mathlab
             NodeId speedNode = new NodeId(6, "::Program:Cube.Command.MachSpeed");
             mconn.getClient().writeValue(speedNode, DataValue.valueOnly(new Variant((float) machSpeed)));
-            
-            // Start the production
-            sendCntrlCmd(new Variant(2));
-            sendCmdRequest();
-            
         } catch (InterruptedException ex) {
             Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
             Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
+        // Start the production
+        sendCntrlCmd(new Variant(2));
+        sendCmdRequest();
     }
 
     public void changeSpeed(float machSpeed) {

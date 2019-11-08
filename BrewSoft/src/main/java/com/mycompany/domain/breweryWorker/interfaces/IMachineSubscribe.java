@@ -6,7 +6,9 @@ public interface IMachineSubscribe {
 
     public void subscribe();
 
-    public void setConsumer(Consumer<String> consumer, String itemName);
+    public void setConsumer(Consumer<String> consumer, String nodeName);
+    
+    public String barleyValue();
 
     public String stateTranslator(String state);
 

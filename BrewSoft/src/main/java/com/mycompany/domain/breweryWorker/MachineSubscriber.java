@@ -10,12 +10,12 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
-import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.UInteger;
 import org.eclipse.milo.opcua.stack.core.types.builtin.unsigned.Unsigned;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.MonitoringMode;
 import org.eclipse.milo.opcua.stack.core.types.enumerated.TimestampsToReturn;
@@ -25,40 +25,42 @@ import org.eclipse.milo.opcua.stack.core.types.structured.ReadValueId;
 
 public class MachineSubscriber implements IMachineSubscribe {
 
-    private static final AtomicLong clientHandles = new AtomicLong(1L);
+    private static final AtomicLong ATOMICLOMG = new AtomicLong(1L);
     private MachineConnection mconn;
     private Map<String, Consumer<String>> consumerMap;
 
     // Production detail nodes
-    private NodeId batchIdNode;
-    private NodeId totalProductsNode;
-    private NodeId tempNode;
-    private NodeId humidityNode;
-    private NodeId vibrationNode;
-    private NodeId producedCountNode;
-    private NodeId defectCountNode;
-    private NodeId productsPrMinuteNode;
-    private NodeId acceptableCountNode;
+    private final NodeId batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
+    private final NodeId totalProductsNode = new NodeId(6, "::Program:Cube.Status.Parameter[1].Value");
+    private final NodeId tempNode = new NodeId(6, "::Program:Cube.Status.Parameter[2].Value");
+    private final NodeId humidityNode = new NodeId(6, "::Program:Cube.Status.Parameter[3].Value");
+    private final NodeId vibrationNode = new NodeId(6, "::Program:Cube.Status.Parameter[4].Value");
+    private final NodeId producedCountNode = new NodeId(6, "::Program:Cube.Admin.ProdProcessedCount");
+    private final NodeId defectCountNode = new NodeId(6, "::Program:Cube.Admin.ProdDefectiveCount");
+    private final NodeId productsPrMinuteNode = new NodeId(6, "::Program:Cube.Status.MachSpeed");
+    private final NodeId acceptableCountNode = new NodeId(6, "::Program:product.good");
 
-    // Production detail nodes. Not used.
-    private NodeId productBadNode;
-    private NodeId productProducedAmountNode;
-    private NodeId productProducedNode;
+    // TODO Production detail nodes. Not used.
+    private final NodeId productBadNode = new NodeId(6, "::Program:product.bad");
+    private final NodeId productProducedAmountNode = new NodeId(6, "::Program:product.produce_amount");
+    private final NodeId productProducedNode = new NodeId(6, "::Program:product.produced");
 
     // Machine specific nodes
-    private NodeId stopReasonNode;
-    private NodeId stateCurrentNode;
-    private NodeId maintenanceCounterNode;
-    private NodeId maintenanceStateNode;
-    private NodeId maintenanceTriggerNode;
+    private final NodeId stopReasonNode = new NodeId(6, "::Program:Cube.Admin.StopReason.ID");
+    private final NodeId stateCurrentNode = new NodeId(6, "::Program:Cube.Status.StateCurrent");
+    private final NodeId maintenanceCounterNode = new NodeId(6, "::Program:Maintenance.Counter");
+    private final NodeId maintenanceStateNode = new NodeId(6, "::Program:Maintenance.State");
+    private final NodeId maintenanceTriggerNode = new NodeId(6, "::Program:Maintenance.Trigger");
 
     // Material nodes
-    private NodeId barleyNode;
-    private NodeId hopsNode;
-    private NodeId maltNode;
-    private NodeId wheatNode;
-    private NodeId yeastNode;
+    private final NodeId barleyNode = new NodeId(6, "::Program:Inventory.Barley");
+    private final NodeId hopsNode = new NodeId(6, "::Program:Inventory.Hops");
+    private final NodeId maltNode = new NodeId(6, "::Program:Inventory.Malt");
+    private final NodeId wheatNode = new NodeId(6, "::Program:Inventory.Wheat");
+    private final NodeId yeastNode = new NodeId(6, "::Program:Inventory.Yeast");
 
+    private String barleyValue;
+    
     // TODO pull ip and port from DB
     public MachineSubscriber() {
         this("127.0.0.1", 4840);
@@ -73,98 +75,53 @@ public class MachineSubscriber implements IMachineSubscribe {
     @Override
     public void subscribe() {
 
-        productionNodes();
-        machineNodes();
-        materialNodes();
-
-        ReadValueId batchIdReadValueId = readValueId(batchIdNode);
-        ReadValueId totalProductsReadValueId = readValueId(totalProductsNode);
-        ReadValueId tempReadValueId = readValueId(tempNode);
-        ReadValueId humidityReadValueId = readValueId(humidityNode);
-        ReadValueId vibrationReadValueId = readValueId(vibrationNode);
-        ReadValueId producedReadValueId = readValueId(producedCountNode);
-        ReadValueId defectReadValueId = readValueId(defectCountNode);
-        ReadValueId acceptableReadValueId = readValueId(acceptableCountNode);
-        ReadValueId stopReasonReadValueId = readValueId(stopReasonNode);
-        ReadValueId stateReadValueId = readValueId(stateCurrentNode);
-        ReadValueId productsPrMinuteValueId = readValueId(productsPrMinuteNode);
-
-        ReadValueId barleyReadValueId = readValueId(barleyNode);
-        ReadValueId hopsReadValueId = readValueId(hopsNode);
-        ReadValueId maltReadValueId = readValueId(maltNode);
-        ReadValueId wheatReadValueId = readValueId(wheatNode);
-        ReadValueId yeastReadValueId = readValueId(yeastNode);
-
-        ReadValueId maintenanceCounterReadValueId = readValueId(maintenanceCounterNode);
-        ReadValueId maintenanceStateReadValueId = readValueId(maintenanceStateNode);
-        ReadValueId maintenanceTriggerReadValueId = readValueId(maintenanceTriggerNode);
-
-        ReadValueId productBadReadValueId = readValueId(productBadNode);
-        ReadValueId productProducedAmountReadValueId = readValueId(productProducedAmountNode);
-        ReadValueId productProducedReadValueId = readValueId(productProducedNode);
-
-        MonitoringParameters batchIdParameters = monitoringParameters();
-        MonitoringParameters totalProductsParameters = monitoringParameters();
-        MonitoringParameters tempParameters = monitoringParameters();
-        MonitoringParameters humidityParameters = monitoringParameters();
-        MonitoringParameters vibrationParameters = monitoringParameters();
-        MonitoringParameters producedParameters = monitoringParameters();
-        MonitoringParameters defectParameters = monitoringParameters();
-        MonitoringParameters acceptableParameters = monitoringParameters();
-        MonitoringParameters stopReasonParameters = monitoringParameters();
-        MonitoringParameters stateParameters = monitoringParameters();
-        MonitoringParameters productsPrMinuteParameters = monitoringParameters();
-        MonitoringParameters barleyParameters = monitoringParameters();
-        MonitoringParameters hopsParameters = monitoringParameters();
-        MonitoringParameters maltParameters = monitoringParameters();
-        MonitoringParameters wheatParameters = monitoringParameters();
-        MonitoringParameters yeastParameters = monitoringParameters();
-        MonitoringParameters maintenanceCounterParameters = monitoringParameters();
-        MonitoringParameters maintenanceStateParameters = monitoringParameters();
-        MonitoringParameters maintenanceTriggerParameters = monitoringParameters();
-        MonitoringParameters productBadParameters = monitoringParameters();
-        MonitoringParameters productProducedAmountParameters = monitoringParameters();
-        MonitoringParameters productProducedParameters = monitoringParameters();
-
         List<MonitoredItemCreateRequest> requestList = new ArrayList();
-        requestList.add(new MonitoredItemCreateRequest(batchIdReadValueId, MonitoringMode.Reporting, batchIdParameters));
-        requestList.add(new MonitoredItemCreateRequest(totalProductsReadValueId, MonitoringMode.Reporting, totalProductsParameters));
-        requestList.add(new MonitoredItemCreateRequest(tempReadValueId, MonitoringMode.Reporting, tempParameters));
-        requestList.add(new MonitoredItemCreateRequest(humidityReadValueId, MonitoringMode.Reporting, humidityParameters));
-        requestList.add(new MonitoredItemCreateRequest(vibrationReadValueId, MonitoringMode.Reporting, vibrationParameters));
-        requestList.add(new MonitoredItemCreateRequest(producedReadValueId, MonitoringMode.Reporting, producedParameters));
-        requestList.add(new MonitoredItemCreateRequest(defectReadValueId, MonitoringMode.Reporting, defectParameters));
-        requestList.add(new MonitoredItemCreateRequest(acceptableReadValueId, MonitoringMode.Reporting, acceptableParameters));
-        requestList.add(new MonitoredItemCreateRequest(stopReasonReadValueId, MonitoringMode.Reporting, stopReasonParameters));
-        requestList.add(new MonitoredItemCreateRequest(stateReadValueId, MonitoringMode.Reporting, stateParameters));
-        requestList.add(new MonitoredItemCreateRequest(productsPrMinuteValueId, MonitoringMode.Reporting, productsPrMinuteParameters));
-        requestList.add(new MonitoredItemCreateRequest(barleyReadValueId, MonitoringMode.Reporting, barleyParameters));
-        requestList.add(new MonitoredItemCreateRequest(hopsReadValueId, MonitoringMode.Reporting, hopsParameters));
-        requestList.add(new MonitoredItemCreateRequest(maltReadValueId, MonitoringMode.Reporting, maltParameters));
-        requestList.add(new MonitoredItemCreateRequest(wheatReadValueId, MonitoringMode.Reporting, wheatParameters));
-        requestList.add(new MonitoredItemCreateRequest(yeastReadValueId, MonitoringMode.Reporting, yeastParameters));
-        requestList.add(new MonitoredItemCreateRequest(maintenanceCounterReadValueId, MonitoringMode.Reporting, maintenanceCounterParameters));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(batchIdNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(totalProductsNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(tempNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(humidityNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(vibrationNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(producedCountNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(defectCountNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(acceptableCountNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(stopReasonNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(stateCurrentNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(productsPrMinuteNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(barleyNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(hopsNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(maltNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(wheatNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(yeastNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(maintenanceCounterNode), MonitoringMode.Reporting, monitoringParameters()));
 
-        Consumer<DataValue> onBatchIdItem = (dataValue) -> batchIdConsumerStarter(dataValue);
-        Consumer<DataValue> onTotalProductsItem = (dataValue) -> totalProductsConsumerStarter(dataValue);
-        Consumer<DataValue> onTempratureItem = (dataValue) -> temperatureConsumerStarter(dataValue);
-        Consumer<DataValue> onHumidityItem = (dataValue) -> humidityConsumerStarter(dataValue);
-        Consumer<DataValue> onVibrationItem = (dataValue) -> vibrationConsumerStarter(dataValue);
-        Consumer<DataValue> onProducedItem = (dataValue) -> producedConsumerStarter(dataValue);
-        Consumer<DataValue> onDefectItem = (dataValue) -> defectConsumerStarter(dataValue);
-        Consumer<DataValue> onAcceptableItem = (dataValue) -> acceptableConsumerStarter(dataValue);
-        Consumer<DataValue> onStopReasonItem = (dataValue) -> stopReasonConsumerStarter(dataValue);
-        Consumer<DataValue> onStateReadItem = (dataValue) -> stateConsumerStarter(dataValue);
-        Consumer<DataValue> onProductsPrMinuteReadItem = (dataValue) -> productsPrMinuteConsumerStarter(dataValue);
+        Consumer<DataValue> onBatchIdItem = (dataValue) -> consumerStarter(BATCHID_NODENAME, dataValue);
+        Consumer<DataValue> onTotalProductsItem = (dataValue) -> consumerStarter(TOTAL_PRODUCTS_NODENAME, dataValue);
+        Consumer<DataValue> onTempratureItem = (dataValue) -> consumerStarter(TEMPERATURE_NODENAME, dataValue);
+        Consumer<DataValue> onHumidityItem = (dataValue) -> consumerStarter(HUMIDITY_NODENAME, dataValue);
+        Consumer<DataValue> onVibrationItem = (dataValue) -> consumerStarter(VIBRATION_NODENAME, dataValue);
+        Consumer<DataValue> onProducedItem = (dataValue) -> consumerStarter(PRODUCED_PRODUCTS_NODENAME, dataValue);
+        Consumer<DataValue> onDefectItem = (dataValue) -> consumerStarter(DEFECT_PRODUCTS_NODENAME, dataValue);
+        Consumer<DataValue> onAcceptableItem = (dataValue) -> consumerStarter(ACCEPTABLE_PRODUCTS_NODENAME, dataValue);
+        Consumer<DataValue> onStopReasonItem = (dataValue) -> consumerStarter(STOP_REASON_NODENAME, dataValue);
+        Consumer<DataValue> onStateReadItem = (dataValue) -> consumerStarter(STATE_CURRENT_NODENAME, dataValue);
+        Consumer<DataValue> onProductsPrMinuteReadItem = (dataValue) -> consumerStarter(PRODUCTS_PR_MINUTE_NODENAME, dataValue);
 
-        Consumer<DataValue> onBarleyReadItem = (dataValue) -> barleyConsumerStarter(dataValue);
-        Consumer<DataValue> onHopsReadItem = (dataValue) -> hopsConsumerStarter(dataValue);
-        Consumer<DataValue> onMaltReadItem = (dataValue) -> maltConsumerStarter(dataValue);
-        Consumer<DataValue> onWheatReadItem = (dataValue) -> wheatConsumerStarter(dataValue);
-        Consumer<DataValue> onYeastReadItem = (dataValue) -> yeastConsumerStarter(dataValue);
+        Consumer<DataValue> onBarleyReadItem = new Consumer<DataValue>() {
+            @Override
+            public void accept(DataValue dataValue) {
+                consumerStarter(BARLEY_NODENAME, dataValue);
+            }
+        };
+        Consumer<DataValue> onHopsReadItem = (dataValue) -> consumerStarter(HOPS_NODENAME, dataValue);
+        Consumer<DataValue> onMaltReadItem = (dataValue) -> consumerStarter(MALT_NODENAME, dataValue);
+        Consumer<DataValue> onWheatReadItem = (dataValue) -> consumerStarter(WHEAT_NODENAME, dataValue);
+        Consumer<DataValue> onYeastReadItem = (dataValue) -> consumerStarter(YEAST_NODENAME, dataValue);
 
-        Consumer<DataValue> onMaintenanceCounterReadItem = (dataValue) -> maintenanceCounterConsumerStarter(dataValue);
+        Consumer<DataValue> onMaintenanceCounterReadItem = (dataValue) -> consumerStarter(MAINTENANCE_COUNTER_NODENAME, dataValue);
 
+//        System.out.println("Barley read Item: " + onBarleyReadItem);
+        
+        
         try {
             UaSubscription subscription = mconn.getClient().getSubscriptionManager().createSubscription(1000.0).get();
             List<UaMonitoredItem> items = subscription.createMonitoredItems(TimestampsToReturn.Both, requestList).get();
@@ -188,13 +145,8 @@ public class MachineSubscriber implements IMachineSubscribe {
             items.get(15).setValueConsumer(onYeastReadItem);
             items.get(16).setValueConsumer(onMaintenanceCounterReadItem);
 
-            for (UaMonitoredItem item : items) {
-                if (item.getStatusCode().isGood()) {
-                    System.out.println("item created for nodeId=" + item.getReadValueId().getNodeId());
-                } else {
-                    System.out.println("failed to create item for nodeId=" + item.getReadValueId().getNodeId() + " (status=" + item.getStatusCode() + ")");
-                }
-            }
+//            System.out.println("Barley set value comsumer: " + items.get(11));
+            
         } catch (InterruptedException ex) {
             Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
@@ -203,129 +155,52 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
 
     @Override
-    public void setConsumer(Consumer<String> consumer, String itemName) {
-        consumerMap.put(itemName, consumer);
+    public void setConsumer(Consumer<String> consumer, String nodeName) {
+        consumerMap.put(nodeName, consumer);
     }
 
-    private void productionNodes() {
+    public String barleyValue() {
 
-        batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
-        totalProductsNode = new NodeId(6, "::Program:Cube.Status.Parameter[1].Value");
-        tempNode = new NodeId(6, "::Program:Cube.Status.Parameter[2].Value");
-        humidityNode = new NodeId(6, "::Program:Cube.Status.Parameter[3].Value");
-        vibrationNode = new NodeId(6, "::Program:Cube.Status.Parameter[4].Value");
-        producedCountNode = new NodeId(6, "::Program:Cube.Admin.ProdProcessedCount");
-        defectCountNode = new NodeId(6, "::Program:Cube.Admin.ProdDefectiveCount");
-        productsPrMinuteNode = new NodeId(6, "::Program:Cube.Status.MachSpeed");
-        acceptableCountNode = new NodeId(6, "::Program:product.good");
+        Consumer<String> barleyUpdater = new Consumer<String>() {
+            @Override
+            public void accept(String text) {
+                System.out.println("Im in Accept");
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        barleyValue = text;
+                        System.out.println("Text: " + text);
+                    }
+                });
+            }
+        };
 
-        // TODO Production detail nodes. Not used.
-        productBadNode = new NodeId(6, "::Program:product.bad");
-        productProducedAmountNode = new NodeId(6, "::Program:product.produce_amount");
-        productProducedNode = new NodeId(6, "::Program:product.produced");
-    }
+        setConsumer(barleyUpdater, BARLEY_NODENAME);
 
-    private void machineNodes() {
+        System.out.println("Barley Value: " + this.barleyValue);
 
-        stopReasonNode = new NodeId(6, "::Program:Cube.Admin.StopReason.ID");
-        stateCurrentNode = new NodeId(6, "::Program:Cube.Status.StateCurrent");
-        maintenanceCounterNode = new NodeId(6, "::Program:Maintenance.Counter");
-        maintenanceStateNode = new NodeId(6, "::Program:Maintenance.State");
-        maintenanceTriggerNode = new NodeId(6, "::Program:Maintenance.Trigger");
-    }
-
-    private void materialNodes() {
-
-        barleyNode = new NodeId(6, "::Program:Inventory.Barley");
-        hopsNode = new NodeId(6, "::Program:Inventory.Hops");
-        maltNode = new NodeId(6, "::Program:Inventory.Malt");
-        wheatNode = new NodeId(6, "::Program:Inventory.Wheat");
-        yeastNode = new NodeId(6, "::Program:Inventory.Yeast");
+        return this.barleyValue;
     }
 
     private MonitoringParameters monitoringParameters() {
         return new MonitoringParameters(
-                Unsigned.uint(clientHandles.getAndIncrement()),
+                Unsigned.uint(ATOMICLOMG.getAndIncrement()),
                 1000.0, // sampling interval
                 null, // filter, null means use default
                 Unsigned.uint(10), // queue size
                 true // discard oldest
         );
     }
-    
+
     private ReadValueId readValueId(NodeId name) {
         return new ReadValueId(name, AttributeId.Value.uid(), null, null);
     }
 
-    private void barleyConsumerStarter(DataValue dataValue) {
-        consumerMap.get(BARLEY_NODENAME).accept(dataValue.getValue().getValue().toString());
+    private void consumerStarter(String nodename, DataValue dataValue) {
+        consumerMap.get(nodename).accept(dataValue.getValue().getValue().toString());
     }
 
-    private void hopsConsumerStarter(DataValue dataValue) {
-        consumerMap.get(HOPS_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void maltConsumerStarter(DataValue dataValue) {
-        consumerMap.get(MALT_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void wheatConsumerStarter(DataValue dataValue) {
-        consumerMap.get(WHEAT_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void yeastConsumerStarter(DataValue dataValue) {
-        consumerMap.get(YEAST_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void batchIdConsumerStarter(DataValue dataValue) {
-        consumerMap.get(BATCHID_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void productsPrMinuteConsumerStarter(DataValue dataValue) {
-        consumerMap.get(PRODUCTS_PR_MINUTE_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void stateConsumerStarter(DataValue dataValue) {
-        consumerMap.get(STATE_CURRENT_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void stopReasonConsumerStarter(DataValue dataValue) {
-        consumerMap.get(STOP_REASON_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void defectConsumerStarter(DataValue dataValue) {
-        consumerMap.get(DEFECT_PRODUCTS_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void acceptableConsumerStarter(DataValue dataValue) {
-        consumerMap.get(ACCEPTABLE_PRODUCTS_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void producedConsumerStarter(DataValue dataValue) {
-        consumerMap.get(PRODUCED_PRODUCTS_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void vibrationConsumerStarter(DataValue dataValue) {
-        consumerMap.get(VIBRATION_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void humidityConsumerStarter(DataValue dataValue) {
-        consumerMap.get(HUMIDITY_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void temperatureConsumerStarter(DataValue dataValue) {
-        consumerMap.get(TEMPERATURE_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void totalProductsConsumerStarter(DataValue dataValue) {
-        consumerMap.get(TOTAL_PRODUCTS_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    private void maintenanceCounterConsumerStarter(DataValue dataValue) {
-        consumerMap.get(MAINTENANCE_COUNTER_NODENAME).accept(dataValue.getValue().getValue().toString());
-    }
-
-    // Get data from database
+    // TODO Get data from database
     @Override
     public String stopReasonTranslator(String stopReason) {
         switch (stopReason) {
