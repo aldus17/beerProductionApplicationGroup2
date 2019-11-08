@@ -233,7 +233,7 @@ public class ManagementController implements Initializable {
         managementDomain.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
 
         if (amountToProduceValue >= 0 && amountToProduceValue < 65535) {
-            imd.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
+            managementDomain.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
             System.out.println("Complete"); //test
         } else {
             System.out.println("Invalid number"); //test
