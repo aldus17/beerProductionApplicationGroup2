@@ -34,3 +34,4 @@ nbdist/
 .nb-gradle/
 
 BrewSoft/target/maven-archiver/pom.properties
+/BrewSoft/nbproject/
