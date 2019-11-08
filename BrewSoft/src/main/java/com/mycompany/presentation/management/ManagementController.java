@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.paint.Color;
 import javafx.util.converter.LocalDateStringConverter;
 import javax.swing.JOptionPane;
 import org.eclipse.milo.opcua.stack.core.Identifiers;
@@ -134,16 +135,18 @@ public class ManagementController implements Initializable {
     private List<BeerTypes> beerTypes;
     private ObservableList<Batch> batcheObservableList;
     private ObservableList<BeerTypes> beerTypesObservableList;
+    @FXML
+    private Label lbl_CreateBatchOrder_error;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
+
         batcheObservableList = FXCollections.observableArrayList();
-        
+
         InitializeObservableBatchList();
         InitializeObservableQueueList();
         InitializeObervableOrderList();
-        
+
         lv_CreateBatchOrder_TypeofBeer.setPlaceholder(new Label());
         lv_CreateBatchOrder_TypeofBeer.setItems(beerTypesObservableList);
 
@@ -152,7 +155,7 @@ public class ManagementController implements Initializable {
         ap_ShowOEE.setVisible(false);
         ap_ProductionQueueLayout.setVisible(true);
         ap_ProductionQueueLayout.toFront();
-        
+
         managementDomain = new ManagementDomain();
     }
 
@@ -178,14 +181,14 @@ public class ManagementController implements Initializable {
             ap_ProductionQueueLayout.setVisible(false);
             ap_CompletedBatchesLayout.setVisible(false);
             ap_ShowOEE.setVisible(false);
-            
-//            beerTypesObservableList.clear();
-//            beerTypes = managementDomain.GetBeerTypes();
-            
-//            beerTypes.forEach((beer) -> {
-//                beerTypesObservableList.add(beer);
-//            });
-//            lv_CreateBatchOrder_TypeofBeer.refresh();
+
+            beerTypesObservableList.clear();
+            beerTypes = managementDomain.GetBeerTypes();
+
+            beerTypes.forEach((beer) -> {
+                beerTypesObservableList.add(beer);
+            });
+            lv_CreateBatchOrder_TypeofBeer.refresh();
         }
         if (event.getSource() == mi_ShowOEE) {
             ap_ProductionQueueLayout.setVisible(false);
@@ -211,7 +214,7 @@ public class ManagementController implements Initializable {
             batches = managementDomain.BatchObjects("BatchesinQueue", text_SearchProductionQueue.getText());
             tw_SearchTableProductionQueue.refresh();
         }
-        
+
         batches.forEach((batch) -> {
             batcheObservableList.add(batch);
         });
@@ -222,30 +225,35 @@ public class ManagementController implements Initializable {
         tw_SearchTableCompletedBatches.getSelectionModel().getSelectedItem();
         ibrg.GeneratePDFDocument(); // TODO Find out witch part the batch should be found on.
     }
-    
+
     @FXML
     private void GetOrdersForSpecificDay(ActionEvent event) {
-//        LocalDate orderDay = dp_CreateBatchOrder.getValue();
-//        managementDomain.BatchObjects("OrderDay", orderDay.toString());
+        LocalDate orderDay = dp_CreateBatchOrder.getValue();
+        managementDomain.BatchObjects("OrderDay", orderDay.toString());
     }
 
     @FXML
     private void CreateBatchAction(ActionEvent event) {
-        String amountToProduceValue = textf_CreateBatchOrder_AmountToProduces.getText();
+
         String typeofProduct = textf_CreateBatchOrder_TypeofProduct.getText();
         String amounttoProduce = textf_CreateBatchOrder_AmountToProduces.getText();
         String speed = textf_CreateBatchOrder_Speed.getText();
         String deadline = dp_CreateBatchOrder.getValue().toString();
-        //managementDomain.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
 
-        if (Integer.parseInt(amountToProduceValue) >= 0 && Integer.parseInt(amountToProduceValue) < 65535) {
-            //managementDomain.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
-            managementDomain.CreateBatch(new Batch("", typeofProduct, deadline, speed, amounttoProduce));
-            System.out.println("Complete"); //test
+        if (!amounttoProduce.isEmpty() && !typeofProduct.isEmpty() && !speed.isEmpty() && !deadline.isEmpty()) {
+            lbl_CreateBatchOrder_error.setText("");
+            if (Integer.parseInt(amounttoProduce) >= 0 && Integer.parseInt(amounttoProduce) < 65535) {
+                managementDomain.CreateBatch(new Batch("", typeofProduct, deadline, speed, amounttoProduce));
+                System.out.println("Complete"); //test
+            } else {
+                System.out.println("Invalid number"); //test
+                JOptionPane.showMessageDialog(null, "Invalid number: Cannot exceed 65535");
+            }
         } else {
-            System.out.println("Invalid number"); //test
-            JOptionPane.showMessageDialog(null, "Invalid number: Cannot exceed 65535");
+            lbl_CreateBatchOrder_error.setText("Make sure no fields are empty");
+            lbl_CreateBatchOrder_error.setTextFill(Color.web("#fc0303"));
         }
+
     }
 
     @FXML
@@ -259,7 +267,7 @@ public class ManagementController implements Initializable {
     }
 
     private void InitializeObservableBatchList() {
-        
+
         tw_SearchTableCompletedBatches.setPlaceholder(new Label());
         tw_SearchTableCompletedBatches.setItems(batcheObservableList);
 
@@ -276,7 +284,7 @@ public class ManagementController implements Initializable {
     }
 
     private void InitializeObservableQueueList() {
-        
+
         tw_SearchTableProductionQueue.setPlaceholder(new Label());
         tw_SearchTableProductionQueue.setItems(batcheObservableList);
 
@@ -287,12 +295,12 @@ public class ManagementController implements Initializable {
         tc_ProductionQueue_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
         tc_ProductionQueue_Amount.setCellValueFactory(callData -> callData.getValue().getTotalAmount());
     }
-    
+
     private void InitializeObervableOrderList() {
-        
+
         tw_CreateBatchOrder_BatchesOnSpecificDay.setPlaceholder(new Label());
         tw_CreateBatchOrder_BatchesOnSpecificDay.setItems(batcheObservableList);
-        
+
         tc_CreatBatchOrder_BatchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
         tc_CreatBatchOrder_DateofCreation.setCellValueFactory(callData -> callData.getValue().getDateofCreation());
         tc_CreatBatchOrder_Amount.setCellValueFactory(callData -> callData.getValue().getGoodAmount());
@@ -301,6 +309,5 @@ public class ManagementController implements Initializable {
         tc_CreatBatchOrder_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
         tc_CreatBatchOrder_ProductionTime.setCellValueFactory(callData -> callData.getValue().CalulateProductionTime());
     }
-    
-    
+
 }
