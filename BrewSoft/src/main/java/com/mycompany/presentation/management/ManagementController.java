@@ -24,6 +24,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
+import javax.swing.JOptionPane;
 
 public class ManagementController implements Initializable {
 
@@ -224,11 +225,20 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void CreateBatchAction(ActionEvent event) {
+        int amountToProduceValue = Integer.valueOf(textf_CreateBatchOrder_AmountToProduces.getText());
         int typeofProduct = Integer.parseInt(textf_CreateBatchOrder_TypeofProduct.getText());
         int amounttoProduce = Integer.parseInt(textf_CreateBatchOrder_AmountToProduces.getText());
         double speed = Double.parseDouble(textf_CreateBatchOrder_Speed.getText());
         LocalDate deadline = dp_CreateBatchOrder.getValue();
         managementDomain.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
+
+        if (amountToProduceValue >= 0 && amountToProduceValue < 65535) {
+            imd.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
+            System.out.println("Complete"); //test
+        } else {
+            System.out.println("Invalid number"); //test
+            JOptionPane.showMessageDialog(null, "Invalid number: Cannot exceed 65535");
+        }
     }
 
     @FXML

@@ -16,7 +16,9 @@ public class Batch {
     private StringProperty goodAmount;
     private StringProperty defectAmount;
 
-    public Batch(StringProperty BatchID, StringProperty type, StringProperty dateofCreation, StringProperty speedforProduction, StringProperty totalAmount) {
+    public Batch(StringProperty BatchID, StringProperty type, 
+            StringProperty dateofCreation, StringProperty speedforProduction, 
+            StringProperty totalAmount) {
         this.BatchID = BatchID;
         this.type = type;
         this.dateofCreation = dateofCreation;
