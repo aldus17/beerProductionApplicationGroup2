@@ -6,7 +6,6 @@
 package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Machine;
-import com.mycompany.data.dataAccess.Connect.DBConnections;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -15,10 +14,9 @@ import java.sql.SQLException;
  *
  * @author ALEKSTUD
  */
-public class MachineSubscribeDataHandler extends DBConnections {
+public class MachineSubscribeDataHandler {
 
     private Machine machine;
-    private Batch batch;
 
     public DatabaseConnection connection;
 
@@ -30,7 +28,7 @@ public class MachineSubscribeDataHandler extends DBConnections {
         connection.queryUpdate("INSERT INTO ProductionInfo(batchID, machineID, humidity, temperature) VALUES (?,?,?,?)", machineID, batchID, humidity, temperature);
     }
 
-    public void insert
+//    public void insert
 //    
 //    public boolean insertProductionInfoData(int machineID, int batchID) {
 //
@@ -60,39 +58,39 @@ public class MachineSubscribeDataHandler extends DBConnections {
 //        return insertProdInfoUpdated;
 //
 //    }
-    public boolean updateProductionInfoData(int machineID, int batchID) {
+//    public boolean updateProductionInfoData(int machineID, int batchID) {
+//
+//        Boolean prodInfoUpdated = false;
+//
+//        try {
+//            connect();
+//            String updateQuery = "UPDATE ProductionInfo";
+//            String setQuery = "SET humidity = ?, temperature = ?";
+//            String whereQuery = "WHERE machineID = ? AND batchID = ?;";
+//            String query = updateQuery + setQuery + whereQuery;
+//
+//            PreparedStatement pstUpdateProdInfo = dbConnection.prepareStatement(query);
+//
+//            pstUpdateProdInfo.setFloat(1, 999); // TODO: Replace 999 with method that checks for humidity changes from machinesubscriber class
+//            pstUpdateProdInfo.setFloat(2, 999); // TODO: Replace 999 with method that checks for Temperature changes from machinesubscriber class
+//            pstUpdateProdInfo.setInt(3, machineID);
+//            pstUpdateProdInfo.setInt(4, batchID);
+//
+//            int updateResult = pstUpdateProdInfo.executeUpdate();
+//
+//            if (updateResult > 0) {
+//                prodInfoUpdated = true;
+//            }
+//        } catch (SQLException e) {
+//            System.out.println("a database access error occurs on updateProductionInfoData");
+//            return prodInfoUpdated;
+//        }
+//
+//        return prodInfoUpdated;
+//
+//    }
 
-        Boolean prodInfoUpdated = false;
-
-        try {
-            connect();
-            String updateQuery = "UPDATE ProductionInfo";
-            String setQuery = "SET humidity = ?, temperature = ?";
-            String whereQuery = "WHERE machineID = ? AND batchID = ?;";
-            String query = updateQuery + setQuery + whereQuery;
-
-            PreparedStatement pstUpdateProdInfo = dbConnection.prepareStatement(query);
-
-            pstUpdateProdInfo.setFloat(1, 999); // TODO: Replace 999 with method that checks for humidity changes from machinesubscriber class
-            pstUpdateProdInfo.setFloat(2, 999); // TODO: Replace 999 with method that checks for Temperature changes from machinesubscriber class
-            pstUpdateProdInfo.setInt(3, machineID);
-            pstUpdateProdInfo.setInt(4, batchID);
-
-            int updateResult = pstUpdateProdInfo.executeUpdate();
-
-            if (updateResult > 0) {
-                prodInfoUpdated = true;
-            }
-        } catch (SQLException e) {
-            System.out.println("a database access error occurs on updateProductionInfoData");
-            return prodInfoUpdated;
-        }
-
-        return prodInfoUpdated;
-
-    }
-
-    public void insertFinalBatchInformationData() {
+    //public void insertFinalBatchInformationData() {
 
         // BEFORE the TODO: Wait until Aleksander H is done with refactoring the subscription class
         // as we need data methods to get specific datavalues to create the logic below
@@ -109,26 +107,26 @@ public class MachineSubscribeDataHandler extends DBConnections {
          *
          * }
          */
-    }
+    //}
 
     // NOT TO BE USED
-    private int productionInfoID() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public boolean updateFinalBatchInfo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
-    }
-
-    public boolean insertFinalBatchInfo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    public boolean readFinalBatchInfo() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-
-    }
+//    private int productionInfoID() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+//
+//    public boolean updateFinalBatchInfo() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//
+//    }
+//
+//    public boolean insertFinalBatchInfo() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//    }
+//
+//    public boolean readFinalBatchInfo() {
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//
+//    }
 
     /*
     public MachineState readMachineStates(int machineID) {

@@ -23,7 +23,7 @@ public class ManagementDomain implements IManagementDomain {
     
     @Override
     public void CreateBatch(int typeofProduct, int amountToProduce, double speed, LocalDate deadline) {
-        batchDataHandler.queueBatch(typeofProduct, amountToProduce, speed, deadline);
+        batchDataHandler.insertBatchToQueue(typeofProduct, amountToProduce, speed, deadline);
     }
 
     @Override
