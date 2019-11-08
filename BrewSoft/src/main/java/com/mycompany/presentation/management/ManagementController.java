@@ -24,7 +24,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.util.converter.LocalDateStringConverter;
 import javax.swing.JOptionPane;
+import org.eclipse.milo.opcua.stack.core.Identifiers;
 
 public class ManagementController implements Initializable {
 
@@ -173,13 +179,13 @@ public class ManagementController implements Initializable {
             ap_CompletedBatchesLayout.setVisible(false);
             ap_ShowOEE.setVisible(false);
             
-            beerTypesObservableList.clear();
-            beerTypes = managementDomain.GetBeerTypes();
+//            beerTypesObservableList.clear();
+//            beerTypes = managementDomain.GetBeerTypes();
             
-            beerTypes.forEach((beer) -> {
-                beerTypesObservableList.add(beer);
-            });
-            lv_CreateBatchOrder_TypeofBeer.refresh();
+//            beerTypes.forEach((beer) -> {
+//                beerTypesObservableList.add(beer);
+//            });
+//            lv_CreateBatchOrder_TypeofBeer.refresh();
         }
         if (event.getSource() == mi_ShowOEE) {
             ap_ProductionQueueLayout.setVisible(false);
@@ -219,21 +225,22 @@ public class ManagementController implements Initializable {
     
     @FXML
     private void GetOrdersForSpecificDay(ActionEvent event) {
-        LocalDate orderDay = dp_CreateBatchOrder.getValue();
-        managementDomain.BatchObjects("OrderDay", orderDay.toString());
+//        LocalDate orderDay = dp_CreateBatchOrder.getValue();
+//        managementDomain.BatchObjects("OrderDay", orderDay.toString());
     }
 
     @FXML
     private void CreateBatchAction(ActionEvent event) {
-        int amountToProduceValue = Integer.valueOf(textf_CreateBatchOrder_AmountToProduces.getText());
-        int typeofProduct = Integer.parseInt(textf_CreateBatchOrder_TypeofProduct.getText());
-        int amounttoProduce = Integer.parseInt(textf_CreateBatchOrder_AmountToProduces.getText());
-        double speed = Double.parseDouble(textf_CreateBatchOrder_Speed.getText());
-        LocalDate deadline = dp_CreateBatchOrder.getValue();
-        managementDomain.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
+        String amountToProduceValue = textf_CreateBatchOrder_AmountToProduces.getText();
+        String typeofProduct = textf_CreateBatchOrder_TypeofProduct.getText();
+        String amounttoProduce = textf_CreateBatchOrder_AmountToProduces.getText();
+        String speed = textf_CreateBatchOrder_Speed.getText();
+        String deadline = dp_CreateBatchOrder.getValue().toString();
+        //managementDomain.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
 
-        if (amountToProduceValue >= 0 && amountToProduceValue < 65535) {
-            managementDomain.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
+        if (Integer.parseInt(amountToProduceValue) >= 0 && Integer.parseInt(amountToProduceValue) < 65535) {
+            //managementDomain.CreateBatch(typeofProduct, amounttoProduce, speed, deadline);
+            managementDomain.CreateBatch(new Batch("", typeofProduct, deadline, speed, amounttoProduce));
             System.out.println("Complete"); //test
         } else {
             System.out.println("Invalid number"); //test

@@ -5,6 +5,7 @@
  */
 package com.mycompany.data.interfaces;
 
+import com.mycompany.crossCutting.objects.Batch;
 import java.time.LocalDate;
 
 /**
@@ -13,6 +14,7 @@ import java.time.LocalDate;
  */
 public interface IBatchDataHandler {
  
-     public void insertBatchToQueue(int typeofProduct, int amountToProduce, double speed, LocalDate deadline);
+     //public void insertBatchToQueue(int typeofProduct, int amountToProduce, double speed, LocalDate deadline);
+     public void insertBatchToQueue(Batch batch);
     
 }
