@@ -138,7 +138,7 @@ public class MachineSubscribeDataHandler {
      */
     public static void main(String[] args) {
         MachineSubscribeDataHandler mspaint = new MachineSubscribeDataHandler();
-        mspaint.insertProductionInfoData(1, 2, 10.6f, 15.2f);
+        mspaint.insertProductionInfoData(60464, 2, 10.6f, 15.2f);
     }
 
 }
