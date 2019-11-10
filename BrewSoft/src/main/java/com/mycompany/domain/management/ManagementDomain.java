@@ -21,7 +21,9 @@ import javafx.beans.property.StringProperty;
  * @author jacob
  */
 public class ManagementDomain implements IManagementDomain {
-
+    private final int BATCHID_MIN = 0;
+    private final int BATCHID_MAX = 65535;
+    
     private IBatchDataHandler batchDataHandler = new BatchDataHandler();
 
     @Override
@@ -52,6 +54,14 @@ public class ManagementDomain implements IManagementDomain {
     @Override
     public List<BeerTypes> GetBeerTypes() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    private int createBatchID(int batchIDRetrieve){
+        if(batchIDRetrieve>=BATCHID_MIN && batchIDRetrieve<BATCHID_MAX){
+           return batchIDRetrieve + 1; 
+        } else {
+            return BATCHID_MIN;
+        }
     }
 
 }

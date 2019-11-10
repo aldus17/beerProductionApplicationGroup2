@@ -44,5 +44,15 @@ public class BatchDataHandler implements IBatchDataHandler {
                 QUEUED_STATUS
         );
     }
+    
+    
+    //TODO: Implement method that gets the latest queued batch id. 
+    // if queue is empty, look at the last produced batch.
+    @Override
+    public int getLatestBatchID() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+
 
 }
