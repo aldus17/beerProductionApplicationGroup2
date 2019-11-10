@@ -10,7 +10,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
@@ -59,8 +58,8 @@ public class MachineSubscriber implements IMachineSubscribe {
     private final NodeId wheatNode = new NodeId(6, "::Program:Inventory.Wheat");
     private final NodeId yeastNode = new NodeId(6, "::Program:Inventory.Yeast");
 
-    private String barleyValue;
-    
+    private String barleyValueString;
+
     // TODO pull ip and port from DB
     public MachineSubscriber() {
         this("127.0.0.1", 4840);
@@ -94,7 +93,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         requestList.add(new MonitoredItemCreateRequest(readValueId(yeastNode), MonitoringMode.Reporting, monitoringParameters()));
         requestList.add(new MonitoredItemCreateRequest(readValueId(maintenanceCounterNode), MonitoringMode.Reporting, monitoringParameters()));
 
-        Consumer<DataValue> onBatchIdItem = (dataValue) -> consumerStarter(BATCHID_NODENAME, dataValue);
+        Consumer<DataValue> onBatchIdItem = (DataValue dataValue) -> consumerStarter(BATCHID_NODENAME, dataValue);
         Consumer<DataValue> onTotalProductsItem = (dataValue) -> consumerStarter(TOTAL_PRODUCTS_NODENAME, dataValue);
         Consumer<DataValue> onTempratureItem = (dataValue) -> consumerStarter(TEMPERATURE_NODENAME, dataValue);
         Consumer<DataValue> onHumidityItem = (dataValue) -> consumerStarter(HUMIDITY_NODENAME, dataValue);
@@ -106,12 +105,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         Consumer<DataValue> onStateReadItem = (dataValue) -> consumerStarter(STATE_CURRENT_NODENAME, dataValue);
         Consumer<DataValue> onProductsPrMinuteReadItem = (dataValue) -> consumerStarter(PRODUCTS_PR_MINUTE_NODENAME, dataValue);
 
-        Consumer<DataValue> onBarleyReadItem = new Consumer<DataValue>() {
-            @Override
-            public void accept(DataValue dataValue) {
-                consumerStarter(BARLEY_NODENAME, dataValue);
-            }
-        };
+        Consumer<DataValue> onBarleyReadItem = (DataValue dataValue) -> consumerStarter(BARLEY_NODENAME, dataValue);
         Consumer<DataValue> onHopsReadItem = (dataValue) -> consumerStarter(HOPS_NODENAME, dataValue);
         Consumer<DataValue> onMaltReadItem = (dataValue) -> consumerStarter(MALT_NODENAME, dataValue);
         Consumer<DataValue> onWheatReadItem = (dataValue) -> consumerStarter(WHEAT_NODENAME, dataValue);
@@ -119,9 +113,6 @@ public class MachineSubscriber implements IMachineSubscribe {
 
         Consumer<DataValue> onMaintenanceCounterReadItem = (dataValue) -> consumerStarter(MAINTENANCE_COUNTER_NODENAME, dataValue);
 
-//        System.out.println("Barley read Item: " + onBarleyReadItem);
-        
-        
         try {
             UaSubscription subscription = mconn.getClient().getSubscriptionManager().createSubscription(1000.0).get();
             List<UaMonitoredItem> items = subscription.createMonitoredItems(TimestampsToReturn.Both, requestList).get();
@@ -145,8 +136,6 @@ public class MachineSubscriber implements IMachineSubscribe {
             items.get(15).setValueConsumer(onYeastReadItem);
             items.get(16).setValueConsumer(onMaintenanceCounterReadItem);
 
-//            System.out.println("Barley set value comsumer: " + items.get(11));
-            
         } catch (InterruptedException ex) {
             Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
@@ -159,27 +148,9 @@ public class MachineSubscriber implements IMachineSubscribe {
         consumerMap.put(nodeName, consumer);
     }
 
+    // Returns the value of the node.
     public String barleyValue() {
-
-        Consumer<String> barleyUpdater = new Consumer<String>() {
-            @Override
-            public void accept(String text) {
-                System.out.println("Im in Accept");
-                Platform.runLater(new Runnable() {
-                    @Override
-                    public void run() {
-                        barleyValue = text;
-                        System.out.println("Text: " + text);
-                    }
-                });
-            }
-        };
-
-        setConsumer(barleyUpdater, BARLEY_NODENAME);
-
-        System.out.println("Barley Value: " + this.barleyValue);
-
-        return this.barleyValue;
+        return this.barleyValueString;
     }
 
     private MonitoringParameters monitoringParameters() {
@@ -198,9 +169,13 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private void consumerStarter(String nodename, DataValue dataValue) {
         consumerMap.get(nodename).accept(dataValue.getValue().getValue().toString());
+        // Sets the value of the node to the attribute.
+        if (nodename == BARLEY_NODENAME) {
+            this.barleyValueString = dataValue.getValue().getValue().toString();
+        }
     }
 
-    // TODO Get data from database
+    // TODO Get data from database.
     @Override
     public String stopReasonTranslator(String stopReason) {
         switch (stopReason) {
@@ -259,5 +234,24 @@ public class MachineSubscriber implements IMachineSubscribe {
                 return "Activating";
         }
         return "Unknown State code: " + state;
+    }
+
+    private class ConsumerImpl implements Consumer<String> {
+
+        public ConsumerImpl() {
+        }
+        public String inner;
+
+        @Override
+        public void accept(String text) {
+            this.inner = text;
+            barleyValueString = text;
+            System.out.println("Text: " + text);
+            System.out.println("Barley Value: " + inner);
+        }
+
+        public String getInner() {
+            return inner;
+        }
     }
 }

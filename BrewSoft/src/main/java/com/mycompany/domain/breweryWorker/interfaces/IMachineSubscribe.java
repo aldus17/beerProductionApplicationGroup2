@@ -1,6 +1,7 @@
 package com.mycompany.domain.breweryWorker.interfaces;
 
 import java.util.function.Consumer;
+import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 
 public interface IMachineSubscribe {
 
@@ -8,8 +9,6 @@ public interface IMachineSubscribe {
 
     public void setConsumer(Consumer<String> consumer, String nodeName);
     
-    public String barleyValue();
-
     public String stateTranslator(String state);
 
     public String stopReasonTranslator(String stopReason);

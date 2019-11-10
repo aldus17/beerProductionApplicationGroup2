@@ -14,6 +14,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 
 public class BrewWorker_UI_Controller implements Initializable {
 
@@ -44,21 +47,7 @@ public class BrewWorker_UI_Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        lbl_Barley.setText(subscriber.barleyValue());
-//        
-//        System.out.println("Barley: " + subscriber.barleyValue());
-
-//        Consumer<String> barleyUpdater = new Consumer<String>() {
-//            @Override
-//            public void accept(String text) {
-//                Platform.runLater(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        lbl_Barley.setText(text);
-//                    }
-//                });
-//            }
-//        };
+        Consumer<String> barleyUpdater = t -> Platform.runLater(() -> lbl_Barley.setText(t));
         Consumer<String> hopsUpdater = text -> Platform.runLater(() -> lbl_Hops.setText(text));
         Consumer<String> maltUpdater = text -> Platform.runLater(() -> lbl_Malt.setText(text));
         Consumer<String> wheatUpdater = text -> Platform.runLater(() -> lbl_Wheat.setText(text));
@@ -94,7 +83,7 @@ public class BrewWorker_UI_Controller implements Initializable {
         subscriber.setConsumer(stateUpdater, subscriber.STATE_CURRENT_NODENAME);
         subscriber.setConsumer(defectUpdater, subscriber.DEFECT_PRODUCTS_NODENAME);
 
-//        subscriber.setConsumer(barleyUpdater, subscriber.BARLEY_NODENAME);
+        subscriber.setConsumer(barleyUpdater, subscriber.BARLEY_NODENAME);
         subscriber.setConsumer(hopsUpdater, subscriber.HOPS_NODENAME);
         subscriber.setConsumer(maltUpdater, subscriber.MALT_NODENAME);
         subscriber.setConsumer(wheatUpdater, subscriber.WHEAT_NODENAME);
@@ -103,8 +92,6 @@ public class BrewWorker_UI_Controller implements Initializable {
         subscriber.setConsumer(maintenanceCounterUpdater, subscriber.MAINTENANCE_COUNTER_NODENAME);
 
         subscriber.subscribe();
-        
-//        System.out.println("Barley 1: " + subscriber.barleyValue());
 
     }
 
