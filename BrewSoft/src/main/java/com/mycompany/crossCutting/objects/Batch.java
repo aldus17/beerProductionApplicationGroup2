@@ -4,7 +4,15 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Batch {
-
+    
+    //String representations
+    private String stringBatchID;
+    private String stringType;
+    private String stringDateofCompletion;
+    private String stringSpeedforProduction;
+    private String stringTotalAmount;
+    
+    //StringProperty representations
     private StringProperty BatchID;
     private StringProperty MachineID;
     private StringProperty type;
@@ -15,13 +23,16 @@ public class Batch {
     private StringProperty totalAmount;
     private StringProperty goodAmount;
     private StringProperty defectAmount;
-
-    public Batch(StringProperty BatchID, StringProperty type, StringProperty dateofCreation, StringProperty speedforProduction, StringProperty totalAmount) {
-        this.BatchID = BatchID;
-        this.type = type;
-        this.dateofCreation = dateofCreation;
-        this.speedforProduction = speedforProduction;
-        this.totalAmount = totalAmount;
+    
+    //Queue batch object
+    public Batch(String sBatchID, String sType, 
+            String sDateofCompletion, String sSpeedforProduction, 
+            String sTotalAmount) {
+        this.stringBatchID = sBatchID;
+        this.stringType = sType;
+        this.stringDateofCompletion = sDateofCompletion;
+        this.stringSpeedforProduction = sSpeedforProduction;
+        this.stringTotalAmount = sTotalAmount;
     }
 
     public Batch(String BatchID, String MachineID, String type,
@@ -80,10 +91,45 @@ public class Batch {
         return defectAmount;
     }
 
+
+
+    
     public StringProperty CalulateProductionTime() {
 
         int productionTime = (int) (Double.parseDouble(totalAmount.toString()) / Double.parseDouble(speedforProduction.toString()));
 
         return new SimpleStringProperty(String.valueOf(productionTime));
     }
+    
+    public String toString(){
+        return stringBatchID + " " + stringType + " " + stringDateofCompletion + " " + stringSpeedforProduction + " " + stringTotalAmount;
+    }
+
+    public String getStringBatchID() {
+        return stringBatchID;
+    }
+
+    public String getStringType() {
+        return stringType;
+    }
+
+    public String getStringDateofCompletion() {
+        return stringDateofCompletion;
+    }
+
+    public String getStringSpeedforProduction() {
+        return stringSpeedforProduction;
+    }
+
+    public String getStringTotalAmount() {
+        return stringTotalAmount;
+    }
+    
+    
+    public void setStringBatchID(String BatchID) {
+        this.stringBatchID = BatchID;
+    }
+    
+    
+    
 }

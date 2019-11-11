@@ -5,9 +5,10 @@ import com.mycompany.crossCutting.objects.BeerTypes;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface IManagermentDomain {
+public interface IManagementDomain {
 
-    public void CreateBatch(int typeofProduct, int amountToProduce, double speed, LocalDate deadline);
+    //public void CreateBatch(int typeofProduct, int amountToProduce, double speed, LocalDate deadline);
+    public void CreateBatch(Batch batch);
     public List<Batch> BatchObjects (String searchKey, String searchValue);
     public double CalulateOEE(LocalDate searchDate);
     public List<BeerTypes> GetBeerTypes();
