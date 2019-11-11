@@ -36,11 +36,6 @@ public class ManagementDomain implements IManagementDomain {
         batchDataHandler.insertBatchToQueue(idLessBatch);
     }
 
-//    @Override
-//    public void CreateBatch(int typeofProduct, int amountToProduce, double speed, LocalDate deadline) {
-//        batchDataHandler.insertBatchToQueue(typeofProduct, amountToProduce, speed, deadline);
-//    }
-
     @Override
     public List<Batch> BatchObjects(String searchKey, String searchValue) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
