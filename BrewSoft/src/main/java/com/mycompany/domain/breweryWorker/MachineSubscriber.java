@@ -58,7 +58,25 @@ public class MachineSubscriber implements IMachineSubscribe {
     private final NodeId wheatNode = new NodeId(6, "::Program:Inventory.Wheat");
     private final NodeId yeastNode = new NodeId(6, "::Program:Inventory.Yeast");
 
-    private String barleyValueString;
+    private String batchIDValue;
+    private String totalProductValue;
+    private String temperaturValue;
+    private String humidityValue;
+    private String vibrationValue;
+    private String productionCountValue;
+    private String defectCountValue;
+    private String acceptableCountValue;
+    private String productionPrMinValue;
+
+    private String StopReasonID;
+    private String currentStateValue;
+    private String maintenanceValue;
+
+    private String barleyValue;
+    private String hopsValue;
+    private String maltValue;
+    private String wheatValue;
+    private String yeastValue;
 
     // TODO pull ip and port from DB
     public MachineSubscriber() {
@@ -148,9 +166,72 @@ public class MachineSubscriber implements IMachineSubscribe {
         consumerMap.put(nodeName, consumer);
     }
 
-    // Returns the value of the node.
-    public String barleyValue() {
-        return this.barleyValueString;
+    public String getBatchIDValue() {
+        return batchIDValue;
+    }
+
+    public String getTotalProductValue() {
+        return totalProductValue;
+    }
+
+    public String getTemperaturValue() {
+        return temperaturValue;
+    }
+
+    public String getHumidityValue() {
+        return humidityValue;
+    }
+
+    public String getVibrationValue() {
+        return vibrationValue;
+    }
+
+    public String getProductionCountValue() {
+        return productionCountValue;
+    }
+
+    public String getDefectCountValue() {
+        return defectCountValue;
+    }
+
+    public String getAcceptableCountValue() {
+        return acceptableCountValue;
+    }
+
+    public String getProductionPrMinValue() {
+        return productionPrMinValue;
+    }
+
+    public String getStopReasonID() {
+        return StopReasonID;
+    }
+
+    public String getCurrentStateValue() {
+        return currentStateValue;
+    }
+
+    public String getMaintenanceValue() {
+        return maintenanceValue;
+    }
+
+    public String getBarleyValue() {
+        return barleyValue;
+    }
+
+    public String getHopsValue() {
+        return hopsValue;
+    }
+
+    public String getMaltValue() {
+        return maltValue;
+    }
+
+    public String getWheatValue() {
+        return wheatValue;
+    }
+
+    public String getYeastValue() {
+        return yeastValue;
     }
 
     private MonitoringParameters monitoringParameters() {
@@ -169,10 +250,63 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private void consumerStarter(String nodename, DataValue dataValue) {
         consumerMap.get(nodename).accept(dataValue.getValue().getValue().toString());
-        // Sets the value of the node to the attribute.
-        if (nodename == BARLEY_NODENAME) {
-            this.barleyValueString = dataValue.getValue().getValue().toString();
+
+        switch (nodename) {
+            case BATCHID_NODENAME:
+                this.batchIDValue = dataValue.getValue().getValue().toString();
+                break;
+            case TOTAL_PRODUCTS_NODENAME:
+                this.totalProductValue = dataValue.getValue().getValue().toString();
+                break;
+            case TEMPERATURE_NODENAME:
+                this.temperaturValue = dataValue.getValue().getValue().toString();
+                break;
+            case HUMIDITY_NODENAME:
+                this.humidityValue = dataValue.getValue().getValue().toString();
+                break;
+            case VIBRATION_NODENAME:
+                this.vibrationValue = dataValue.getValue().getValue().toString();
+                break;
+            case PRODUCED_PRODUCTS_NODENAME:
+                this.productionCountValue = dataValue.getValue().getValue().toString();
+                break;
+            case DEFECT_PRODUCTS_NODENAME:
+                this.defectCountValue = dataValue.getValue().getValue().toString();
+                break;
+            case PRODUCTS_PR_MINUTE_NODENAME:
+                this.productionPrMinValue = dataValue.getValue().getValue().toString();
+                break;
+            case ACCEPTABLE_PRODUCTS_NODENAME:
+                this.acceptableCountValue = dataValue.getValue().getValue().toString();
+                break;
+            case STOP_REASON_NODENAME:
+                this.StopReasonID = dataValue.getValue().getValue().toString();
+                break;
+            case STATE_CURRENT_NODENAME:
+                this.currentStateValue = dataValue.getValue().getValue().toString();
+                break;
+            case MAINTENANCE_COUNTER_NODENAME:
+                this.maintenanceValue = dataValue.getValue().getValue().toString();
+                break;
+            case BARLEY_NODENAME:
+                this.barleyValue = dataValue.getValue().getValue().toString();
+                break;
+            case HOPS_NODENAME:
+                this.hopsValue = dataValue.getValue().getValue().toString();
+                break;
+            case MALT_NODENAME:
+                this.maltValue = dataValue.getValue().getValue().toString();
+                break;
+            case WHEAT_NODENAME:
+                this.wheatValue = dataValue.getValue().getValue().toString();
+                break;
+            case YEAST_NODENAME:
+                this.yeastValue = dataValue.getValue().getValue().toString();
+                break;
+            default:
+                System.out.println("There are no Node for this!!");
         }
+
     }
 
     // TODO Get data from database.
@@ -234,24 +368,5 @@ public class MachineSubscriber implements IMachineSubscribe {
                 return "Activating";
         }
         return "Unknown State code: " + state;
-    }
-
-    private class ConsumerImpl implements Consumer<String> {
-
-        public ConsumerImpl() {
-        }
-        public String inner;
-
-        @Override
-        public void accept(String text) {
-            this.inner = text;
-            barleyValueString = text;
-            System.out.println("Text: " + text);
-            System.out.println("Barley Value: " + inner);
-        }
-
-        public String getInner() {
-            return inner;
-        }
     }
 }

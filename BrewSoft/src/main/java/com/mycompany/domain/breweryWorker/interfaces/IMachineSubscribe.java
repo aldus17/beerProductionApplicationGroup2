@@ -1,13 +1,14 @@
 package com.mycompany.domain.breweryWorker.interfaces;
 
 import java.util.function.Consumer;
-import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 
 public interface IMachineSubscribe {
 
     public void subscribe();
 
     public void setConsumer(Consumer<String> consumer, String nodeName);
+    
+    public String getBarleyValue();
     
     public String stateTranslator(String state);
 

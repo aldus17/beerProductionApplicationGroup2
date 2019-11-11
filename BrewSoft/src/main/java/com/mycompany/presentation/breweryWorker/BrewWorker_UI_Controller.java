@@ -47,7 +47,18 @@ public class BrewWorker_UI_Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        Consumer<String> barleyUpdater = t -> Platform.runLater(() -> lbl_Barley.setText(t));
+        Consumer<String> barleyUpdater = new Consumer<String>() {
+            @Override
+            public void accept(String text) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        lbl_Barley.setText(text);
+                        System.out.println(subscriber.getBarleyValue());
+                    }
+                });
+            }
+        };
         Consumer<String> hopsUpdater = text -> Platform.runLater(() -> lbl_Hops.setText(text));
         Consumer<String> maltUpdater = text -> Platform.runLater(() -> lbl_Malt.setText(text));
         Consumer<String> wheatUpdater = text -> Platform.runLater(() -> lbl_Wheat.setText(text));
@@ -92,7 +103,6 @@ public class BrewWorker_UI_Controller implements Initializable {
         subscriber.setConsumer(maintenanceCounterUpdater, subscriber.MAINTENANCE_COUNTER_NODENAME);
 
         subscriber.subscribe();
-
     }
 
     @FXML
