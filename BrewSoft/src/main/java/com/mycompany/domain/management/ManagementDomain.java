@@ -29,11 +29,14 @@ public class ManagementDomain implements IManagementDomain {
     @Override
     public void CreateBatch(Batch batch) {
         Batch idLessBatch = batch;
-        
-        Random random = new Random();
-        idLessBatch.setStringBatchID(String.valueOf(random.nextInt(65535))); // Implement real id creater
+        Batch batchWithID = new Batch(
+                createBatchID(batchDataHandler.getLatestBatchID()),
+                idLessBatch.getStringType(),
+                idLessBatch.getStringDateofCompletion(),
+                idLessBatch.getStringSpeedforProduction(),
+                idLessBatch.getStringTotalAmount());
         System.out.println("Batch " + idLessBatch.toString() );
-        batchDataHandler.insertBatchToQueue(idLessBatch);
+        batchDataHandler.insertBatchToQueue(batchWithID);
     }
 
     @Override
@@ -51,11 +54,14 @@ public class ManagementDomain implements IManagementDomain {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
-    private int createBatchID(int batchIDRetrieve){
-        if(batchIDRetrieve>=BATCHID_MIN && batchIDRetrieve<BATCHID_MAX){
-           return batchIDRetrieve + 1; 
+    private String createBatchID(Integer batchIDRetrieve){
+        Integer batchid = batchIDRetrieve;
+        if(batchid == null){
+            return String.valueOf(BATCHID_MIN);
+        } else if(batchIDRetrieve>=BATCHID_MIN && batchIDRetrieve<BATCHID_MAX){
+           return String.valueOf(batchIDRetrieve + 1); 
         } else {
-            return BATCHID_MIN;
+            return String.valueOf(BATCHID_MIN);
         }
     }
 
