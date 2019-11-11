@@ -26,8 +26,17 @@ public class ManagementDomain implements IManagementDomain {
     
     private IBatchDataHandler batchDataHandler = new BatchDataHandler();
 
+    /**
+     * Method that creates takes a batch with no batch ID 
+     * and generates a new batch with a batch ID.
+     * 
+     * @param batch
+     * The method takes a batch with no ID and generates one for it. 
+     * The batch is then sent to the datalayer, where it is then saved to the
+     * database
+     */
     @Override
-    public void CreateBatch(Batch batch) {
+    public void createBatch(Batch batch) {
         Batch idLessBatch = batch;
         Batch batchWithID = new Batch(
                 createBatchID(batchDataHandler.getLatestBatchID()),
@@ -35,25 +44,24 @@ public class ManagementDomain implements IManagementDomain {
                 idLessBatch.getStringDateofCompletion(),
                 idLessBatch.getStringSpeedforProduction(),
                 idLessBatch.getStringTotalAmount());
-        System.out.println("Batch " + idLessBatch.toString() );
         batchDataHandler.insertBatchToQueue(batchWithID);
     }
 
     @Override
-    public List<Batch> BatchObjects(String searchKey, String searchValue) {
+    public List<Batch> batchObjects(String searchKey, String searchValue) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public double CalulateOEE(LocalDate searchDate) {
+    public double calulateOEE(LocalDate searchDate) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<BeerTypes> GetBeerTypes() {
+    public List<BeerTypes> getBeerTypes() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     private String createBatchID(Integer batchIDRetrieve){
         Integer batchid = batchIDRetrieve;
         if(batchid == null){
@@ -64,5 +72,12 @@ public class ManagementDomain implements IManagementDomain {
             return String.valueOf(BATCHID_MIN);
         }
     }
-
+    public static void main(String[] args) {
+//        ManagementDomain ms = new ManagementDomain();
+//        Batch batch = new Batch("","1","2019-11-12","250","12345");
+//        for(int i = 0; i<10; i++){
+//            ms.CreateBatch(batch);
+//            
+//        }
+    }
 }
