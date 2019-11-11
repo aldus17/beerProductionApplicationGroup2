@@ -1,6 +1,7 @@
 package com.mycompany.data.dataAccess;
 
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
+import com.mycompany.data.dataAccess.Connect.SimpleSet;
 
 public class MachineSubscribeDataHandler {
 
@@ -31,7 +32,13 @@ public class MachineSubscribeDataHandler {
     }
 
     public void insertFinalBatchInformation(int batchID, int machineID, int productID, int totalCount, int defectCount, int acceptedCount, String deadline, String dateOfCompleation, String dateOfCreation) {
-        connection.queryUpdate("INSERT INTO finalBatchInformation (batchID, machineID, productID, totalCount, defectCount, acceptedCount, deadline, dateOfCompleation, dateOfCreation) values(?,?,?,?,?,?,?,?,?)", batchID, machineID, productID, totalCount, defectCount, acceptedCount, deadline, dateOfCompleation, dateOfCreation);
+        connection.queryUpdate("INSERT INTO finalBatchInformation (batchID, machineID, productID, totalCount, defectCount, acceptedCount, deadline, dateOfCompleation, dateOfCreation) values(?,?,?,?,?,?,?,?,?)",
+                batchID, machineID, productID, totalCount, defectCount, acceptedCount, deadline, dateOfCompleation, dateOfCreation);
+    }
+
+    public SimpleSet getBatches() {
+        return connection.query("SELECT * FROM finalbatchinformation");
+
     }
 
 //    
@@ -138,7 +145,21 @@ public class MachineSubscribeDataHandler {
      */
     public static void main(String[] args) {
         MachineSubscribeDataHandler mspaint = new MachineSubscribeDataHandler();
-        mspaint.insertProductionInfoData(60464, 2, 10.6f, 15.2f);
-    }
+        
+//        
+//        for (int i = 0; i < batchSet.getRows(); i++) {
+//            Batch databaseBatch = new Batch(
+//                    UUID.fromString((String) caseSet.get(i, "caseid")),
+//                    (String) caseSet.get(i, "name"),
+//                    (String) caseSet.get(i, "cpr"),
+//                    UUID.fromString((String) caseSet.get(i, "departmentID")));
+//
+//                    caseList.add(databaseCase);
+//        }
 
-}
+            System.out.println(mspaint.getBatches().getRows());
+            System.out.println(mspaint.getBatches().get(0, "machineid"));
+            System.out.println(mspaint.getBatches().get(1, 1));
+        }
+
+    }
