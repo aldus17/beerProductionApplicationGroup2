@@ -13,6 +13,7 @@ public class DatabaseConnection {
     final private String url;
     final private String user;
     final private String password;
+    private Connection con;
 
     public DatabaseConnection() {
         this.url = "jdbc:postgresql://tek-mmmi-db0a.tek.c.sdu.dk:5432/si3_2019_group_2_db";
@@ -27,8 +28,7 @@ public class DatabaseConnection {
     }
 
     private PreparedStatement prepareStatement(String query, Object... values) throws SQLException, ClassNotFoundException {
-        Connection con = connect();
-
+        con = connect();
         PreparedStatement statement = con.prepareStatement(query);
 
         for (int i = 0; i < values.length; i++) {
@@ -48,9 +48,11 @@ public class DatabaseConnection {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
+            disconnect();
             return affectedRows;
         }
     }
+    
     public SimpleSet query(String query, Object... values) {
 
         SimpleSet set = new SimpleSet();
@@ -80,7 +82,18 @@ public class DatabaseConnection {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return set;
+        finally{
+            disconnect();
+            return set;
+        }
+        
     }
-
+    
+    private void disconnect(){
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

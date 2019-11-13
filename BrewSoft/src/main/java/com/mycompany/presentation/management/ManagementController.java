@@ -182,8 +182,11 @@ public class ManagementController implements Initializable {
             ap_CompletedBatchesLayout.setVisible(false);
             ap_ShowOEE.setVisible(false);
 
-            beerTypesObservableList.clear();
-            beerTypes = managementDomain.GetBeerTypes();
+            // TODO Handle
+            if (beerTypesObservableList != null) {
+                beerTypesObservableList.clear();
+            }
+            beerTypes = managementDomain.getBeerTypes();
 
             beerTypes.forEach((beer) -> {
                 beerTypesObservableList.add(beer);
@@ -206,12 +209,12 @@ public class ManagementController implements Initializable {
         batcheObservableList.clear();
 
         if (event.getSource() == btn_SearchCompletedBatches) {
-            batches = managementDomain.BatchObjects("CompletedBatches", text_SearchCompletedBarches.getText());
+            batches = managementDomain.batchObjects("CompletedBatches", text_SearchCompletedBarches.getText());
             tw_SearchTableCompletedBatches.refresh();
         }
 
         if (event.getSource() == btn_SearchProductionQueue) {
-            batches = managementDomain.BatchObjects("BatchesinQueue", text_SearchProductionQueue.getText());
+            batches = managementDomain.batchObjects("BatchesinQueue", text_SearchProductionQueue.getText());
             tw_SearchTableProductionQueue.refresh();
         }
 
@@ -229,7 +232,7 @@ public class ManagementController implements Initializable {
     @FXML
     private void GetOrdersForSpecificDay(ActionEvent event) {
         LocalDate orderDay = dp_CreateBatchOrder.getValue();
-        managementDomain.BatchObjects("OrderDay", orderDay.toString());
+        managementDomain.batchObjects("OrderDay", orderDay.toString());
     }
 
     @FXML
@@ -243,7 +246,7 @@ public class ManagementController implements Initializable {
         if (!amounttoProduce.isEmpty() && !typeofProduct.isEmpty() && !speed.isEmpty() && !deadline.isEmpty()) {
             lbl_CreateBatchOrder_error.setText("");
             if (Integer.parseInt(amounttoProduce) >= 0 && Integer.parseInt(amounttoProduce) < 65535) {
-                managementDomain.CreateBatch(new Batch("", typeofProduct, deadline, speed, amounttoProduce));
+                managementDomain.createBatch(new Batch("", typeofProduct, deadline, speed, amounttoProduce));
                 System.out.println("Complete"); //test
             } else {
                 System.out.println("Invalid number"); //test
@@ -259,7 +262,7 @@ public class ManagementController implements Initializable {
     @FXML
     private void GenerateOEEAction(ActionEvent event) {
         LocalDate dateToCreateOEE = dp_ShowOEE.getValue();
-        double oee = managementDomain.CalulateOEE(dateToCreateOEE);
+        double oee = managementDomain.calulateOEE(dateToCreateOEE);
 
         Texta_ShowOEE_Text.appendText(dateToCreateOEE.toString());
         Texta_ShowOEE_Text.appendText(" | ");

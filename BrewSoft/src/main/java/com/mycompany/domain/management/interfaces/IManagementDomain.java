@@ -8,9 +8,9 @@ import java.util.List;
 public interface IManagementDomain {
 
     //public void CreateBatch(int typeofProduct, int amountToProduce, double speed, LocalDate deadline);
-    public void CreateBatch(Batch batch);
-    public List<Batch> BatchObjects (String searchKey, String searchValue);
-    public double CalulateOEE(LocalDate searchDate);
-    public List<BeerTypes> GetBeerTypes();
+    public void createBatch(Batch batch);
+    public List<Batch> batchObjects (String searchKey, String searchValue);
+    public double calulateOEE(LocalDate searchDate);
+    public List<BeerTypes> getBeerTypes();
     
 }

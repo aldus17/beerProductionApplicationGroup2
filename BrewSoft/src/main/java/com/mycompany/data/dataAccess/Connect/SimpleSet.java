@@ -29,7 +29,7 @@ public class SimpleSet {
     }
     
     public Object get (int row, int column) {
-        Object[] values = rows.get(row).values().toArray ();
+        Object[] values = rows.get(row).values().toArray();
         return values[column];
     }
     

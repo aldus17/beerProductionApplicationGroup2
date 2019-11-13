@@ -26,37 +26,58 @@ public class ManagementDomain implements IManagementDomain {
     
     private IBatchDataHandler batchDataHandler = new BatchDataHandler();
 
+    /**
+     * Method that creates takes a batch with no batch ID 
+     * and generates a new batch with a batch ID.
+     * 
+     * @param batch
+     * The method takes a batch with no ID and generates one for it. 
+     * The batch is then sent to the datalayer, where it is then saved to the
+     * database
+     */
     @Override
-    public void CreateBatch(Batch batch) {
+    public void createBatch(Batch batch) {
         Batch idLessBatch = batch;
-        
-        Random random = new Random();
-        idLessBatch.setStringBatchID(String.valueOf(random.nextInt(65535))); // Implement real id creater
-        System.out.println("Batch " + idLessBatch.toString() );
-        batchDataHandler.insertBatchToQueue(idLessBatch);
+        Batch batchWithID = new Batch(
+                createBatchID(batchDataHandler.getLatestBatchID()),
+                idLessBatch.getStringType(),
+                idLessBatch.getStringDateofCompletion(),
+                idLessBatch.getStringSpeedforProduction(),
+                idLessBatch.getStringTotalAmount());
+        batchDataHandler.insertBatchToQueue(batchWithID);
     }
 
     @Override
-    public List<Batch> BatchObjects(String searchKey, String searchValue) {
+    public List<Batch> batchObjects(String searchKey, String searchValue) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public double CalulateOEE(LocalDate searchDate) {
+    public double calulateOEE(LocalDate searchDate) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<BeerTypes> GetBeerTypes() {
+    public List<BeerTypes> getBeerTypes() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
-    private int createBatchID(int batchIDRetrieve){
-        if(batchIDRetrieve>=BATCHID_MIN && batchIDRetrieve<BATCHID_MAX){
-           return batchIDRetrieve + 1; 
+
+    private String createBatchID(Integer batchIDRetrieve){
+        Integer batchid = batchIDRetrieve;
+        if(batchid == null){
+            return String.valueOf(BATCHID_MIN);
+        } else if(batchIDRetrieve>=BATCHID_MIN && batchIDRetrieve<BATCHID_MAX){
+           return String.valueOf(batchIDRetrieve + 1); 
         } else {
-            return BATCHID_MIN;
+            return String.valueOf(BATCHID_MIN);
         }
     }
-
+    public static void main(String[] args) {
+        ManagementDomain ms = new ManagementDomain();
+        Batch batch = new Batch("","1","2019-11-12","250","12345");
+        for(int i = 0; i<65535; i++){
+            ms.createBatch(batch);
+            
+        }
+    }
 }
