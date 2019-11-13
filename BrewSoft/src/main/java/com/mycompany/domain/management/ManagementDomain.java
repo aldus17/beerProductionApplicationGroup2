@@ -73,11 +73,11 @@ public class ManagementDomain implements IManagementDomain {
         }
     }
     public static void main(String[] args) {
-//        ManagementDomain ms = new ManagementDomain();
-//        Batch batch = new Batch("","1","2019-11-12","250","12345");
-//        for(int i = 0; i<10; i++){
-//            ms.CreateBatch(batch);
-//            
-//        }
+        ManagementDomain ms = new ManagementDomain();
+        Batch batch = new Batch("","1","2019-11-12","250","12345");
+        for(int i = 0; i<65535; i++){
+            ms.createBatch(batch);
+            
+        }
     }
 }
