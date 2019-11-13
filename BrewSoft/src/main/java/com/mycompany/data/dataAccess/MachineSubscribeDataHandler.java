@@ -30,11 +30,6 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 ProductionListID, BreweryMachineID, stopReasonID);
     }
 
-    public void insertProductionList(int batchID, int productID, float productAmount, String deadline, float speed, String status) {
-        connection.queryUpdate("INSERT INTO productionList (batchID, productID, productAmount, deadline, speed, status) values (?,?,?,?,?,?)",
-                batchID, productID, productAmount, Date.valueOf((deadline)), speed, status);
-    }
-
     public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID, String deadline, String dateOfCreation, String dateOfCompleation, int productID, int totalCount, int defectCount, int acceptedCount) {
         connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, dateOfCompletion, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?,?)",
                 ProductionListID, BreweryMachineID, Date.valueOf(deadline), Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation), productID, totalCount, defectCount, acceptedCount);
@@ -48,6 +43,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
             Batch batch = null;
             for (int i = 0; i < batchSet.getRows(); i++){
                 batch = new Batch(
+                       String.valueOf(batchSet.get(i, "productionListID")),
                        String.valueOf(batchSet.get(i, "batchid")),
                        String.valueOf(batchSet.get(i, "productid")),
                        String.valueOf(batchSet.get(i, "productamount")),
@@ -63,30 +59,4 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     public void changeProductionListStatus(int productionListID, String newStatus) {
        connection.queryUpdate("UPDATE productionList SET status = ? WHERE productionListID = ?", newStatus, productionListID);
     }
-
-    public static void main(String[] args) {
-        MachineSubscribeDataHandler mspaint = new MachineSubscribeDataHandler();            
-        
-//        ArrayList<BatchReport> batchReportList = new ArrayList<>();
-//        SimpleSet set = null;
-//       
-//        
-//        for (int i = 0; i < set.getRows(); i++) {
-//            BatchReport b = new BatchReport(
-//                    (int) set.get(i, "finalBatchInformationID"),
-//                    (int) set.get(i, "productionListID"),
-//                    (int) set.get(i, "BreweryMachineID"),
-//                    set.get(i, "deadline").toString(),
-//                    set.get(i, "dateOfCreation").toString(),
-//                    set.get(i, "dateOfCompletion").toString(),
-//                    (int) set.get(i, "productID"),
-//                    (int) set.get(i, "totalCount"),
-//                    (int) set.get(i, "defectCount"),
-//                    (int) set.get(i, "acceptedCount"));
-//            batchReportList.add(b);
-//        }
-    }
-
-    
-
 }

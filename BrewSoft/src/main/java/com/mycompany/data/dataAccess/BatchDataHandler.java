@@ -6,21 +6,12 @@
 package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.util.converter.LocalDateStringConverter;
 
 /**
  *
@@ -51,7 +42,7 @@ public class BatchDataHandler implements IBatchDataHandler {
                 QUEUED_STATUS
         );
     }
-
+    
     //TODO: Implement method that gets the latest queued batch id. 
     // if queue is empty, look at the last produced batch.
     @Override
@@ -72,10 +63,32 @@ public class BatchDataHandler implements IBatchDataHandler {
             }
             return new Integer(batch.getStringBatchID());
         }
-
-        
-        
-
     }
+    
+ // private helper-method to convert simpleSet to arrayList
+    
+         private ArrayList<BatchReport> simpleSetToArrayList(SimpleSet set){
+            ArrayList<BatchReport> list = new ArrayList<>();
+            set = new SimpleSet();
+            for(int i = 0; i < set.getRows(); i++){
+                BatchReport br = new BatchReport(
+                (int) set.get(i, "finalBatchInformationID"),
+                   (int) set.get(i, "productionListID"),
+                   (int) set.get(i, "BreweryMachineID"),
+                    set.get(i, "deadline").toString(),
+                    set.get(i, "dateOfCreation").toString(),
+                    set.get(i, "dateOfCompletion").toString(),
+                   (int) set.get(i, "productID"),
+                   (int) set.get(i, "totalCount"),
+                   (int) set.get(i, "defectCount"),
+                   (int) set.get(i, "acceptedCount"));
+                
+                list.add(br);
+            }
+            
+            return list;
+        }
+
+    
 
 }
