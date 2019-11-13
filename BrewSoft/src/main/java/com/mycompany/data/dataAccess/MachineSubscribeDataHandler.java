@@ -1,11 +1,13 @@
 package com.mycompany.data.dataAccess;
 
+import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
+import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import java.util.ArrayList;
 
-public class MachineSubscribeDataHandler {
+public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandler{
 
     public DatabaseConnection connection;
 
@@ -37,35 +39,36 @@ public class MachineSubscribeDataHandler {
         connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, dateOfCompleation, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?,?)",
                 ProductionListID, BreweryMachineID, deadline, dateOfCreation, dateOfCompleation, productID, totalCount, defectCount, acceptedCount);
     }
-
-    public SimpleSet getBatches() {
-        return connection.query("SELECT * FROM finalbatchinformation");
-
+    
+    public Batch getNextBatch(){
+                SimpleSet batchSet = connection.query("SELECT * FROM productionlist ORDER BY deadline ASC limit 1");
+        if (batchSet.isEmpty()) {
+            return null;
+        } else {
+            Batch batch = null;
+            for (int i = 0; i < batchSet.getRows(); i++){
+                batch = new Batch(
+                       String.valueOf(batchSet.get(i, "batchid")),
+                       String.valueOf(batchSet.get(i, "productid")),
+                       String.valueOf(batchSet.get(i, "productamount")),
+                       String.valueOf(batchSet.get(i, "deadline")),
+                       String.valueOf(batchSet.get(i, "speed"))   
+                );
+            }
+            return batch;
+        }
+    }
+    
+    @Override
+    public void changeProductionListStatus(int productionListID, String newStatus) {
+       connection.queryUpdate("UPDATE productionList SET status = ? WHERE productionListID = ?", newStatus, productionListID);
     }
 
-//    public void insertFinalBatchInformationData() {
-    // BEFORE the TODO: Wait until Aleksander H is done with refactoring the subscription class
-    // as we need data methods to get specific datavalues to create the logic below
-    // TODO: Under Brewer domain class make logic for what a complete batch is
-    // Logic for productAmount not met by the production
-    /**
-     * If (machine state = COMPLETE && that the productionList productAmount
-     * order = TotalCount) {
-     *
-     * read production info insert data to final batch report
-     *
-     * if (productAmount = TotalCount) { create new queue with defectCount set
-     * to productAmount }
-     *
-     * }
-     */
     public static void main(String[] args) {
-        MachineSubscribeDataHandler mspaint = new MachineSubscribeDataHandler();
-
-        
         ArrayList<BatchReport> batchReportList = new ArrayList<>();
         SimpleSet set = null;
-        set = mspaint.getBatches();
+       
+        
         for (int i = 0; i < set.getRows(); i++) {
             BatchReport b = new BatchReport(
                     (int) set.get(i, "finalBatchInformationID"),
@@ -80,9 +83,8 @@ public class MachineSubscribeDataHandler {
                     (int) set.get(i, "acceptedCount"));
             batchReportList.add(b);
         }
-        
-        
-        System.out.println(batchReportList.get(0).getTotalCount());
     }
+
+    
 
 }
