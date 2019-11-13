@@ -93,6 +93,10 @@ public class Batch {
     public StringProperty getDefectAmount() {
         return defectAmount;
     }
+    
+    public StringProperty getProductionListID() {
+        return productionListID;
+    }
 
     public StringProperty CalulateProductionTime() {
 

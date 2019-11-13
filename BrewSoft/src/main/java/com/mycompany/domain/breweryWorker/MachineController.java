@@ -33,7 +33,7 @@ public class MachineController implements IMachineControl {
     public void startProduction() {
         Batch newBatch = msdh.getNextBatch();
         // TODO Changes value of production List ID
-        msdh.changeProductionListStatus(410, "In Production");
+        msdh.changeProductionListStatus(Integer.parseInt(newBatch.getProductionListID().getValue()), "In Production");
         
         try {
             // Set parameter[0], batchid > 65536

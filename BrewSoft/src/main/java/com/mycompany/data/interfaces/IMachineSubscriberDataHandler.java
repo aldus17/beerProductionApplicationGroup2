@@ -11,7 +11,7 @@ public interface IMachineSubscriberDataHandler {
     public void insertStopsDuringProduction(int ProductionListID, int BreweryMachineID, int stopReasonsID);
 
     public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID,
-            String deadline, String dateOfCreation, String dateOfCompleation, int productID, int totalCount, int defectCount, int acceptedCount);
+            String deadline, String dateOfCreation, String dateOfCompleation, int productID, float totalCount, int defectCount, int acceptedCount);
 
     public void changeProductionListStatus(int productionListID, String newStatus);
 

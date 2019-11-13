@@ -16,12 +16,12 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     }
 
     public void insertProductionInfo(int productionListID, int BreweryMachineID, float humidity, float temperature) {
-        connection.queryUpdate("INSERT INTO ProductionInfo(productionListID, BreweryMachineID, humidity, temperature) VALUES (?,?,?,?)",
+        connection.queryUpdate("INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature) VALUES (?,?,?,?)",
                 productionListID, BreweryMachineID, humidity, temperature);
     }
 
     public void insertTimesInStates(int ProductionListID, int BreweryMachineID, String StartTimeInState, int MachinestateID) {
-        connection.queryUpdate("INSERT INTO timeInstate (ProductionListID, BreweryMachineID, StartTimeInState, machineStateID) VALUES (?,?,?,?)",
+        connection.queryUpdate("INSERT INTO timeInstate (productionListID, breweryMachineID, startTimeInState, machineStateID) VALUES (?,?,?,?)",
                 ProductionListID, BreweryMachineID, Time.valueOf(StartTimeInState), MachinestateID);
     }
 
@@ -30,7 +30,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 ProductionListID, BreweryMachineID, stopReasonID);
     }
 
-    public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID, String deadline, String dateOfCreation, String dateOfCompleation, int productID, int totalCount, int defectCount, int acceptedCount) {
+    public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID, String deadline, String dateOfCreation, String dateOfCompleation, int productID, float totalCount, int defectCount, int acceptedCount) {
         connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, dateOfCompletion, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?,?)",
                 ProductionListID, BreweryMachineID, Date.valueOf(deadline), Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation), productID, totalCount, defectCount, acceptedCount);
     }
