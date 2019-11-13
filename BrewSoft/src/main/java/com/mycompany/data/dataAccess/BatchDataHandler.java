@@ -34,48 +34,45 @@ public class BatchDataHandler implements IBatchDataHandler {
     public BatchDataHandler() {
         dbConnection = new DatabaseConnection();
     }
-//ldsc.fromString(batchObject.getStringDateofCompletion())
 
     @Override
     public void insertBatchToQueue(Batch batch) {
         Batch batchObject = batch;
-        batchObject.toString();
         dbConnection.queryUpdate("INSERT INTO ProductionList "
                 + "(batchid, productid, productamount, deadline, speed, status)"
                 + "VALUES(?,?,?,?,?,?)",
-                Integer.parseInt(batchObject.getStringBatchID()),
-                Float.parseFloat(batchObject.getStringType()),
-                Float.parseFloat(batchObject.getStringTotalAmount()),
-                Date.valueOf(batchObject.getStringDateofCompletion()),
-                Float.parseFloat(batchObject.getStringSpeedforProduction()),
+                Integer.parseInt(batchObject.getBatchID().getValue()),
+                Float.parseFloat(batchObject.getType().getValue()),
+                Float.parseFloat(batchObject.getTotalAmount().getValue()),
+                Date.valueOf(batchObject.getDeadline().getValue()),
+                Float.parseFloat(batchObject.getSpeedforProduction().getValue()),
                 QUEUED_STATUS
         );
     }
-
-    //TODO: Implement method that gets the latest queued batch id. 
-    // if queue is empty, look at the last produced batch.
+   public List getQueuedBatches(){
+       ArrayList <Batch> queuedbatches = new ArrayList<>();
+       SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status='"+QUEUED_STATUS+"'");
+       for(int i = 0; i<set.getRows();i++){
+           queuedbatches.add(
+                   new Batch(
+                           String.valueOf(set.get(i, "batchid")),
+                           String.valueOf(set.get(i, "productid")),
+                           String.valueOf(set.get(i, "deadline")),
+                           String.valueOf(set.get(i, "speed")),
+                           String.valueOf(set.get(i, "productamount"))
+           ));
+       }
+       return queuedbatches;
+   }
+    
     @Override
     public Integer getLatestBatchID() {
         SimpleSet batchSet = dbConnection.query("SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1");
         if (batchSet.isEmpty()) {
             return null;
         } else {
-            Batch batch = null;
-            for (int i = 0; i < batchSet.getRows(); i++){
-                batch = new Batch(
-                       String.valueOf(batchSet.get(i, "batchid")),
-                       String.valueOf(batchSet.get(i, "productid")),
-                       String.valueOf(batchSet.get(i, "productamount")),
-                       String.valueOf(batchSet.get(i, "deadline")),
-                       String.valueOf(batchSet.get(i, "speed"))   
-                );
-            }
-            return new Integer(batch.getStringBatchID());
+            return new Integer(String.valueOf(batchSet.get(0, "batchid")));
         }
-
-        
-        
-
     }
 
 }

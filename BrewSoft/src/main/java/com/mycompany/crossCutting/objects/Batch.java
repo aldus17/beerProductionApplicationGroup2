@@ -4,14 +4,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Batch {
-    
-    //String representations
-    private String stringBatchID;
-    private String stringType;
-    private String stringDateofCompletion;
-    private String stringSpeedforProduction;
-    private String stringTotalAmount;
-    
+   
     //StringProperty representations
     private StringProperty BatchID;
     private StringProperty MachineID;
@@ -25,16 +18,17 @@ public class Batch {
     private StringProperty defectAmount;
     
     //Queue batch object
-    public Batch(String sBatchID, String sType, 
-            String sDateofCompletion, String sSpeedforProduction, 
-            String sTotalAmount) {
-        this.stringBatchID = sBatchID;
-        this.stringType = sType;
-        this.stringDateofCompletion = sDateofCompletion;
-        this.stringSpeedforProduction = sSpeedforProduction;
-        this.stringTotalAmount = sTotalAmount;
+    public Batch(String batchID, String type, 
+            String deadline, String speedforProduction, 
+            String totalAmount) {
+         this.BatchID = new SimpleStringProperty(batchID);
+         this.type = new SimpleStringProperty(type);
+         this.deadline = new SimpleStringProperty(deadline);
+         this.speedforProduction = new SimpleStringProperty(speedforProduction);
+         this.totalAmount = new SimpleStringProperty(totalAmount);
     }
-
+    
+    
     public Batch(String BatchID, String MachineID, String type,
             String dateofCreation, String deadline, String dateofCompletion,
             String speedforProduction, String totalAmount, String goodAmount,
@@ -91,45 +85,11 @@ public class Batch {
         return defectAmount;
     }
 
-
-
-    
     public StringProperty CalulateProductionTime() {
 
         int productionTime = (int) (Double.parseDouble(totalAmount.toString()) / Double.parseDouble(speedforProduction.toString()));
 
         return new SimpleStringProperty(String.valueOf(productionTime));
     }
-    
-    public String toString(){
-        return stringBatchID + " " + stringType + " " + stringDateofCompletion + " " + stringSpeedforProduction + " " + stringTotalAmount;
-    }
-
-    public String getStringBatchID() {
-        return stringBatchID;
-    }
-
-    public String getStringType() {
-        return stringType;
-    }
-
-    public String getStringDateofCompletion() {
-        return stringDateofCompletion;
-    }
-
-    public String getStringSpeedforProduction() {
-        return stringSpeedforProduction;
-    }
-
-    public String getStringTotalAmount() {
-        return stringTotalAmount;
-    }
-    
-    
-    public void setStringBatchID(String BatchID) {
-        this.stringBatchID = BatchID;
-    }
-    
-    
-    
+     
 }
