@@ -1,5 +1,8 @@
 package com.mycompany.domain.breweryWorker;
 
+import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
+import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
+import com.mycompany.crossCutting.objects.Batch;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,6 +17,8 @@ public class MachineController implements IMachineControl {
 
     private final NodeId cntrlCmdNodeId = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
     private final NodeId cmdChangeRequestNodeId = new NodeId(6, "::Program:Cube.Command.CmdChangeRequest");
+    
+    private IMachineSubscriberDataHandler msdh = new MachineSubscribeDataHandler();
 
     public MachineController() {
         this("127.0.0.1", 4840);
@@ -25,25 +30,32 @@ public class MachineController implements IMachineControl {
     }
 
     @Override
-    public void startProduction(float batchID, float productID, float quantity, float machSpeed) {
+    public void startProduction() {
+        Batch newBatch = msdh.getNextBatch();
+        
+        System.out.println("Batch Object: " + newBatch);
+        System.out.println("Batch ID Object: " + newBatch.getBatchID());
+        System.out.println("Batch ID: " + newBatch.getBatchID().getValue());
+        
         try {
             // Set parameter[0], batchid > 65536
             NodeId batchIDNode = new NodeId(6, "::Program:Cube.Command.Parameter[0].Value");
-            DataValue dv = new DataValue(new Variant((float) batchID), null, null, null);
+            System.out.println(Float.parseFloat(newBatch.getBatchID().getValue()));
+            DataValue dv = new DataValue(new Variant(Float.parseFloat(newBatch.getStringBatchID())), null, null, null);
             mconn.getClient().writeValue(batchIDNode, dv).get();
 
             // Set parameter[1], Product id [0..5]
             NodeId productIdNode = new NodeId(6, "::Program:Cube.Command.Parameter[1].Value");
-            mconn.getClient().writeValue(productIdNode, DataValue.valueOnly(new Variant((float) productID))).get();
+            mconn.getClient().writeValue(productIdNode, DataValue.valueOnly(new Variant(Float.parseFloat(newBatch.getStringType())))).get();
 
             // Set parameter[2], Amount >65536
             NodeId quantityNode = new NodeId(6, "::Program:Cube.Command.Parameter[2].Value");
-            mconn.getClient().writeValue(quantityNode, DataValue.valueOnly(new Variant((float) quantity))).get();
+            mconn.getClient().writeValue(quantityNode, DataValue.valueOnly(new Variant(Float.parseFloat(newBatch.getStringTotalAmount())))).get();
 
             // Set the speed of production, table for speeds in projektoplæg.pdf
             // Need to calculate the "right" speeds, maybe in mathlab
             NodeId speedNode = new NodeId(6, "::Program:Cube.Command.MachSpeed");
-            mconn.getClient().writeValue(speedNode, DataValue.valueOnly(new Variant((float) machSpeed)));
+            mconn.getClient().writeValue(speedNode, DataValue.valueOnly(new Variant(Float.parseFloat(newBatch.get))));
         } catch (InterruptedException ex) {
             Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {

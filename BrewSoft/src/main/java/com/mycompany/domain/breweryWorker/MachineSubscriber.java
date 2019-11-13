@@ -1,5 +1,7 @@
 package com.mycompany.domain.breweryWorker;
 
+import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
+import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +29,8 @@ public class MachineSubscriber implements IMachineSubscribe {
     private static final AtomicLong ATOMICLOMG = new AtomicLong(1L);
     private MachineConnection mconn;
     private Map<String, Consumer<String>> consumerMap;
+    
+    private IMachineSubscriberDataHandler msdh = new MachineSubscribeDataHandler();
 
     // Production detail nodes
     private final NodeId batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
@@ -60,9 +64,9 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private String batchIDValue;
     private String totalProductValue;
-    private String temperaturValue;
-    private String humidityValue;
-    private String vibrationValue;
+    private float temperaturValue;
+    private float humidityValue;
+    private float vibrationValue;
     private String productionCountValue;
     private String defectCountValue;
     private String acceptableCountValue;
@@ -91,7 +95,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     @Override
     public void subscribe() {
-
+        
         List<MonitoredItemCreateRequest> requestList = new ArrayList();
         requestList.add(new MonitoredItemCreateRequest(readValueId(batchIdNode), MonitoringMode.Reporting, monitoringParameters()));
         requestList.add(new MonitoredItemCreateRequest(readValueId(totalProductsNode), MonitoringMode.Reporting, monitoringParameters()));
@@ -165,6 +169,10 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void setConsumer(Consumer<String> consumer, String nodeName) {
         consumerMap.put(nodeName, consumer);
     }
+    
+    public void sendProductionData() {
+        msdh.insertProductionInfo(0, 0, humidityValue, temperaturValue);
+    }
 
     public String getBatchIDValue() {
         return batchIDValue;
@@ -174,15 +182,15 @@ public class MachineSubscriber implements IMachineSubscribe {
         return totalProductValue;
     }
 
-    public String getTemperaturValue() {
+    public float getTemperaturValue() {
         return temperaturValue;
     }
 
-    public String getHumidityValue() {
+    public float getHumidityValue() {
         return humidityValue;
     }
 
-    public String getVibrationValue() {
+    public float getVibrationValue() {
         return vibrationValue;
     }
 
@@ -259,13 +267,13 @@ public class MachineSubscriber implements IMachineSubscribe {
                 this.totalProductValue = dataValue.getValue().getValue().toString();
                 break;
             case TEMPERATURE_NODENAME:
-                this.temperaturValue = dataValue.getValue().getValue().toString();
+                this.temperaturValue = (float) dataValue.getValue().getValue();
                 break;
             case HUMIDITY_NODENAME:
-                this.humidityValue = dataValue.getValue().getValue().toString();
+                this.humidityValue = (float) dataValue.getValue().getValue();
                 break;
             case VIBRATION_NODENAME:
-                this.vibrationValue = dataValue.getValue().getValue().toString();
+                this.vibrationValue = (float) dataValue.getValue().getValue();
                 break;
             case PRODUCED_PRODUCTS_NODENAME:
                 this.productionCountValue = dataValue.getValue().getValue().toString();
