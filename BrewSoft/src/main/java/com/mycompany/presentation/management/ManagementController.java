@@ -26,6 +26,7 @@ import javafx.scene.layout.AnchorPane;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
@@ -136,6 +137,8 @@ public class ManagementController implements Initializable {
     private ObservableList<Batch> batcheObservableList;
     private ObservableList<Batch> queuedBatchesObservableList;
     private ObservableList<BeerTypes> beerTypesObservableList;
+    private String batchQueueDate;
+    
     @FXML
     private Label lbl_CreateBatchOrder_error;
 
@@ -143,6 +146,7 @@ public class ManagementController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         batcheObservableList = FXCollections.observableArrayList();
+        queuedBatchesObservableList = FXCollections.observableArrayList();
 
         InitializeObservableBatchList();
         InitializeObservableQueueList();
@@ -232,8 +236,17 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void GetOrdersForSpecificDay(ActionEvent event) {
-        LocalDate orderDay = dp_CreateBatchOrder.getValue();
-        managementDomain.batchObjects("OrderDay", orderDay.toString());
+        queuedBatchesObservableList.clear();
+        batchQueueDate = dp_CreateBatchOrder.getValue().toString();
+       
+        ArrayList <Batch> list = managementDomain.getQueuedBatches();
+        for (Batch b : list) {
+            if(b.getDeadline().getValue().equals(batchQueueDate))
+                
+            queuedBatchesObservableList.add(b);
+        }
+        InitializeObervableOrderList();
+
     }
 
     @FXML
@@ -301,13 +314,14 @@ public class ManagementController implements Initializable {
     }
 
     private void InitializeObervableOrderList() {
-        //queuedBatchesObservableList = FXCollections.observableList(managementDomain.getQueuedBatches());
+
+
         tw_CreateBatchOrder_BatchesOnSpecificDay.setPlaceholder(new Label());
         tw_CreateBatchOrder_BatchesOnSpecificDay.setItems(queuedBatchesObservableList);
 
         tc_CreatBatchOrder_BatchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
         tc_CreatBatchOrder_DateofCreation.setCellValueFactory(callData -> callData.getValue().getDateofCreation());
-        tc_CreatBatchOrder_Amount.setCellValueFactory(callData -> callData.getValue().getGoodAmount());
+        tc_CreatBatchOrder_Amount.setCellValueFactory(callData -> callData.getValue().getTotalAmount());
         tc_CreatBatchOrder_Type.setCellValueFactory(callData -> callData.getValue().getType());
         tc_CreatBatchOrder_Deadline.setCellValueFactory(callData -> callData.getValue().getDeadline());
         tc_CreatBatchOrder_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());

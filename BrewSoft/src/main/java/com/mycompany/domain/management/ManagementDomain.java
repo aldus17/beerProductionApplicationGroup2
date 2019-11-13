@@ -75,7 +75,7 @@ public class ManagementDomain implements IManagementDomain {
     }
 
     @Override
-    public List<Batch> getQueuedBatches() {
+    public ArrayList<Batch> getQueuedBatches() {
         return batchDataHandler.getQueuedBatches();
     }
 
