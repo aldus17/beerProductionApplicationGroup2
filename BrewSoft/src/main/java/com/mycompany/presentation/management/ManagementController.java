@@ -134,6 +134,7 @@ public class ManagementController implements Initializable {
     private List<Batch> batches;
     private List<BeerTypes> beerTypes;
     private ObservableList<Batch> batcheObservableList;
+    private ObservableList<Batch> queuedBatchesObservableList;
     private ObservableList<BeerTypes> beerTypesObservableList;
     @FXML
     private Label lbl_CreateBatchOrder_error;
@@ -300,9 +301,9 @@ public class ManagementController implements Initializable {
     }
 
     private void InitializeObervableOrderList() {
-
+        //queuedBatchesObservableList = FXCollections.observableList(managementDomain.getQueuedBatches());
         tw_CreateBatchOrder_BatchesOnSpecificDay.setPlaceholder(new Label());
-        tw_CreateBatchOrder_BatchesOnSpecificDay.setItems(batcheObservableList);
+        tw_CreateBatchOrder_BatchesOnSpecificDay.setItems(queuedBatchesObservableList);
 
         tc_CreatBatchOrder_BatchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
         tc_CreatBatchOrder_DateofCreation.setCellValueFactory(callData -> callData.getValue().getDateofCreation());
