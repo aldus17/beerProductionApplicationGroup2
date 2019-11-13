@@ -1,7 +1,9 @@
 package com.mycompany.data.dataAccess;
 
+import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
+import java.util.ArrayList;
 
 public class MachineSubscribeDataHandler {
 
@@ -11,29 +13,29 @@ public class MachineSubscribeDataHandler {
         connection = new DatabaseConnection();
     }
 
-    public void insertProductionInfoData(int machineID, int batchID, float humidity, float temperature) {
-        connection.queryUpdate("INSERT INTO ProductionInfo(batchID, machineID, humidity, temperature) VALUES (?,?,?,?)",
-                machineID, batchID, humidity, temperature);
+    public void insertProductionInfo(int productionListID, int BreweryMachineID, float humidity, float temperature) {
+        connection.queryUpdate("INSERT INTO ProductionInfo(productionListID, BreweryMachineID, humidity, temperature) VALUES (?,?,?,?)",
+                productionListID, BreweryMachineID, humidity, temperature);
     }
 
-    public void insertTimesInStates(int batchID, int machineID, String timestamp, int MachinestatesID) {
-        connection.queryUpdate("INSERT INTO timeInstates (batchID, machineID, timestamp, machineStatesID) VALUES (?,?,?,?)",
-                batchID, machineID, timestamp, MachinestatesID);
+    public void insertTimesInStates(int ProductionListID, int BreweryMachineID, String StartTimeInState, int MachinestatesID) {
+        connection.queryUpdate("INSERT INTO timeInstates (ProductionListID, BreweryMachineID, StartTimeInState, machineStatesID) VALUES (?,?,?,?)",
+                ProductionListID, BreweryMachineID, StartTimeInState, MachinestatesID);
     }
 
-    public void insertStopsDuringProduction(int batchID, int machineID, int stopReasonsID) {
-        connection.queryUpdate("INSERT INTO stopsDuringProduction (batchID, machineID, stopReasonsID) VALUES (?,?,?)",
-                machineID, batchID, stopReasonsID);
+    public void insertStopsDuringProduction(int ProductionListID, int BreweryMachineID, int stopReasonsID) {
+        connection.queryUpdate("INSERT INTO stopsDuringProduction (ProductionListID, BreweryMachineID, stopReasonsID) VALUES (?,?,?)",
+                ProductionListID, BreweryMachineID, stopReasonsID);
     }
 
-    public void insertProductionList(int batchID, int productID, float productAmount, String priority, float speed, String status) {
-        connection.queryUpdate("INSERT INTO productionList (batchID, productID, productAmount, priority, speed, status) values (?,?,?,?,?,?)",
-                batchID, productID, productAmount, priority, speed, status);
+    public void insertProductionList(int batchID, int productID, float productAmount, String deadline, float speed, String status) {
+        connection.queryUpdate("INSERT INTO productionList (batchID, productID, productAmount, deadline, speed, status) values (?,?,?,?,?,?)",
+                batchID, productID, productAmount, deadline, speed, status);
     }
 
-    public void insertFinalBatchInformation(int batchID, int machineID, int productID, int totalCount, int defectCount, int acceptedCount, String deadline, String dateOfCompleation, String dateOfCreation) {
-        connection.queryUpdate("INSERT INTO finalBatchInformation (batchID, machineID, productID, totalCount, defectCount, acceptedCount, deadline, dateOfCompleation, dateOfCreation) values(?,?,?,?,?,?,?,?,?)",
-                batchID, machineID, productID, totalCount, defectCount, acceptedCount, deadline, dateOfCompleation, dateOfCreation);
+    public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID, String deadline, String dateOfCreation, String dateOfCompleation, int productID, int totalCount, int defectCount, int acceptedCount) {
+        connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, dateOfCompleation, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?,?)",
+                ProductionListID, BreweryMachineID, deadline, dateOfCreation, dateOfCompleation, productID, totalCount, defectCount, acceptedCount);
     }
 
     public SimpleSet getBatches() {
@@ -41,67 +43,6 @@ public class MachineSubscribeDataHandler {
 
     }
 
-//    
-//    public boolean insertProductionInfoData(int machineID, int batchID) {
-//
-//        Boolean insertProdInfoUpdated = false;
-//        String insertIntoQuery = "INSERT INTO ProductionInfo";
-//        String valuesQuery = "VALUES (?,?,?,?,?)";
-//        String query = insertIntoQuery + valuesQuery;
-//        
-//        
-//        try {
-//            PreparedStatement pstProdInfo = dbConnection.prepareStatement(query);
-//            pstProdInfo.setInt(1, productionInfoID()); // TODO: Define what productionInfoID actually is, taken from a class via getter?
-//            pstProdInfo.setInt(2, batchID);
-//            pstProdInfo.setInt(3, machineID);
-//            pstProdInfo.setFloat(4, 999); // TODO: get humidity subscription data 
-//            pstProdInfo.setFloat(4, 999); // TODO: get temperature subscription data
-//
-//            int updateResult = pstProdInfo.executeUpdate();
-//
-//            if (updateResult > 0) {
-//                insertProdInfoUpdated = true;
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("a database access error occurs on insertProductionInfoData");
-//            return insertProdInfoUpdated;
-//        }
-//        return insertProdInfoUpdated;
-//
-//    }
-//    public boolean updateProductionInfoData(int machineID, int batchID) {
-//
-//        Boolean prodInfoUpdated = false;
-//
-//        try {
-//            connect();
-//            String updateQuery = "UPDATE ProductionInfo";
-//            String setQuery = "SET humidity = ?, temperature = ?";
-//            String whereQuery = "WHERE machineID = ? AND batchID = ?;";
-//            String query = updateQuery + setQuery + whereQuery;
-//
-//            PreparedStatement pstUpdateProdInfo = dbConnection.prepareStatement(query);
-//
-//            pstUpdateProdInfo.setFloat(1, 999); // TODO: Replace 999 with method that checks for humidity changes from machinesubscriber class
-//            pstUpdateProdInfo.setFloat(2, 999); // TODO: Replace 999 with method that checks for Temperature changes from machinesubscriber class
-//            pstUpdateProdInfo.setInt(3, machineID);
-//            pstUpdateProdInfo.setInt(4, batchID);
-//
-//            int updateResult = pstUpdateProdInfo.executeUpdate();
-//
-//            if (updateResult > 0) {
-//                prodInfoUpdated = true;
-//            }
-//        } catch (SQLException e) {
-//            System.out.println("a database access error occurs on updateProductionInfoData");
-//            return prodInfoUpdated;
-//        }
-//
-//        return prodInfoUpdated;
-//
-//    }
-//
 //    public void insertFinalBatchInformationData() {
     // BEFORE the TODO: Wait until Aleksander H is done with refactoring the subscription class
     // as we need data methods to get specific datavalues to create the logic below
@@ -118,48 +59,30 @@ public class MachineSubscribeDataHandler {
      *
      * }
      */
-//    }
-    // NOT TO BE USED
-//    private int productionInfoID() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-//
-//    public boolean updateFinalBatchInfo() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//
-//    }
-//
-//    public boolean insertFinalBatchInfo() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
-//
-//    public boolean readFinalBatchInfo() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//
-//    }
-
-    /*
-    public MachineState readMachineStates(int machineID) {
-        
-    }
-     */
     public static void main(String[] args) {
         MachineSubscribeDataHandler mspaint = new MachineSubscribeDataHandler();
+
         
-//        
-//        for (int i = 0; i < batchSet.getRows(); i++) {
-//            Batch databaseBatch = new Batch(
-//                    UUID.fromString((String) caseSet.get(i, "caseid")),
-//                    (String) caseSet.get(i, "name"),
-//                    (String) caseSet.get(i, "cpr"),
-//                    UUID.fromString((String) caseSet.get(i, "departmentID")));
-//
-//                    caseList.add(databaseCase);
-//        }
-
-            System.out.println(mspaint.getBatches().getRows());
-            System.out.println(mspaint.getBatches().get(0, "machineid"));
-            System.out.println(mspaint.getBatches().get(1, 1));
+        ArrayList<BatchReport> batchReportList = new ArrayList<>();
+        SimpleSet set = null;
+        set = mspaint.getBatches();
+        for (int i = 0; i < set.getRows(); i++) {
+            BatchReport b = new BatchReport(
+                    (int) set.get(i, "finalBatchInformationID"),
+                    (int) set.get(i, "productionListID"),
+                    (int) set.get(i, "BreweryMachineID"),
+                    set.get(i, "deadline").toString(),
+                    set.get(i, "dateOfCreation").toString(),
+                    set.get(i, "dateOfCompletion").toString(),
+                    (int) set.get(i, "productID"),
+                    (int) set.get(i, "totalCount"),
+                    (int) set.get(i, "defectCount"),
+                    (int) set.get(i, "acceptedCount"));
+            batchReportList.add(b);
         }
-
+        
+        
+        System.out.println(batchReportList.get(0).getTotalCount());
     }
+
+}
