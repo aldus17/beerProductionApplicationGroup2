@@ -1,11 +1,11 @@
 package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
-import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
-import java.util.ArrayList;
+import java.sql.Date;
+import java.sql.Time;
 
 public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandler{
 
@@ -20,24 +20,24 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 productionListID, BreweryMachineID, humidity, temperature);
     }
 
-    public void insertTimesInStates(int ProductionListID, int BreweryMachineID, String StartTimeInState, int MachinestatesID) {
-        connection.queryUpdate("INSERT INTO timeInstates (ProductionListID, BreweryMachineID, StartTimeInState, machineStatesID) VALUES (?,?,?,?)",
-                ProductionListID, BreweryMachineID, StartTimeInState, MachinestatesID);
+    public void insertTimesInStates(int ProductionListID, int BreweryMachineID, String StartTimeInState, int MachinestateID) {
+        connection.queryUpdate("INSERT INTO timeInstate (ProductionListID, BreweryMachineID, StartTimeInState, machineStateID) VALUES (?,?,?,?)",
+                ProductionListID, BreweryMachineID, Time.valueOf(StartTimeInState), MachinestateID);
     }
 
-    public void insertStopsDuringProduction(int ProductionListID, int BreweryMachineID, int stopReasonsID) {
-        connection.queryUpdate("INSERT INTO stopsDuringProduction (ProductionListID, BreweryMachineID, stopReasonsID) VALUES (?,?,?)",
-                ProductionListID, BreweryMachineID, stopReasonsID);
+    public void insertStopsDuringProduction(int ProductionListID, int BreweryMachineID, int stopReasonID) {
+        connection.queryUpdate("INSERT INTO stopDuringProduction (ProductionListID, BreweryMachineID, stopReasonID) VALUES (?,?,?)",
+                ProductionListID, BreweryMachineID, stopReasonID);
     }
 
     public void insertProductionList(int batchID, int productID, float productAmount, String deadline, float speed, String status) {
         connection.queryUpdate("INSERT INTO productionList (batchID, productID, productAmount, deadline, speed, status) values (?,?,?,?,?,?)",
-                batchID, productID, productAmount, deadline, speed, status);
+                batchID, productID, productAmount, Date.valueOf((deadline)), speed, status);
     }
 
     public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID, String deadline, String dateOfCreation, String dateOfCompleation, int productID, int totalCount, int defectCount, int acceptedCount) {
-        connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, dateOfCompleation, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?,?)",
-                ProductionListID, BreweryMachineID, deadline, dateOfCreation, dateOfCompleation, productID, totalCount, defectCount, acceptedCount);
+        connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, dateOfCompletion, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?,?)",
+                ProductionListID, BreweryMachineID, Date.valueOf(deadline), Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation), productID, totalCount, defectCount, acceptedCount);
     }
     
     public Batch getNextBatch(){
@@ -65,24 +65,26 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     }
 
     public static void main(String[] args) {
-        ArrayList<BatchReport> batchReportList = new ArrayList<>();
-        SimpleSet set = null;
-       
+        MachineSubscribeDataHandler mspaint = new MachineSubscribeDataHandler();            
         
-        for (int i = 0; i < set.getRows(); i++) {
-            BatchReport b = new BatchReport(
-                    (int) set.get(i, "finalBatchInformationID"),
-                    (int) set.get(i, "productionListID"),
-                    (int) set.get(i, "BreweryMachineID"),
-                    set.get(i, "deadline").toString(),
-                    set.get(i, "dateOfCreation").toString(),
-                    set.get(i, "dateOfCompletion").toString(),
-                    (int) set.get(i, "productID"),
-                    (int) set.get(i, "totalCount"),
-                    (int) set.get(i, "defectCount"),
-                    (int) set.get(i, "acceptedCount"));
-            batchReportList.add(b);
-        }
+//        ArrayList<BatchReport> batchReportList = new ArrayList<>();
+//        SimpleSet set = null;
+//       
+//        
+//        for (int i = 0; i < set.getRows(); i++) {
+//            BatchReport b = new BatchReport(
+//                    (int) set.get(i, "finalBatchInformationID"),
+//                    (int) set.get(i, "productionListID"),
+//                    (int) set.get(i, "BreweryMachineID"),
+//                    set.get(i, "deadline").toString(),
+//                    set.get(i, "dateOfCreation").toString(),
+//                    set.get(i, "dateOfCompletion").toString(),
+//                    (int) set.get(i, "productID"),
+//                    (int) set.get(i, "totalCount"),
+//                    (int) set.get(i, "defectCount"),
+//                    (int) set.get(i, "acceptedCount"));
+//            batchReportList.add(b);
+//        }
     }
 
     
