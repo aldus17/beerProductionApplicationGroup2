@@ -40,6 +40,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 ProductionListID, BreweryMachineID, Date.valueOf(deadline), Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation), productID, totalCount, defectCount, acceptedCount);
     }
 
+    // TODO Check if batch is in Queue
     public Batch getNextBatch() {
         SimpleSet batchSet = connection.query("SELECT * FROM productionlist ORDER BY deadline ASC limit 1");
         if (batchSet.isEmpty()) {
@@ -47,6 +48,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
         } else {
             Batch batch = null;
             for (int i = 0; i < batchSet.getRows(); i++) {
+                System.out.println("TEST"+batchSet.get(i, "speed"));
                 batch = new Batch(
                         String.valueOf(batchSet.get(i, "batchid")),
                         String.valueOf(batchSet.get(i, "productid")),
@@ -63,25 +65,4 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     public void changeProductionListStatus(int productionListID, String newStatus) {
         connection.queryUpdate("UPDATE productionList SET status = ? WHERE productionListID = ?", newStatus, productionListID);
     }
-
-    public static void main(String[] args) {
-        ArrayList<BatchReport> batchReportList = new ArrayList<>();
-        SimpleSet set = null;
-
-        for (int i = 0; i < set.getRows(); i++) {
-            BatchReport b = new BatchReport(
-                    (int) set.get(i, "finalBatchInformationID"),
-                    (int) set.get(i, "productionListID"),
-                    (int) set.get(i, "BreweryMachineID"),
-                    set.get(i, "deadline").toString(),
-                    set.get(i, "dateOfCreation").toString(),
-                    set.get(i, "dateOfCompletion").toString(),
-                    (int) set.get(i, "productID"),
-                    (int) set.get(i, "totalCount"),
-                    (int) set.get(i, "defectCount"),
-                    (int) set.get(i, "acceptedCount"));
-            batchReportList.add(b);
-        }
-    }
-
 }

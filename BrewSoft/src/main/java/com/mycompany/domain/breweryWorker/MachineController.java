@@ -32,30 +32,28 @@ public class MachineController implements IMachineControl {
     @Override
     public void startProduction() {
         Batch newBatch = msdh.getNextBatch();
-        
-        System.out.println("Batch Object: " + newBatch);
-        System.out.println("Batch ID Object: " + newBatch.getBatchID());
-        System.out.println("Batch ID: " + newBatch.getBatchID().getValue());
+        // TODO Changes value of production List ID
+        msdh.changeProductionListStatus(410, "In Production");
         
         try {
             // Set parameter[0], batchid > 65536
             NodeId batchIDNode = new NodeId(6, "::Program:Cube.Command.Parameter[0].Value");
             System.out.println(Float.parseFloat(newBatch.getBatchID().getValue()));
-            DataValue dv = new DataValue(new Variant(Float.parseFloat(newBatch.getStringBatchID())), null, null, null);
+            DataValue dv = new DataValue(new Variant(Float.parseFloat(newBatch.getBatchID().getValue())), null, null, null);
             mconn.getClient().writeValue(batchIDNode, dv).get();
 
             // Set parameter[1], Product id [0..5]
             NodeId productIdNode = new NodeId(6, "::Program:Cube.Command.Parameter[1].Value");
-            mconn.getClient().writeValue(productIdNode, DataValue.valueOnly(new Variant(Float.parseFloat(newBatch.getStringType())))).get();
+            mconn.getClient().writeValue(productIdNode, DataValue.valueOnly(new Variant(Float.parseFloat(newBatch.getType().getValue())))).get();
 
             // Set parameter[2], Amount >65536
             NodeId quantityNode = new NodeId(6, "::Program:Cube.Command.Parameter[2].Value");
-            mconn.getClient().writeValue(quantityNode, DataValue.valueOnly(new Variant(Float.parseFloat(newBatch.getStringTotalAmount())))).get();
+            mconn.getClient().writeValue(quantityNode, DataValue.valueOnly(new Variant(Float.parseFloat(newBatch.getTotalAmount().getValue())))).get();
 
             // Set the speed of production, table for speeds in projektoplæg.pdf
             // Need to calculate the "right" speeds, maybe in mathlab
             NodeId speedNode = new NodeId(6, "::Program:Cube.Command.MachSpeed");
-            mconn.getClient().writeValue(speedNode, DataValue.valueOnly(new Variant(Float.parseFloat(newBatch.get))));
+            mconn.getClient().writeValue(speedNode, DataValue.valueOnly(new Variant(Float.parseFloat(newBatch.getSpeedforProduction().getValue()))));
         } catch (InterruptedException ex) {
             Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {

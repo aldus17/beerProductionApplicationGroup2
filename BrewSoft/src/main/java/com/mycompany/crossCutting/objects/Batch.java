@@ -4,7 +4,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
 public class Batch {
-   
+
     //StringProperty representations
     private StringProperty BatchID;
     private StringProperty MachineID;
@@ -16,19 +16,17 @@ public class Batch {
     private StringProperty totalAmount;
     private StringProperty goodAmount;
     private StringProperty defectAmount;
-    
+
     //Queue batch object
-    public Batch(String batchID, String type, 
-            String deadline, String speedforProduction, 
-            String totalAmount) {
-         this.BatchID = new SimpleStringProperty(batchID);
-         this.type = new SimpleStringProperty(type);
-         this.deadline = new SimpleStringProperty(deadline);
-         this.speedforProduction = new SimpleStringProperty(speedforProduction);
-         this.totalAmount = new SimpleStringProperty(totalAmount);
+    public Batch(String batchID, String type, String totalAmount,
+            String deadline, String speedforProduction) {
+        this.BatchID = new SimpleStringProperty(batchID);
+        this.type = new SimpleStringProperty(type);
+        this.totalAmount = new SimpleStringProperty(totalAmount);
+        this.deadline = new SimpleStringProperty(deadline);
+        this.speedforProduction = new SimpleStringProperty(speedforProduction);
     }
-    
-    
+
     public Batch(String BatchID, String MachineID, String type,
             String dateofCreation, String deadline, String dateofCompletion,
             String speedforProduction, String totalAmount, String goodAmount,
@@ -91,5 +89,5 @@ public class Batch {
 
         return new SimpleStringProperty(String.valueOf(productionTime));
     }
-     
+
 }

@@ -1,8 +1,10 @@
 package com.mycompany.domain.breweryWorker;
 
+import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,8 +31,9 @@ public class MachineSubscriber implements IMachineSubscribe {
     private static final AtomicLong ATOMICLOMG = new AtomicLong(1L);
     private MachineConnection mconn;
     private Map<String, Consumer<String>> consumerMap;
-    
+
     private IMachineSubscriberDataHandler msdh = new MachineSubscribeDataHandler();
+    
 
     // Production detail nodes
     private final NodeId batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
@@ -63,17 +66,17 @@ public class MachineSubscriber implements IMachineSubscribe {
     private final NodeId yeastNode = new NodeId(6, "::Program:Inventory.Yeast");
 
     private String batchIDValue;
-    private String totalProductValue;
+    private int totalProductValue;
     private float temperaturValue;
     private float humidityValue;
     private float vibrationValue;
     private String productionCountValue;
-    private String defectCountValue;
-    private String acceptableCountValue;
+    private int defectCountValue;
+    private int acceptableCountValue;
     private String productionPrMinValue;
 
-    private String StopReasonID;
-    private String currentStateValue;
+    private int StopReasonID;
+    private int currentStateValue;
     private String maintenanceValue;
 
     private String barleyValue;
@@ -95,7 +98,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     @Override
     public void subscribe() {
-        
+
         List<MonitoredItemCreateRequest> requestList = new ArrayList();
         requestList.add(new MonitoredItemCreateRequest(readValueId(batchIdNode), MonitoringMode.Reporting, monitoringParameters()));
         requestList.add(new MonitoredItemCreateRequest(readValueId(totalProductsNode), MonitoringMode.Reporting, monitoringParameters()));
@@ -169,16 +172,44 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void setConsumer(Consumer<String> consumer, String nodeName) {
         consumerMap.put(nodeName, consumer);
     }
-    
+
+    // TODO Insert machine ID and Production List ID
     public void sendProductionData() {
-        msdh.insertProductionInfo(0, 0, humidityValue, temperaturValue);
+        float checkHumidity = 0;
+        float checkTemperatur = 0;
+        if (checkHumidity < humidityValue || checkTemperatur < temperaturValue) {
+            checkHumidity = humidityValue;
+            checkTemperatur = temperaturValue;
+            msdh.insertProductionInfo(410, 1, humidityValue, temperaturValue);
+        }
+    }
+
+    // TODO Insert machine ID and Production List ID
+    public void sendTimeInState() {
+        int checkCurrentState = -1;
+        if (checkCurrentState != currentStateValue) {
+            msdh.insertTimesInStates(410, 1, LocalDate.now().toString(), currentStateValue);
+        }
+    }
+    
+    public void sendStopDuingProduction() {
+        
+        msdh.insertStopsDuringProduction(410, 1, StopReasonID);
+    }
+    
+    public void completedBatch() {
+        Batch batch = msdh.getNextBatch();
+        
+        msdh.insertFinalBatchInformation(410, 1, batch.getDeadline().getValue(),
+                batch.getDateofCreation().getValue(), LocalDate.now().toString(),
+                Integer.parseInt(batch.getType().getValue()), totalProductValue, defectCountValue, acceptableCountValue);
     }
 
     public String getBatchIDValue() {
         return batchIDValue;
     }
 
-    public String getTotalProductValue() {
+    public int getTotalProductValue() {
         return totalProductValue;
     }
 
@@ -198,11 +229,11 @@ public class MachineSubscriber implements IMachineSubscribe {
         return productionCountValue;
     }
 
-    public String getDefectCountValue() {
+    public int getDefectCountValue() {
         return defectCountValue;
     }
 
-    public String getAcceptableCountValue() {
+    public int getAcceptableCountValue() {
         return acceptableCountValue;
     }
 
@@ -210,11 +241,11 @@ public class MachineSubscriber implements IMachineSubscribe {
         return productionPrMinValue;
     }
 
-    public String getStopReasonID() {
+    public int getStopReasonID() {
         return StopReasonID;
     }
 
-    public String getCurrentStateValue() {
+    public int getCurrentStateValue() {
         return currentStateValue;
     }
 
@@ -222,6 +253,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         return maintenanceValue;
     }
 
+    @Override
     public String getBarleyValue() {
         return barleyValue;
     }
@@ -264,34 +296,34 @@ public class MachineSubscriber implements IMachineSubscribe {
                 this.batchIDValue = dataValue.getValue().getValue().toString();
                 break;
             case TOTAL_PRODUCTS_NODENAME:
-                this.totalProductValue = dataValue.getValue().getValue().toString();
+                this.totalProductValue = Integer.parseInt(dataValue.getValue().getValue().toString());
                 break;
             case TEMPERATURE_NODENAME:
-                this.temperaturValue = (float) dataValue.getValue().getValue();
+                this.temperaturValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
             case HUMIDITY_NODENAME:
-                this.humidityValue = (float) dataValue.getValue().getValue();
+                this.humidityValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
             case VIBRATION_NODENAME:
-                this.vibrationValue = (float) dataValue.getValue().getValue();
+                this.vibrationValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
             case PRODUCED_PRODUCTS_NODENAME:
                 this.productionCountValue = dataValue.getValue().getValue().toString();
                 break;
             case DEFECT_PRODUCTS_NODENAME:
-                this.defectCountValue = dataValue.getValue().getValue().toString();
+                this.defectCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
                 break;
             case PRODUCTS_PR_MINUTE_NODENAME:
                 this.productionPrMinValue = dataValue.getValue().getValue().toString();
                 break;
             case ACCEPTABLE_PRODUCTS_NODENAME:
-                this.acceptableCountValue = dataValue.getValue().getValue().toString();
+                this.acceptableCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
                 break;
             case STOP_REASON_NODENAME:
-                this.StopReasonID = dataValue.getValue().getValue().toString();
+                this.StopReasonID = Integer.parseInt(dataValue.getValue().getValue().toString());
                 break;
             case STATE_CURRENT_NODENAME:
-                this.currentStateValue = dataValue.getValue().getValue().toString();
+                this.currentStateValue = Integer.parseInt(dataValue.getValue().getValue().toString());
                 break;
             case MAINTENANCE_COUNTER_NODENAME:
                 this.maintenanceValue = dataValue.getValue().getValue().toString();
