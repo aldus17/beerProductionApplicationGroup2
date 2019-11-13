@@ -7,11 +7,13 @@ package com.mycompany.domain.management;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
+import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import java.time.LocalDate;
 import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
+import java.util.ArrayList;
 import java.util.Random;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -61,6 +63,18 @@ public class ManagementDomain implements IManagementDomain {
     public List<BeerTypes> getBeerTypes() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    public List<String> getTimeInStates() {
+        
+        MachineState ms = batchDataHandler.getMachineState();
+        List<String> listOfTime = new ArrayList<>();
+        // Calculate HH:MM:SS
+        // 
+        while (!(Integer.valueOf(batchDataHandler.getMachineState().getMachineStateID()) > 19)) {
+            
+        }
+        
+    }
 
     private String createBatchID(Integer batchIDRetrieve){
         Integer batchid = batchIDRetrieve;
@@ -72,12 +86,5 @@ public class ManagementDomain implements IManagementDomain {
             return String.valueOf(BATCHID_MIN);
         }
     }
-    public static void main(String[] args) {
-        ManagementDomain ms = new ManagementDomain();
-        Batch batch = new Batch("","1","2019-11-12","250","12345");
-        for(int i = 0; i<65535; i++){
-            ms.createBatch(batch);
-            
-        }
-    }
+   
 }

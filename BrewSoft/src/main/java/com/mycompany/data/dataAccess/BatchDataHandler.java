@@ -6,6 +6,7 @@
 package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
@@ -21,6 +22,7 @@ import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.util.converter.LocalDateStringConverter;
+import org.bouncycastle.asn1.cms.Time;
 
 /**
  *
@@ -61,21 +63,39 @@ public class BatchDataHandler implements IBatchDataHandler {
             return null;
         } else {
             Batch batch = null;
-            for (int i = 0; i < batchSet.getRows(); i++){
+            for (int i = 0; i < batchSet.getRows(); i++) {
                 batch = new Batch(
-                       String.valueOf(batchSet.get(i, "batchid")),
-                       String.valueOf(batchSet.get(i, "productid")),
-                       String.valueOf(batchSet.get(i, "productamount")),
-                       String.valueOf(batchSet.get(i, "deadline")),
-                       String.valueOf(batchSet.get(i, "speed"))   
+                        String.valueOf(batchSet.get(i, "batchid")),
+                        String.valueOf(batchSet.get(i, "productid")),
+                        String.valueOf(batchSet.get(i, "productamount")),
+                        String.valueOf(batchSet.get(i, "deadline")),
+                        String.valueOf(batchSet.get(i, "speed"))
                 );
             }
             return new Integer(batch.getStringBatchID());
         }
+    }
 
-        
-        
+    public MachineState getMachineState() {
 
+        SimpleSet stateSet = dbConnection.query("SELECT pl.productionlistid, tis.timeinstateid, tis.machinestateid, tis.starttimeinstate"
+                + "FROM timeinstate AS tis, productionlist AS pl"
+                + "WHERE pl.productionlistid = tis.productionlistid;");
+
+        if (stateSet.isEmpty()) {
+            return null;
+        } else {
+            MachineState machineState = null;
+            for (int i = 0; i < stateSet.getRows(); i++) {
+                machineState = new MachineState(
+                        String.valueOf(stateSet.get(i, "productionlistid")),
+                        String.valueOf(stateSet.get(i, "timeinstateid")),
+                        String.valueOf(stateSet.get(i, "machinestateid")),
+                        String.valueOf(stateSet.get(i, "starttimeinstate"))
+                );
+            }
+            return machineState;
+        }
     }
 
 }
