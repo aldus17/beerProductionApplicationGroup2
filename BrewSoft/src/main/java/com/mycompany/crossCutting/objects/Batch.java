@@ -6,6 +6,7 @@ import javafx.beans.property.StringProperty;
 public class Batch {
 
     //StringProperty representations
+    private StringProperty productionListID;
     private StringProperty BatchID;
     private StringProperty MachineID;
     private StringProperty type;
@@ -41,6 +42,16 @@ public class Batch {
         this.totalAmount = new SimpleStringProperty(totalAmount);
         this.goodAmount = new SimpleStringProperty(goodAmount);
         this.defectAmount = new SimpleStringProperty(defectAmount);
+    }
+
+    public Batch(String productionListID, String BatchID, String type, String totalAmount, String deadline, String speedforProduction) {
+        this.productionListID = new SimpleStringProperty(productionListID);
+        this.BatchID = new SimpleStringProperty(BatchID);
+        this.type = new SimpleStringProperty(type);
+        this.totalAmount = new SimpleStringProperty(totalAmount);
+        this.deadline = new SimpleStringProperty(deadline);
+        this.speedforProduction = new SimpleStringProperty(speedforProduction);
+
     }
 
     public StringProperty getBatchID() {

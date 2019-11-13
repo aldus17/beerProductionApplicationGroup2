@@ -30,11 +30,6 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 ProductionListID, BreweryMachineID, stopReasonID);
     }
 
-    public void insertProductionList(int batchID, int productID, float productAmount, String deadline, float speed, String status) {
-        connection.queryUpdate("INSERT INTO productionList (batchID, productID, productAmount, deadline, speed, status) values (?,?,?,?,?,?)",
-                batchID, productID, productAmount, Date.valueOf((deadline)), speed, status);
-    }
-
     public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID, String deadline, String dateOfCreation, String dateOfCompleation, int productID, int totalCount, int defectCount, int acceptedCount) {
         connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, dateOfCompletion, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?,?)",
                 ProductionListID, BreweryMachineID, Date.valueOf(deadline), Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation), productID, totalCount, defectCount, acceptedCount);
@@ -50,11 +45,12 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
             for (int i = 0; i < batchSet.getRows(); i++) {
                 System.out.println("TEST"+batchSet.get(i, "speed"));
                 batch = new Batch(
-                        String.valueOf(batchSet.get(i, "batchid")),
-                        String.valueOf(batchSet.get(i, "productid")),
-                        String.valueOf(batchSet.get(i, "productamount")),
-                        String.valueOf(batchSet.get(i, "deadline")),
-                        String.valueOf(batchSet.get(i, "speed"))
+                       String.valueOf(batchSet.get(i, "productionListID")),
+                       String.valueOf(batchSet.get(i, "batchid")),
+                       String.valueOf(batchSet.get(i, "productid")),
+                       String.valueOf(batchSet.get(i, "productamount")),
+                       String.valueOf(batchSet.get(i, "deadline")),
+                       String.valueOf(batchSet.get(i, "speed"))
                 );
             }
             return batch;
@@ -63,6 +59,6 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void changeProductionListStatus(int productionListID, String newStatus) {
-        connection.queryUpdate("UPDATE productionList SET status = ? WHERE productionListID = ?", newStatus, productionListID);
+       connection.queryUpdate("UPDATE productionList SET status = ? WHERE productionListID = ?", newStatus, productionListID);
     }
 }
