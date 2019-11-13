@@ -182,7 +182,10 @@ public class ManagementController implements Initializable {
             ap_CompletedBatchesLayout.setVisible(false);
             ap_ShowOEE.setVisible(false);
 
-            beerTypesObservableList.clear();
+            // TODO Handle
+            if (beerTypesObservableList != null) {
+                beerTypesObservableList.clear();
+            }
             beerTypes = managementDomain.getBeerTypes();
 
             beerTypes.forEach((beer) -> {
