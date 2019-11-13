@@ -126,6 +126,8 @@ public class ManagementController implements Initializable {
     private TextArea Texta_ShowOEE_Text;
     @FXML
     private AnchorPane ap_ShowOEE;
+    @FXML
+    private Label lbl_CreateBatchOrder_error;
 
     // Class calls
     private IManagementDomain managementDomain;
@@ -137,16 +139,15 @@ public class ManagementController implements Initializable {
     private ObservableList<Batch> batcheObservableList;
     private ObservableList<Batch> queuedBatchesObservableList;
     private ObservableList<BeerTypes> beerTypesObservableList;
-    private String batchQueueDate;
-    
-    @FXML
-    private Label lbl_CreateBatchOrder_error;
+    private ArrayList<Batch> queuedBatcheslist;
+    private LocalDate queuedBatchesDate;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
         batcheObservableList = FXCollections.observableArrayList();
         queuedBatchesObservableList = FXCollections.observableArrayList();
+        queuedBatcheslist = new ArrayList<>();
 
         InitializeObservableBatchList();
         InitializeObservableQueueList();
@@ -162,6 +163,9 @@ public class ManagementController implements Initializable {
         ap_ProductionQueueLayout.toFront();
 
         managementDomain = new ManagementDomain();
+
+        queuedBatchesDate = LocalDate.now();
+        dp_CreateBatchOrder.setValue(queuedBatchesDate);
     }
 
     @FXML
@@ -186,10 +190,9 @@ public class ManagementController implements Initializable {
             ap_ProductionQueueLayout.setVisible(false);
             ap_CompletedBatchesLayout.setVisible(false);
             ap_ShowOEE.setVisible(false);
-
-            // TODO Handle
-            if (beerTypesObservableList != null) {
-                beerTypesObservableList.clear();
+            if (queuedBatcheslist.isEmpty()) {
+                queuedBatcheslist = managementDomain.getQueuedBatches();
+                updateObservableOrderList(queuedBatchesDate);
             }
             beerTypes = managementDomain.getBeerTypes();
 
@@ -237,21 +240,15 @@ public class ManagementController implements Initializable {
     @FXML
     private void GetOrdersForSpecificDay(ActionEvent event) {
         queuedBatchesObservableList.clear();
-        batchQueueDate = dp_CreateBatchOrder.getValue().toString();
-       
-        ArrayList <Batch> list = managementDomain.getQueuedBatches();
-        for (Batch b : list) {
-            if(b.getDeadline().getValue().equals(batchQueueDate))
-                
-            queuedBatchesObservableList.add(b);
+        queuedBatchesDate = dp_CreateBatchOrder.getValue();
+        if (queuedBatcheslist.isEmpty()) {
+            queuedBatcheslist = managementDomain.getQueuedBatches();
         }
-        InitializeObervableOrderList();
-
+        updateObservableOrderList(queuedBatchesDate);
     }
 
     @FXML
     private void CreateBatchAction(ActionEvent event) {
-
         String typeofProduct = textf_CreateBatchOrder_TypeofProduct.getText();
         String amounttoProduce = textf_CreateBatchOrder_AmountToProduces.getText();
         String speed = textf_CreateBatchOrder_Speed.getText();
@@ -261,9 +258,13 @@ public class ManagementController implements Initializable {
             lbl_CreateBatchOrder_error.setText("");
             if (Integer.parseInt(amounttoProduce) >= 0 && Integer.parseInt(amounttoProduce) < 65535) {
                 managementDomain.createBatch(new Batch("", typeofProduct, deadline, speed, amounttoProduce));
-                System.out.println("Complete"); //test
+                System.out.println("Batch created");
+                queuedBatcheslist.clear();                                  //Clears list of queued batches
+                queuedBatcheslist = managementDomain.getQueuedBatches();    //Repopulate the list, with the addition of a new batch. 
+                updateObservableOrderList(queuedBatchesDate);               //Updates the observableorderlist
+
             } else {
-                System.out.println("Invalid number"); //test
+                System.out.println("Invalid amount");
                 JOptionPane.showMessageDialog(null, "Invalid number: Cannot exceed 65535");
             }
         } else {
@@ -315,7 +316,6 @@ public class ManagementController implements Initializable {
 
     private void InitializeObervableOrderList() {
 
-
         tw_CreateBatchOrder_BatchesOnSpecificDay.setPlaceholder(new Label());
         tw_CreateBatchOrder_BatchesOnSpecificDay.setItems(queuedBatchesObservableList);
 
@@ -326,6 +326,15 @@ public class ManagementController implements Initializable {
         tc_CreatBatchOrder_Deadline.setCellValueFactory(callData -> callData.getValue().getDeadline());
         tc_CreatBatchOrder_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
         tc_CreatBatchOrder_ProductionTime.setCellValueFactory(callData -> callData.getValue().CalulateProductionTime());
+    }
+
+    private void updateObservableOrderList(LocalDate dateToCompare) {
+        for (Batch b : queuedBatcheslist) {
+            if (b.getDeadline().getValue().equals(dateToCompare.toString())) {
+                queuedBatchesObservableList.add(b);
+            }
+        }
+        InitializeObervableOrderList();
     }
 
 }
