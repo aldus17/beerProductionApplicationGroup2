@@ -6,6 +6,7 @@
 package com.mycompany.data.interfaces;
 
 import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -23,6 +24,6 @@ public interface IBatchDataHandler {
      public ArrayList<Batch> getQueuedBatches();
      
      public Integer getLatestBatchID();
-     
+     public MachineState getMachineState(String prodListID);
     
 }
