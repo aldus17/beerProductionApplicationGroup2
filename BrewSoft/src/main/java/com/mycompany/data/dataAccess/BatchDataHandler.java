@@ -11,18 +11,7 @@ import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.util.converter.LocalDateStringConverter;
-import org.bouncycastle.asn1.cms.Time;
+import java.util.TreeMap;
 
 /**
  *
@@ -76,26 +65,30 @@ public class BatchDataHandler implements IBatchDataHandler {
         }
     }
 
-    public MachineState getMachineState() {
+    @Override
+    public MachineState getMachineState(String prodListID) {
 
-        SimpleSet stateSet = dbConnection.query("SELECT pl.productionlistid, tis.timeinstateid, tis.machinestateid, tis.starttimeinstate"
-                + "FROM timeinstate AS tis, productionlist AS pl"
-                + "WHERE pl.productionlistid = tis.productionlistid;");
+        SimpleSet stateSet = dbConnection.query("SELECT tis.machinestateid, tis.starttimeinstate "
+                + "FROM timeinstate AS tis, productionlist AS pl "
+                + "WHERE pl.productionlistid = 410;");
 
         if (stateSet.isEmpty()) {
             return null;
         } else {
             MachineState machineState = null;
+            TreeMap<Integer, String> map = new TreeMap<>();
             for (int i = 0; i < stateSet.getRows(); i++) {
                 machineState = new MachineState(
-                        String.valueOf(stateSet.get(i, "productionlistid")),
-                        String.valueOf(stateSet.get(i, "timeinstateid")),
-                        String.valueOf(stateSet.get(i, "machinestateid")),
-                        String.valueOf(stateSet.get(i, "starttimeinstate"))
+                       String.valueOf(batchSet.get(i, "speed"))
                 );
             }
             return machineState;
         }
+    }
+    public static void main(String[] args) {
+        BatchDataHandler b = new BatchDataHandler();
+        b.getMachineState("410");
+        System.out.println(b.getMachineState("410").getTimeInStates());
     }
 
 }
