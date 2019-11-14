@@ -16,7 +16,7 @@ import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
@@ -72,26 +72,66 @@ public class ManagementDomain implements IManagementDomain {
     public Map<Integer, String> getTimeInStates(String prodListID) {
 
         MachineState ms = batchDataHandler.getMachineState(prodListID);
-        List<String> listOfTime = new ArrayList<>();
-        TreeMap<Integer, String> allTimeValues = new TreeMap<>();
-        TreeMap<Integer, String> timeDifferenceMap = new TreeMap<>();
+        Map<Integer, String> finalTimeInStatesList = new TreeMap<>();
+        finalTimeInStatesList.put(2, "");   
+        finalTimeInStatesList.put(4, "");
+        finalTimeInStatesList.put(9, "");
+        finalTimeInStatesList.put(11, "");
+        finalTimeInStatesList.put(17, "");
+        finalTimeInStatesList.put(17, "");
+        
+        System.out.println(Arrays.toString(ms.getStateObjList().toArray()));
+        
+        for (Object o : ms.getStateObjList()) {
+            MachineState m = (MachineState) o;
+            String addHeldTimeToExcecuteTime = "";
+            if (Integer.valueOf(m.getMachinestateID()) == 4) {
 
-        for (int i = 0; i <= 19; i++) {
-//            allTimeValues.put(i, Integer.valueOf(ms.getMachineStateID()) == i ? ms.getTimeInStates() : "");
+                // Idle state time
+                finalTimeInStatesList.put(
+                        4, getDifferenceTimeInState(
+                                m.getTimeInState(), m.getMachinestateID().equals("6") ? m.getTimeInState() : "00:00:00"));
 
+                // Stopped state time
+                finalTimeInStatesList.put(
+                        2, getDifferenceTimeInState(
+                                m.getTimeInState(), m.getMachinestateID().equals("6") ? m.getTimeInState() : "00:00:00"));
+            }
+
+            if (Integer.valueOf(m.getMachinestateID()) == 6) {
+                // difference of excecute and held | excecute time before Held
+//                finalTimeInStatesList.put(
+//                        6, getDifferenceTimeInState(
+//                                m.getTimeInState(), m.getMachinestateID().equals("11") ? m.getTimeInState() : "00:00:00"));
+                String excecuteTime = getDifferenceTimeInState(
+                        m.getTimeInState(), m.getMachinestateID().equals("11") ? m.getTimeInState() : "00:00:00");
+                // difference of held and excecuted | held time
+                addHeldTimeToExcecuteTime = getDifferenceTimeInState(m.getMachinestateID().equals("11") ? m.getTimeInState() : "00:00:00", m.getTimeInState());
+
+                finalTimeInStatesList.put(
+                        11, getDifferenceTimeInState(
+                                m.getMachinestateID().equals("11") ? m.getTimeInState() : "00:00:00", m.getTimeInState()));
+                // Add that difference to excecuted state when calculating the difference between excecute and completed
+                String finalExcecuteTime = getAdditionTimeInState(excecuteTime, addHeldTimeToExcecuteTime);
+
+                finalTimeInStatesList.put(6, finalExcecuteTime);
+
+            }
         }
-
-        for (int i = 0; i < allTimeValues.size(); i++) {
-            int firstValue = i;
-            int secondValue = i + 1;
-
-            timeDifferenceMap.put(i, getDifferenceTimeInState(allTimeValues.get(firstValue), allTimeValues.get(secondValue)));
-        }
-
-        return timeDifferenceMap;
+        return finalTimeInStatesList;
 
     }
 
+//        for (int i = 0; i <= 19; i++) {
+//            allTimeValues.put(i, Integer.valueOf(ms.getMachineStateID()) == i ? ms.getTimeInStates() : "");
+//
+//        }
+//        for (int i = 0; i < allTimeValues.size(); i++) {
+//            int firstValue = i;
+//            int secondValue = i + 1;
+//
+//            timeDifferenceMap.put(i, getDifferenceTimeInState(allTimeValues.get(firstValue), allTimeValues.get(secondValue)));
+//        }
     public String getDifferenceTimeInState(String stateValue1, String stateValue2) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         long difference = 0;
@@ -116,8 +156,29 @@ public class ManagementDomain implements IManagementDomain {
 //        long m = (difference / 60) % 60;
 //        long h = (difference / (60 * 60)) % 24;
 //        return String.format("%d:%02d:%02d", h, m, s);
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds); //02d e.g. 01 or 00 or 22
 //        return formatted;
+    }
+
+    public String getAdditionTimeInState(String stateValue1, String stateValue2) {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        long difference = 0;
+        try {
+
+            Date date1 = format.parse(stateValue1);
+            Date date2 = format.parse(stateValue2);
+            difference = date2.getTime() - date1.getTime();
+
+        } catch (ParseException ex) {
+            System.out.println("The beginning of the specified string cannot be parsed");
+            Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        long seconds = (difference / 1000) % 60;
+        long minutes = (difference / (1000 * 60)) % 60;
+        long hours = difference / (1000 * 60 * 60);
+
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds); //02d e.g. 01 or 00 or 22
     }
 
     private String createBatchID(Integer batchIDRetrieve) {
@@ -129,6 +190,15 @@ public class ManagementDomain implements IManagementDomain {
         } else {
             return String.valueOf(BATCHID_MIN);
         }
+    }
+    
+    public static void main(String[] args) {
+        ManagementDomain md = new ManagementDomain();
+        
+        Map<Integer, String> testMap = new TreeMap<>();
+        testMap = md.getTimeInStates("410");
+        
+        System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
     }
 
 }

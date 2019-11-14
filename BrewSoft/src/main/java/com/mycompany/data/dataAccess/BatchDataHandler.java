@@ -87,7 +87,7 @@ public class BatchDataHandler implements IBatchDataHandler {
                                 String.valueOf(stateSet.get(i, "starttimeinstate"))
                         ));
             }
-            machineState.setStateObj(list);
+            machineState.setStateObjList(list);
             return machineState;
         }
     }
@@ -97,7 +97,7 @@ public class BatchDataHandler implements IBatchDataHandler {
         MachineState ms = b.getMachineState("410");
         ManagementDomain md = new ManagementDomain();
         
-        for (Object o : ms.getStateObj()) {
+        for (Object o : ms.getStateObjList()) {
             String s = o.toString();
             System.out.println(s);
         }

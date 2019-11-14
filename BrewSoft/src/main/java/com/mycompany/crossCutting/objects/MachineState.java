@@ -7,22 +7,22 @@ public class MachineState {
 
     private String machinestateID;
     private String timeInState;
-    private List<Object> stateObj;
+    private List<Object> stateObjList;
 
     public MachineState(String machinestateID, String timeInState) {
         this.machinestateID = machinestateID;
         this.timeInState = timeInState;
-        this.stateObj = new ArrayList<>();
+        this.stateObjList = new ArrayList<>();
     }
 
     public MachineState(String machinestateID, String timeInState, List<Object> stateObj) {
         this.machinestateID = machinestateID;
         this.timeInState = timeInState;
-        this.stateObj = new ArrayList<>();
+        this.stateObjList = new ArrayList<>();
     }
 
-    public void setStateObj(List<Object> stateObj) {
-        this.stateObj = stateObj;
+    public void setStateObjList(List<Object> stateObjList) {
+        this.stateObjList = stateObjList;
     }
 
     public String getMachinestateID() {
@@ -33,8 +33,8 @@ public class MachineState {
         return timeInState;
     }
 
-    public List<Object> getStateObj() {
-        return stateObj;
+    public List<Object> getStateObjList() {
+        return stateObjList;
     }
 
     @Override

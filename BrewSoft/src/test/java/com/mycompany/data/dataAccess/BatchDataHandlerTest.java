@@ -73,13 +73,14 @@ public class BatchDataHandlerTest {
     @Test
     public void testGetMachineState() {
         System.out.println("getMachineState");
-        String prodListID = "";
+        String prodListID = "410";
         BatchDataHandler instance = new BatchDataHandler();
-        MachineState expResult = null;
+        MachineState expResult = instance.getMachineState("410");
         MachineState result = instance.getMachineState(prodListID);
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+       
+        
+        
     }
 
     /**
