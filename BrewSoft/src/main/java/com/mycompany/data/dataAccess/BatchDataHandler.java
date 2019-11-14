@@ -43,21 +43,22 @@ public class BatchDataHandler implements IBatchDataHandler {
                 QUEUED_STATUS
         );
     }
-   public ArrayList<Batch> getQueuedBatches(){
-       ArrayList <Batch> queuedbatches = new ArrayList<>();
-       SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status='"+QUEUED_STATUS+"'");
-       for(int i = 0; i<set.getRows();i++){
-           queuedbatches.add(
-                   new Batch(
-                           String.valueOf(set.get(i, "batchid")),
-                           String.valueOf(set.get(i, "productid")),
-                           String.valueOf(set.get(i, "deadline")),
-                           String.valueOf(set.get(i, "speed")),
-                           String.valueOf(set.get(i, "productamount"))
-           ));
-       }
-       return queuedbatches;
-   }
+
+    public ArrayList<Batch> getQueuedBatches() {
+        ArrayList<Batch> queuedbatches = new ArrayList<>();
+        SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status='" + QUEUED_STATUS + "'");
+        for (int i = 0; i < set.getRows(); i++) {
+            queuedbatches.add(
+                    new Batch(
+                            String.valueOf(set.get(i, "batchid")),
+                            String.valueOf(set.get(i, "productid")),
+                            String.valueOf(set.get(i, "deadline")),
+                            String.valueOf(set.get(i, "speed")),
+                            String.valueOf(set.get(i, "productamount"))
+                    ));
+        }
+        return queuedbatches;
+    }
 
     @Override
     public Integer getLatestBatchID() {
@@ -75,33 +76,31 @@ public class BatchDataHandler implements IBatchDataHandler {
                         String.valueOf(batchSet.get(i, "speed"))
                 );
             }
-            return new Integer(batch.getStringBatchID());
+            return new Integer(batch.getBatchID().getValue());
         }
     }
 
- // private helper-method to convert simpleSet to arrayList
-
-         private ArrayList<BatchReport> simpleSetToArrayList(SimpleSet set){
-            ArrayList<BatchReport> list = new ArrayList<>();
-            set = new SimpleSet();
-            for(int i = 0; i < set.getRows(); i++){
-                BatchReport br = new BatchReport(
-                (int) set.get(i, "finalBatchInformationID"),
-                   (int) set.get(i, "productionListID"),
-                   (int) set.get(i, "BreweryMachineID"),
+    // private helper-method to convert simpleSet to arrayList
+    private ArrayList<BatchReport> simpleSetToArrayList(SimpleSet set) {
+        ArrayList<BatchReport> list = new ArrayList<>();
+        set = new SimpleSet();
+        for (int i = 0; i < set.getRows(); i++) {
+            BatchReport br = new BatchReport(
+                    (int) set.get(i, "finalBatchInformationID"),
+                    (int) set.get(i, "productionListID"),
+                    (int) set.get(i, "BreweryMachineID"),
                     set.get(i, "deadline").toString(),
                     set.get(i, "dateOfCreation").toString(),
                     set.get(i, "dateOfCompletion").toString(),
-                   (int) set.get(i, "productID"),
-                   (int) set.get(i, "totalCount"),
-                   (int) set.get(i, "defectCount"),
-                   (int) set.get(i, "acceptedCount"));
+                    (int) set.get(i, "productID"),
+                    (int) set.get(i, "totalCount"),
+                    (int) set.get(i, "defectCount"),
+                    (int) set.get(i, "acceptedCount"));
 
-                list.add(br);
-            }
-
-            return list;
+            list.add(br);
         }
+
+        return list;
     }
 
     @Override
@@ -128,20 +127,19 @@ public class BatchDataHandler implements IBatchDataHandler {
             return machineState;
         }
     }
-
-    public static void main(String[] args) {
-        BatchDataHandler b = new BatchDataHandler();
-        MachineState ms = b.getMachineState("410");
-        ManagementDomain md = new ManagementDomain();
-        
-        for (Object o : ms.getStateObj()) {
-            String s = o.toString();
-            System.out.println(s);
-        }
-        
-        System.out.println("Test " + md.getDifferenceTimeInState("12:31:22", "13:40:49"));
-        
-      
+    
+    public static void main(String[] args) { 
+        BatchDataHandler b = new BatchDataHandler(); 
+        MachineState ms = b.getMachineState("410"); 
+        ManagementDomain md = new ManagementDomain(); 
+         
+        for (Object o : ms.getStateObj()) { 
+            String s = o.toString(); 
+            System.out.println(s); 
+        } 
+         
+        System.out.println("Test " + md.getDifferenceTimeInState("12:31:22", "13:40:49")); 
+         
+       
     }
-
 }

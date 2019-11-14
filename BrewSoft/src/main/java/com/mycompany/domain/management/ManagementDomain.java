@@ -8,8 +8,11 @@ package com.mycompany.domain.management;
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineState;
+import com.mycompany.crossCutting.objects.SearchData;
 import com.mycompany.data.dataAccess.BatchDataHandler;
+import com.mycompany.data.dataAccess.SearchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
+import com.mycompany.data.interfaces.ISearchDataHandler;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +22,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 import java.util.TreeMap;
@@ -34,8 +38,14 @@ public class ManagementDomain implements IManagementDomain {
     private final int BATCHID_MIN = 0;
     private final int BATCHID_MAX = 65535;
 
-    private IBatchDataHandler batchDataHandler = new BatchDataHandler();
+    private IBatchDataHandler batchDataHandler;
+    private ISearchDataHandler searchDataHandler;
 
+    public ManagementDomain() {
+        this.batchDataHandler = new BatchDataHandler();
+        this.searchDataHandler = new SearchDataHandler();
+    }
+    
     /**
      * Method that creates takes a batch with no batch ID and generates a new
      * batch with a batch ID.
@@ -57,8 +67,9 @@ public class ManagementDomain implements IManagementDomain {
     }
 
     @Override
-    public List<Batch> batchObjects(String searchKey, String searchValue) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Batch> batchObjects(String searchKey, SearchData searchDataObj) {
+        
+        return searchDataHandler.getBatchList(searchDataObj);
     }
 
     @Override

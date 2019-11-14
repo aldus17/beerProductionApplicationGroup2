@@ -8,6 +8,7 @@ package com.mycompany.domain.management;
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineState;
+import com.mycompany.crossCutting.objects.SearchData;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import java.time.LocalDate;
@@ -69,10 +70,12 @@ public class ManagementDomainTest {
     public void testBatchObjects() {
         System.out.println("batchObjects");
         String searchKey = "";
-        String searchValue = "";
+        String searchDate = "";
+        float searchBatchID = 0.0f;
+        SearchData searchDataObj = new SearchData(searchDate, searchBatchID);
         ManagementDomain instance = new ManagementDomain();
         List<Batch> expResult = null;
-        List<Batch> result = instance.batchObjects(searchKey, searchValue);
+        List<Batch> result = instance.batchObjects(searchKey, searchDataObj);
         assertEquals(expResult, result);
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
