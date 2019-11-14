@@ -15,11 +15,12 @@ import java.util.List;
 import java.util.TreeMap;
 import org.junit.After;
 import org.junit.AfterClass;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+
 
 /**
  *
@@ -105,6 +106,19 @@ public class ManagementDomainTest {
         // TODO review the generated test code and remove the default call to fail.
         fail("The test case is a prototype.");
     }
+    
+    @Test
+    public void getDifferenceTimeInState() {
+        System.out.println("getDifferenceTimeInState");
+        ManagementDomain instance = new ManagementDomain();
+        String value1 = "12:31:22";
+        String value2 = "13:40:49";
+        String expectedValue = "01:09:27";
+        String actualValue = instance.getDifferenceTimeInState(value1,value2);
+        
+        assertEquals(expectedValue, actualValue);
+        System.out.println("Expected: " + expectedValue + "\nActualValue: " + actualValue);
+    }
 
     /**
      * Test of getTimeInStates method, of class ManagementDomain.
@@ -117,6 +131,7 @@ public class ManagementDomainTest {
         MachineState ms = batchDataHandler.getMachineState(prodListID);
         TreeMap<Integer, String> allTimeValues = new TreeMap<>();
         TreeMap<Integer, String> timeDifferenceMap = new TreeMap<>();
+        System.out.println(instance.getDifferenceTimeInState("12:31:22", "13:40:49"));
 //        for (int i = 0; i <= 19; i++) {
 //            allTimeValues.put(i, Integer.valueOf(ms.getMachineStateID()) == i ? ms.getTimeInStates() : "");
 //            if (Integer.valueOf(ms.getMachineStateID()) == 0) {
@@ -158,9 +173,8 @@ public class ManagementDomainTest {
 //        assertEquals(exp, timeDifferenceMap);
         
     
-    public static void main(String[] args) {
-        ManagementDomainTest mdt = new ManagementDomainTest();
-        mdt.testGetTimeInStates();
-    }
+  
+        
+        
     
 }

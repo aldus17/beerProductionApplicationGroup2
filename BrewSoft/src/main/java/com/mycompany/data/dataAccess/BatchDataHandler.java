@@ -10,8 +10,10 @@ import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
+import com.mycompany.domain.management.ManagementDomain;
 import java.sql.Date;
-import java.util.TreeMap;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -70,25 +72,39 @@ public class BatchDataHandler implements IBatchDataHandler {
 
         SimpleSet stateSet = dbConnection.query("SELECT tis.machinestateid, tis.starttimeinstate "
                 + "FROM timeinstate AS tis, productionlist AS pl "
-                + "WHERE pl.productionlistid = 410;");
+                + "WHERE pl.productionlistid = 410"
+                + "ORDER BY starttimeinstate ASC;");
 
         if (stateSet.isEmpty()) {
             return null;
         } else {
-            MachineState machineState = null;
-            TreeMap<Integer, String> map = new TreeMap<>();
+            MachineState machineState = new MachineState("", "");
+            List<Object> list = new ArrayList<>();
             for (int i = 0; i < stateSet.getRows(); i++) {
-                machineState = new MachineState(
-                       String.valueOf(batchSet.get(i, "speed"))
-                );
+                list.add(
+                        machineState = new MachineState(
+                                String.valueOf(stateSet.get(i, "machinestateid")),
+                                String.valueOf(stateSet.get(i, "starttimeinstate"))
+                        ));
             }
+            machineState.setStateObj(list);
             return machineState;
         }
     }
+
     public static void main(String[] args) {
         BatchDataHandler b = new BatchDataHandler();
-        b.getMachineState("410");
-        System.out.println(b.getMachineState("410").getTimeInStates());
+        MachineState ms = b.getMachineState("410");
+        ManagementDomain md = new ManagementDomain();
+        
+        for (Object o : ms.getStateObj()) {
+            String s = o.toString();
+            System.out.println(s);
+        }
+        
+        System.out.println("Test " + md.getDifferenceTimeInState("12:31:22", "13:40:49"));
+        
+      
     }
 
 }

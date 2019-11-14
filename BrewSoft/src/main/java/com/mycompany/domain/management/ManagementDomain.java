@@ -75,49 +75,49 @@ public class ManagementDomain implements IManagementDomain {
         List<String> listOfTime = new ArrayList<>();
         TreeMap<Integer, String> allTimeValues = new TreeMap<>();
         TreeMap<Integer, String> timeDifferenceMap = new TreeMap<>();
-        
+
         for (int i = 0; i <= 19; i++) {
 //            allTimeValues.put(i, Integer.valueOf(ms.getMachineStateID()) == i ? ms.getTimeInStates() : "");
-            
+
         }
-        
+
         for (int i = 0; i < allTimeValues.size(); i++) {
             int firstValue = i;
             int secondValue = i + 1;
-            
+
             timeDifferenceMap.put(i, getDifferenceTimeInState(allTimeValues.get(firstValue), allTimeValues.get(secondValue)));
         }
-        
+
         return timeDifferenceMap;
 
-        
     }
 
     public String getDifferenceTimeInState(String stateValue1, String stateValue2) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         long difference = 0;
+//        String formatted = "";
         try {
-            
-            if (stateValue1.equalsIgnoreCase("") || stateValue2.equalsIgnoreCase("")) {
-                stateValue1 = "00:00:00";
-                stateValue2 = "00:00:00";
-            }
 
             Date date1 = format.parse(stateValue1);
             Date date2 = format.parse(stateValue2);
             difference = date2.getTime() - date1.getTime();
 
+//            Date differenceInTime = new Date(difference);
+//            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+//            formatted = formatter.format(differenceInTime);
         } catch (ParseException ex) {
             System.out.println("The beginning of the specified string cannot be parsed");
             Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        long s = difference % 60;
-        long m = (difference / 60) % 60;
-        long h = (difference / (60 * 60)) % 24;
-
-        return String.format("%d:%02d:%02d", h, m, s);
-
+        long seconds = (difference / 1000) % 60;
+        long minutes = (difference / (1000 * 60)) % 60;
+        long hours = difference / (1000 * 60 * 60);
+//        long s = difference % 60;
+//        long m = (difference / 60) % 60;
+//        long h = (difference / (60 * 60)) % 24;
+//        return String.format("%d:%02d:%02d", h, m, s);
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+//        return formatted;
     }
 
     private String createBatchID(Integer batchIDRetrieve) {
