@@ -35,9 +35,8 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 ProductionListID, BreweryMachineID, Date.valueOf(deadline), Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation), productID, totalCount, defectCount, acceptedCount);
     }
 
-    // TODO Check if batch is in Queue
-    public Batch getNextBatch() {
-        SimpleSet batchSet = connection.query("SELECT * FROM productionlist ORDER BY deadline ASC limit 1");
+    public Batch getNextBatch(){
+                SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'Queued' ORDER BY deadline ASC limit 1"); // hent queue
         if (batchSet.isEmpty()) {
             return null;
         } else {
@@ -53,6 +52,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                        String.valueOf(batchSet.get(i, "speed"))
                 );
             }
+
             return batch;
         }
     }
