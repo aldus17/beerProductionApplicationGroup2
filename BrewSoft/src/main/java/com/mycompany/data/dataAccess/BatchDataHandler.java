@@ -51,7 +51,7 @@ public class BatchDataHandler implements IBatchDataHandler {
     }
    public ArrayList<Batch> getQueuedBatches(){
        ArrayList <Batch> queuedbatches = new ArrayList<>();
-       SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status='"+QUEUED_STATUS+"'");
+       SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status=?", QUEUED_STATUS);
        for(int i = 0; i<set.getRows();i++){
            queuedbatches.add(
                    new Batch(
