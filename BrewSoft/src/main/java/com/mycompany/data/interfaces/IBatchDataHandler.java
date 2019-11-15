@@ -1,6 +1,7 @@
 package com.mycompany.data.interfaces;
 
 import com.mycompany.crossCutting.objects.Batch;
+import java.util.ArrayList;
 
 public interface IBatchDataHandler {
 

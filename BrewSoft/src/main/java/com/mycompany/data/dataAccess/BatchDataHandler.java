@@ -64,7 +64,7 @@ public class BatchDataHandler implements IBatchDataHandler {
                         String.valueOf(batchSet.get(i, "speed"))
                 );
             }
-            return new Integer(batch.getStringBatchID());
+            return new Integer(batch.getBatchID().getValue());
         }
     }
 
