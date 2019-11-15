@@ -20,7 +20,7 @@ public interface IBatchDataHandler {
      //public void insertBatchToQueue(int typeofProduct, int amountToProduce, double speed, LocalDate deadline);
      public void insertBatchToQueue(Batch batch);
      
-     public List getQueuedBatches();
+     public ArrayList<Batch> getQueuedBatches();
      
      public Integer getLatestBatchID();
      

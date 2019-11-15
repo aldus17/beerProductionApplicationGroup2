@@ -100,7 +100,7 @@ public class Batch {
 
     public StringProperty CalulateProductionTime() {
 
-        int productionTime = (int) (Double.parseDouble(totalAmount.toString()) / Double.parseDouble(speedforProduction.toString()));
+        int productionTime = (int) (Double.parseDouble(totalAmount.getValue()) / Double.parseDouble(speedforProduction.getValue()));
 
         return new SimpleStringProperty(String.valueOf(productionTime));
     }
