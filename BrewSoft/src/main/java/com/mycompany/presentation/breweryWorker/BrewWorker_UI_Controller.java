@@ -57,7 +57,19 @@ public class BrewWorker_UI_Controller implements Initializable {
         Consumer<String> batchIdUpdater = text -> Platform.runLater(() -> lbl_BatchID.setText(text));
         Consumer<String> producedUpdater = text -> Platform.runLater(() -> lbl_Produced.setText(text));
         Consumer<String> humidityUpdater = text -> Platform.runLater(() -> lbl_Humidity.setText(text));
-        Consumer<String> totalProductsUpdater = text -> Platform.runLater(() -> lbl_TotalProducts.setText(text));
+        Consumer<String> totalProductsUpdater = new Consumer<String>() {
+            @Override
+            public void accept(String text) {
+                Platform.runLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        System.out.println("UI prod data");
+                        lbl_TotalProducts.setText(text);
+                        subscriber.sendProductionData();
+                    }
+                });
+            }
+        };
         Consumer<String> acceptableUpdater = text -> Platform.runLater(() -> lbl_Acceptable.setText(text));
         Consumer<String> vibrationUpdater = text -> Platform.runLater(() -> lbl_Vibration.setText(text));
         Consumer<String> productsPrMinuteUpdater = text -> Platform.runLater(() -> lbl_ProductsPrMinute.setText(text));
@@ -123,9 +135,5 @@ public class BrewWorker_UI_Controller implements Initializable {
             controls.abortProduction();
         }
         
-//        subscriber.completedBatch();
-        subscriber.sendProductionData();
-        subscriber.sendStopDuingProduction();
-        subscriber.sendTimeInState();
     }
 }

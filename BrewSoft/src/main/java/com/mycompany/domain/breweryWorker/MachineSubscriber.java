@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.time.LocalTime;
+import java.util.function.BiConsumer;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
@@ -67,9 +68,9 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private String batchIDValue;
     private String totalProductValue;
-    private String temperaturValue;
+    private String temperaturValue = "0";
     private String humidityValue;
-    private String vibrationValue;
+    private String vibrationValue = "0";
     private String productionCountValue;
     private String defectCountValue;
     private String acceptableCountValue;
@@ -130,7 +131,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         Consumer<DataValue> onStateReadItem = (dataValue) -> consumerStarter(STATE_CURRENT_NODENAME, dataValue);
         Consumer<DataValue> onProductsPrMinuteReadItem = (dataValue) -> consumerStarter(PRODUCTS_PR_MINUTE_NODENAME, dataValue);
 
-        Consumer<DataValue> onBarleyReadItem = (DataValue dataValue) -> consumerStarter(BARLEY_NODENAME, dataValue);
+        Consumer<DataValue> onBarleyReadItem = (dataValue) -> consumerStarter(BARLEY_NODENAME, dataValue);
         Consumer<DataValue> onHopsReadItem = (dataValue) -> consumerStarter(HOPS_NODENAME, dataValue);
         Consumer<DataValue> onMaltReadItem = (dataValue) -> consumerStarter(MALT_NODENAME, dataValue);
         Consumer<DataValue> onWheatReadItem = (dataValue) -> consumerStarter(WHEAT_NODENAME, dataValue);
@@ -178,7 +179,9 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void sendProductionData() {
         float checkHumidity = 0;
         float checkTemperatur = 0;
+        System.out.println("Production Data");
         if (checkHumidity != Float.parseFloat(humidityValue) || checkTemperatur != Float.parseFloat(temperaturValue)) {
+            System.out.println("TESTER " + humidityValue);
             checkHumidity = Float.parseFloat(humidityValue);
             checkTemperatur = Float.parseFloat(temperaturValue);
             msdh.insertProductionInfo(Integer.parseInt(msdh.getNextBatch().getProductionListID().getValue()), 1, Float.parseFloat(humidityValue), Float.parseFloat(temperaturValue));
@@ -205,7 +208,9 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     public void completedBatch() {
         Batch batch = msdh.getNextBatch();
-
+        
+        msdh.changeProductionListStatus(Integer.parseInt(batch.getProductionListID().getValue()), "Completed");
+        
         if (Float.parseFloat(batch.getTotalAmount().getValue()) == Float.parseFloat(totalProductValue)) {
             msdh.insertFinalBatchInformation(Integer.parseInt(batch.getProductionListID().getValue()), 1, batch.getDeadline().getValue(),
                     batch.getDateofCreation().getValue(), LocalDate.now().toString(),
@@ -218,6 +223,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
 
     public String getTotalProductValue() {
+        
         return totalProductValue;
     }
 
@@ -293,31 +299,39 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
 
     private ReadValueId readValueId(NodeId name) {
-
         return new ReadValueId(name, AttributeId.Value.uid(), null, null);
     }
 
     private void consumerStarter(String nodename, DataValue dataValue) {
         consumerMap.get(nodename).accept(dataValue.getValue().getValue().toString());
+        
 
         switch (nodename) {
             case BATCHID_NODENAME:
                 this.batchIDValue = dataValue.getValue().getValue().toString();
+                //consumerMap.get(nodename).accept(this.batchIDValue);
                 break;
             case TOTAL_PRODUCTS_NODENAME:
                 this.totalProductValue = dataValue.getValue().getValue().toString();
                 break;
             case TEMPERATURE_NODENAME:
                 this.temperaturValue = dataValue.getValue().getValue().toString();
-                break;
+                //break;
             case HUMIDITY_NODENAME:
-                this.humidityValue = dataValue.getValue().getValue().toString();
+                if(nodename.equals(HUMIDITY_NODENAME)) {
+                    this.humidityValue = dataValue.getValue().getValue().toString();
+                }
+                this.sendProductionData();
+                //consumerMap.get(nodename).accept(this.humidityValue);
+                
                 break;
             case VIBRATION_NODENAME:
                 this.vibrationValue = dataValue.getValue().getValue().toString();
                 break;
             case PRODUCED_PRODUCTS_NODENAME:
                 this.productionCountValue = dataValue.getValue().getValue().toString();
+                //this.sendProductionData();
+                //consumerMap.get(nodename).accept(this.productionCountValue);
                 break;
             case DEFECT_PRODUCTS_NODENAME:
                 this.defectCountValue = dataValue.getValue().getValue().toString();
@@ -336,6 +350,7 @@ public class MachineSubscriber implements IMachineSubscribe {
                 break;
             case MAINTENANCE_COUNTER_NODENAME:
                 this.maintenanceValue = dataValue.getValue().getValue().toString();
+                //consumerMap.get(nodename).accept(this.maintenanceValue);
                 break;
             case BARLEY_NODENAME:
                 this.barleyValue = dataValue.getValue().getValue().toString();
@@ -355,7 +370,6 @@ public class MachineSubscriber implements IMachineSubscribe {
             default:
                 System.out.println("There are no Node for this!!");
         }
-        
     }
 
     // TODO Get data from database.
