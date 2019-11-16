@@ -16,8 +16,10 @@ import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -73,65 +75,33 @@ public class ManagementDomain implements IManagementDomain {
 
         MachineState ms = batchDataHandler.getMachineState(prodListID);
         Map<Integer, String> finalTimeInStatesList = new TreeMap<>();
-        finalTimeInStatesList.put(2, "");   
-        finalTimeInStatesList.put(4, "");
-        finalTimeInStatesList.put(9, "");
-        finalTimeInStatesList.put(11, "");
-        finalTimeInStatesList.put(17, "");
-        finalTimeInStatesList.put(17, "");
-        
+
         System.out.println(Arrays.toString(ms.getStateObjList().toArray()));
-        
-        for (Object o : ms.getStateObjList()) {
-            MachineState m = (MachineState) o;
-            String addHeldTimeToExcecuteTime = "";
-            if (Integer.valueOf(m.getMachinestateID()) == 4) {
 
-                // Idle state time
-                finalTimeInStatesList.put(
-                        4, getDifferenceTimeInState(
-                                m.getTimeInState(), m.getMachinestateID().equals("6") ? m.getTimeInState() : "00:00:00"));
+        List<MachineState> msl = new ArrayList<>();
 
-                // Stopped state time
-                finalTimeInStatesList.put(
-                        2, getDifferenceTimeInState(
-                                m.getTimeInState(), m.getMachinestateID().equals("6") ? m.getTimeInState() : "00:00:00"));
-            }
+        for (Object object : ms.getStateObjList()) {
+            msl.add((MachineState) object);
+        }
 
-            if (Integer.valueOf(m.getMachinestateID()) == 6) {
-                // difference of excecute and held | excecute time before Held
-//                finalTimeInStatesList.put(
-//                        6, getDifferenceTimeInState(
-//                                m.getTimeInState(), m.getMachinestateID().equals("11") ? m.getTimeInState() : "00:00:00"));
-                String excecuteTime = getDifferenceTimeInState(
-                        m.getTimeInState(), m.getMachinestateID().equals("11") ? m.getTimeInState() : "00:00:00");
-                // difference of held and excecuted | held time
-                addHeldTimeToExcecuteTime = getDifferenceTimeInState(m.getMachinestateID().equals("11") ? m.getTimeInState() : "00:00:00", m.getTimeInState());
+        for (int i = 1; i < msl.size(); i++) {
+            // tag første object, gemmer det object i variable, checke den variable mod det næste object, hvis det samme continue
+            MachineState firstObj = msl.get(i - 1);
+            MachineState secondObj = msl.get(i);
 
-                finalTimeInStatesList.put(
-                        11, getDifferenceTimeInState(
-                                m.getMachinestateID().equals("11") ? m.getTimeInState() : "00:00:00", m.getTimeInState()));
-                // Add that difference to excecuted state when calculating the difference between excecute and completed
-                String finalExcecuteTime = getAdditionTimeInState(excecuteTime, addHeldTimeToExcecuteTime);
+            System.out.println(firstObj.getMachinestateID());
 
-                finalTimeInStatesList.put(6, finalExcecuteTime);
+            if (!firstObj.getMachinestateID().equals(secondObj.getMachinestateID())) {
+                finalTimeInStatesList.put(Integer.valueOf(firstObj.getMachinestateID()), getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState()));
+            } else {
 
             }
         }
-        return finalTimeInStatesList;
+        System.out.println(finalTimeInStatesList.toString());
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
     }
 
-//        for (int i = 0; i <= 19; i++) {
-//            allTimeValues.put(i, Integer.valueOf(ms.getMachineStateID()) == i ? ms.getTimeInStates() : "");
-//
-//        }
-//        for (int i = 0; i < allTimeValues.size(); i++) {
-//            int firstValue = i;
-//            int secondValue = i + 1;
-//
-//            timeDifferenceMap.put(i, getDifferenceTimeInState(allTimeValues.get(firstValue), allTimeValues.get(secondValue)));
-//        }
     public String getDifferenceTimeInState(String stateValue1, String stateValue2) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         long difference = 0;
@@ -167,7 +137,7 @@ public class ManagementDomain implements IManagementDomain {
 
             Date date1 = format.parse(stateValue1);
             Date date2 = format.parse(stateValue2);
-            difference = date2.getTime() - date1.getTime();
+            difference = date2.getTime() + date1.getTime();
 
         } catch (ParseException ex) {
             System.out.println("The beginning of the specified string cannot be parsed");
@@ -191,13 +161,13 @@ public class ManagementDomain implements IManagementDomain {
             return String.valueOf(BATCHID_MIN);
         }
     }
-    
+
     public static void main(String[] args) {
         ManagementDomain md = new ManagementDomain();
-        
+
         Map<Integer, String> testMap = new TreeMap<>();
         testMap = md.getTimeInStates("410");
-        
+
         System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
     }
 

@@ -72,9 +72,9 @@ public class BatchDataHandler implements IBatchDataHandler {
 
         SimpleSet stateSet = dbConnection.query("SELECT tis.machinestateid, tis.starttimeinstate "
                 + "FROM timeinstate AS tis, productionlist AS pl "
-                + "WHERE pl.productionlistid = 410"
+                + "WHERE pl.productionlistid = 410 "
                 + "ORDER BY starttimeinstate ASC;");
-
+        
         if (stateSet.isEmpty()) {
             return null;
         } else {
