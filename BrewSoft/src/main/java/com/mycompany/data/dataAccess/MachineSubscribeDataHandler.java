@@ -36,7 +36,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     }
 
     public Batch getNextBatch(){
-                SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'Queued' ORDER BY deadline ASC limit 1"); // hent queue
+        SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'Queued' ORDER BY deadline ASC limit 1"); // hent queue
         if (batchSet.isEmpty()) {
             return null;
         } else {

@@ -1,5 +1,6 @@
 package com.mycompany.domain.breweryWorker.interfaces;
 
+import com.mycompany.crossCutting.objects.Batch;
 import java.util.function.Consumer;
 
 public interface IMachineSubscribe {
@@ -18,7 +19,9 @@ public interface IMachineSubscribe {
 
     public void sendProductionData();
 
-//    public void completedBatch();
+    public void completedBatch();
+    
+    public void setCurrentBatch(Batch currentBatch);
 
     public String stopReasonTranslator(String stopReason);
 

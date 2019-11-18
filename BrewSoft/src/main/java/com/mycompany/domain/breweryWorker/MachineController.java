@@ -2,6 +2,7 @@ package com.mycompany.domain.breweryWorker;
 
 import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
+import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
 import com.mycompany.crossCutting.objects.Batch;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
@@ -19,19 +20,27 @@ public class MachineController implements IMachineControl {
     private final NodeId cmdChangeRequestNodeId = new NodeId(6, "::Program:Cube.Command.CmdChangeRequest");
     
     private IMachineSubscriberDataHandler msdh = new MachineSubscribeDataHandler();
+    
+    private IMachineSubscribe subscriber;
 
     public MachineController() {
-        this("127.0.0.1", 4840);
+        this("127.0.0.1", 4840, null);
     }
 
     public MachineController(String hostname, int port) {
+        this(hostname, port, null);
+    }
+    
+    public MachineController(String hostname, int port, IMachineSubscribe subscriber) {
         mconn = new MachineConnection(hostname, port);
         mconn.connect();
+        this.subscriber = subscriber;
     }
-
+    
     @Override
     public void startProduction() {
         Batch newBatch = msdh.getNextBatch();
+        subscriber.setCurrentBatch(newBatch);
         // TODO Changes value of production List ID
         msdh.changeProductionListStatus(Integer.parseInt(newBatch.getProductionListID().getValue()), "In Production");
         

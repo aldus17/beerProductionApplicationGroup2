@@ -15,7 +15,6 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.time.LocalTime;
-import java.util.function.BiConsumer;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
@@ -85,6 +84,8 @@ public class MachineSubscriber implements IMachineSubscribe {
     private String maltValue;
     private String wheatValue;
     private String yeastValue;
+    
+    private Batch batch;
 
     // TODO pull ip and port from DB
     public MachineSubscriber() {
@@ -95,6 +96,11 @@ public class MachineSubscriber implements IMachineSubscribe {
         mconn = new MachineConnection(hostname, port);
         mconn.connect();
         consumerMap = new HashMap();
+    }
+    
+    @Override
+    public void setCurrentBatch(Batch currentBatch) {
+        this.batch = currentBatch;
     }
 
     @Override
@@ -184,7 +190,7 @@ public class MachineSubscriber implements IMachineSubscribe {
             System.out.println("TESTER " + humidityValue);
             checkHumidity = Float.parseFloat(humidityValue);
             checkTemperatur = Float.parseFloat(temperaturValue);
-            msdh.insertProductionInfo(Integer.parseInt(msdh.getNextBatch().getProductionListID().getValue()), 1, Float.parseFloat(humidityValue), Float.parseFloat(temperaturValue));
+            msdh.insertProductionInfo(Integer.parseInt(batch.getProductionListID().getValue()), 1, Float.parseFloat(humidityValue), Float.parseFloat(temperaturValue));
         }
     }
 
@@ -197,21 +203,21 @@ public class MachineSubscriber implements IMachineSubscribe {
         System.out.println("Current State: " + currentStateValue);
         if (checkCurrentState != Integer.parseInt(currentStateValue)) {
             checkCurrentState = Integer.parseInt(currentStateValue);
-            msdh.insertTimesInStates(Integer.parseInt(msdh.getNextBatch().getProductionListID().getValue()), 1, timeObject, Integer.parseInt(currentStateValue));
+            msdh.insertTimesInStates(Integer.parseInt(batch.getProductionListID().getValue()), 1, timeObject, Integer.parseInt(currentStateValue));
         }
     }
 
     public void sendStopDuingProduction() {
 
-        msdh.insertStopsDuringProduction(Integer.parseInt(msdh.getNextBatch().getProductionListID().getValue()), 1, Integer.parseInt(StopReasonID));
+        msdh.insertStopsDuringProduction(Integer.parseInt(batch.getProductionListID().getValue()), 1, Integer.parseInt(StopReasonID));
     }
 
     public void completedBatch() {
-        Batch batch = msdh.getNextBatch();
+        //Batch batch = msdh.getNextBatch();
         
         msdh.changeProductionListStatus(Integer.parseInt(batch.getProductionListID().getValue()), "Completed");
         
-        if (Float.parseFloat(batch.getTotalAmount().getValue()) == Float.parseFloat(totalProductValue)) {
+        if (Float.parseFloat(batch.getTotalAmount().getValue()) == Float.parseFloat(this.productionCountValue)) {
             msdh.insertFinalBatchInformation(Integer.parseInt(batch.getProductionListID().getValue()), 1, batch.getDeadline().getValue(),
                     batch.getDateofCreation().getValue(), LocalDate.now().toString(),
                     Integer.parseInt(batch.getType().getValue()), Float.parseFloat(totalProductValue), Integer.parseInt(defectCountValue), Integer.parseInt(acceptableCountValue));
@@ -301,38 +307,29 @@ public class MachineSubscriber implements IMachineSubscribe {
     private ReadValueId readValueId(NodeId name) {
         return new ReadValueId(name, AttributeId.Value.uid(), null, null);
     }
-
+    
     private void consumerStarter(String nodename, DataValue dataValue) {
         consumerMap.get(nodename).accept(dataValue.getValue().getValue().toString());
-        
 
         switch (nodename) {
             case BATCHID_NODENAME:
                 this.batchIDValue = dataValue.getValue().getValue().toString();
-                //consumerMap.get(nodename).accept(this.batchIDValue);
                 break;
             case TOTAL_PRODUCTS_NODENAME:
                 this.totalProductValue = dataValue.getValue().getValue().toString();
                 break;
             case TEMPERATURE_NODENAME:
                 this.temperaturValue = dataValue.getValue().getValue().toString();
-                //break;
             case HUMIDITY_NODENAME:
-                if(nodename.equals(HUMIDITY_NODENAME)) {
+                if (nodename.equals(HUMIDITY_NODENAME)) {
                     this.humidityValue = dataValue.getValue().getValue().toString();
                 }
                 this.sendProductionData();
-                //consumerMap.get(nodename).accept(this.humidityValue);
-                
                 break;
             case VIBRATION_NODENAME:
                 this.vibrationValue = dataValue.getValue().getValue().toString();
                 break;
-            case PRODUCED_PRODUCTS_NODENAME:
-                this.productionCountValue = dataValue.getValue().getValue().toString();
-                //this.sendProductionData();
-                //consumerMap.get(nodename).accept(this.productionCountValue);
-                break;
+
             case DEFECT_PRODUCTS_NODENAME:
                 this.defectCountValue = dataValue.getValue().getValue().toString();
                 break;
@@ -344,13 +341,15 @@ public class MachineSubscriber implements IMachineSubscribe {
                 break;
             case STOP_REASON_NODENAME:
                 this.StopReasonID = dataValue.getValue().getValue().toString();
+                //sendStopDuingProduction();
                 break;
             case STATE_CURRENT_NODENAME:
                 this.currentStateValue = dataValue.getValue().getValue().toString();
+                System.out.println("state " + this.currentStateValue);
+                sendTimeInState();
                 break;
             case MAINTENANCE_COUNTER_NODENAME:
                 this.maintenanceValue = dataValue.getValue().getValue().toString();
-                //consumerMap.get(nodename).accept(this.maintenanceValue);
                 break;
             case BARLEY_NODENAME:
                 this.barleyValue = dataValue.getValue().getValue().toString();
@@ -366,6 +365,10 @@ public class MachineSubscriber implements IMachineSubscribe {
                 break;
             case YEAST_NODENAME:
                 this.yeastValue = dataValue.getValue().getValue().toString();
+                break;
+            case PRODUCED_PRODUCTS_NODENAME:
+                this.productionCountValue = dataValue.getValue().getValue().toString();
+                this.completedBatch();
                 break;
             default:
                 System.out.println("There are no Node for this!!");
