@@ -18,8 +18,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -83,13 +84,14 @@ public class ManagementDomain implements IManagementDomain {
         for (Object object : ms.getStateObjList()) {
             msl.add((MachineState) object);
         }
-
+        System.out.println(Arrays.toString(msl.toArray()));
+        Collections.sort(msl, Comparator.comparing(MachineState::getTimeInState));
+        
+        System.out.println(Arrays.toString(msl.toArray()));
         for (int i = 1; i < msl.size(); i++) {
             // tag første object, gemmer det object i variable, checke den variable mod det næste object, hvis det samme continue
             MachineState firstObj = msl.get(i - 1);
             MachineState secondObj = msl.get(i);
-
-            System.out.println(firstObj.getMachinestateID());
 
             if (!firstObj.getMachinestateID().equals(secondObj.getMachinestateID())) {
                 finalTimeInStatesList.put(Integer.valueOf(firstObj.getMachinestateID()), getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState()));
