@@ -14,9 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 
 public class BrewWorker_UI_Controller implements Initializable {
 
@@ -47,7 +44,7 @@ public class BrewWorker_UI_Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         controls.resetMachine();
-        
+
         Consumer<String> barleyUpdater = text -> Platform.runLater(() -> lbl_Barley.setText(text));
         Consumer<String> hopsUpdater = text -> Platform.runLater(() -> lbl_Hops.setText(text));
         Consumer<String> maltUpdater = text -> Platform.runLater(() -> lbl_Malt.setText(text));
@@ -104,7 +101,7 @@ public class BrewWorker_UI_Controller implements Initializable {
         } else if (event.getSource() == btn_Reset) {
             controls.resetMachine();
             // TODO remove hard code
-            lbl_Produced.setText("0");
+            //lbl_Produced.setText("0");
         } else if (event.getSource() == btn_Clear) {
             controls.clearState();
         } else if (event.getSource() == btn_Stop) {
@@ -112,6 +109,6 @@ public class BrewWorker_UI_Controller implements Initializable {
         } else if (event.getSource() == btn_Abort) {
             controls.abortProduction();
         }
-        
+
     }
 }

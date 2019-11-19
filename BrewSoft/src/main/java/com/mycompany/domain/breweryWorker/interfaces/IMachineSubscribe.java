@@ -9,18 +9,8 @@ public interface IMachineSubscribe {
 
     public void setConsumer(Consumer<String> consumer, String nodeName);
 
-    public String getBarleyValue();
-
     public String stateTranslator(String state);
 
-    public void sendTimeInState();
-
-    public void sendStopDuingProduction();
-
-    public void sendProductionData();
-
-    public void completedBatch();
-    
     public void setCurrentBatch(Batch currentBatch);
 
     public String stopReasonTranslator(String stopReason);

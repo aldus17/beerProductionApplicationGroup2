@@ -4,7 +4,6 @@ import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +13,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.time.LocalTime;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
@@ -46,7 +44,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     private final NodeId productsPrMinuteNode = new NodeId(6, "::Program:Cube.Status.MachSpeed");
     private final NodeId acceptableCountNode = new NodeId(6, "::Program:product.good");
 
-    // TODO Production detail nodes. Not used.
+    // Production detail nodes.
     private final NodeId productBadNode = new NodeId(6, "::Program:product.bad");
     private final NodeId productProducedAmountNode = new NodeId(6, "::Program:product.produce_amount");
     private final NodeId productProducedNode = new NodeId(6, "::Program:product.produced");
@@ -84,7 +82,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     private String maltValue;
     private String wheatValue;
     private String yeastValue;
-    
+
     private Batch batch;
 
     // TODO pull ip and port from DB
@@ -97,7 +95,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         mconn.connect();
         consumerMap = new HashMap();
     }
-    
+
     @Override
     public void setCurrentBatch(Batch currentBatch) {
         this.batch = currentBatch;
@@ -112,7 +110,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         requestList.add(new MonitoredItemCreateRequest(readValueId(tempNode), MonitoringMode.Reporting, monitoringParameters()));
         requestList.add(new MonitoredItemCreateRequest(readValueId(humidityNode), MonitoringMode.Reporting, monitoringParameters()));
         requestList.add(new MonitoredItemCreateRequest(readValueId(vibrationNode), MonitoringMode.Reporting, monitoringParameters()));
-        requestList.add(new MonitoredItemCreateRequest(readValueId(producedCountNode), MonitoringMode.Reporting, monitoringParameters()));
+        requestList.add(new MonitoredItemCreateRequest(readValueId(productProducedNode), MonitoringMode.Reporting, monitoringParameters()));
         requestList.add(new MonitoredItemCreateRequest(readValueId(defectCountNode), MonitoringMode.Reporting, monitoringParameters()));
         requestList.add(new MonitoredItemCreateRequest(readValueId(acceptableCountNode), MonitoringMode.Reporting, monitoringParameters()));
         requestList.add(new MonitoredItemCreateRequest(readValueId(stopReasonNode), MonitoringMode.Reporting, monitoringParameters()));
@@ -198,29 +196,27 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void sendTimeInState() {
         int checkCurrentState = -1;
 
-        String timeObject = LocalTime.now().getHour() + ":" + LocalTime.now().getMinute() + ":" + LocalTime.now().getSecond();
-
+        //String timeObject = LocalTime.now().getHour() + ":" + LocalTime.now().getMinute() + ":" + LocalTime.now().getSecond();
         System.out.println("Current State: " + currentStateValue);
         if (checkCurrentState != Integer.parseInt(currentStateValue)) {
             checkCurrentState = Integer.parseInt(currentStateValue);
-            msdh.insertTimesInStates(Integer.parseInt(batch.getProductionListID().getValue()), 1, timeObject, Integer.parseInt(currentStateValue));
+            msdh.insertTimesInStates(Integer.parseInt(batch.getProductionListID().getValue()), 1, Integer.parseInt(currentStateValue));
         }
     }
 
     public void sendStopDuingProduction() {
-
         msdh.insertStopsDuringProduction(Integer.parseInt(batch.getProductionListID().getValue()), 1, Integer.parseInt(StopReasonID));
     }
 
     public void completedBatch() {
         //Batch batch = msdh.getNextBatch();
-        
+
         msdh.changeProductionListStatus(Integer.parseInt(batch.getProductionListID().getValue()), "Completed");
-        
+
         if (Float.parseFloat(batch.getTotalAmount().getValue()) == Float.parseFloat(this.productionCountValue)) {
             msdh.insertFinalBatchInformation(Integer.parseInt(batch.getProductionListID().getValue()), 1, batch.getDeadline().getValue(),
-                    batch.getDateofCreation().getValue(), LocalDate.now().toString(),
-                    Integer.parseInt(batch.getType().getValue()), Float.parseFloat(totalProductValue), Integer.parseInt(defectCountValue), Integer.parseInt(acceptableCountValue));
+                    batch.getDateofCreation().getValue(), Integer.parseInt(batch.getType().getValue()),
+                    Float.parseFloat(totalProductValue), Integer.parseInt(defectCountValue), Integer.parseInt(acceptableCountValue));
         }
     }
 
@@ -229,7 +225,6 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
 
     public String getTotalProductValue() {
-        
         return totalProductValue;
     }
 
@@ -273,7 +268,6 @@ public class MachineSubscriber implements IMachineSubscribe {
         return maintenanceValue;
     }
 
-    @Override
     public String getBarleyValue() {
         return barleyValue;
     }
@@ -307,7 +301,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     private ReadValueId readValueId(NodeId name) {
         return new ReadValueId(name, AttributeId.Value.uid(), null, null);
     }
-    
+
     private void consumerStarter(String nodename, DataValue dataValue) {
         consumerMap.get(nodename).accept(dataValue.getValue().getValue().toString());
 

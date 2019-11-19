@@ -7,7 +7,6 @@ import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.List;
 
 public class BatchDataHandler implements IBatchDataHandler {
 
@@ -32,21 +31,23 @@ public class BatchDataHandler implements IBatchDataHandler {
                 QUEUED_STATUS
         );
     }
-   public ArrayList<Batch> getQueuedBatches(){
-       ArrayList <Batch> queuedbatches = new ArrayList<>();
-       SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status='"+QUEUED_STATUS+"'");
-       for(int i = 0; i<set.getRows();i++){
-           queuedbatches.add(
-                   new Batch(
-                           String.valueOf(set.get(i, "batchid")),
-                           String.valueOf(set.get(i, "productid")),
-                           String.valueOf(set.get(i, "deadline")),
-                           String.valueOf(set.get(i, "speed")),
-                           String.valueOf(set.get(i, "productamount"))
-           ));
-       }
-       return queuedbatches;
-   }
+
+    public ArrayList<Batch> getQueuedBatches() {
+        ArrayList<Batch> queuedbatches = new ArrayList<>();
+        SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status='" + QUEUED_STATUS + "'");
+        for (int i = 0; i < set.getRows(); i++) {
+            queuedbatches.add(
+                    new Batch(
+                            String.valueOf(set.get(i, "batchid")),
+                            String.valueOf(set.get(i, "productid")),
+                            String.valueOf(set.get(i, "deadline")),
+                            String.valueOf(set.get(i, "speed")),
+                            String.valueOf(set.get(i, "productamount"))
+                            // TODO Get DateofCreation.
+                    ));
+        }
+        return queuedbatches;
+    }
 
     @Override
     public Integer getLatestBatchID() {
@@ -56,12 +57,15 @@ public class BatchDataHandler implements IBatchDataHandler {
         } else {
             Batch batch = null;
             for (int i = 0; i < batchSet.getRows(); i++) {
+                // TODO Why set a full batch object, when only the batch ID is returned?
                 batch = new Batch(
+                        // TODO Check order of insert to object.
                         String.valueOf(batchSet.get(i, "batchid")),
                         String.valueOf(batchSet.get(i, "productid")),
                         String.valueOf(batchSet.get(i, "productamount")),
                         String.valueOf(batchSet.get(i, "deadline")),
                         String.valueOf(batchSet.get(i, "speed"))
+                        // TODO Get DateofCreation.
                 );
             }
             return new Integer(batch.getBatchID().getValue());

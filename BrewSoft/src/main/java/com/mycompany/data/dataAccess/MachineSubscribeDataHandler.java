@@ -5,7 +5,6 @@ import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import java.sql.Date;
-import java.sql.Time;
 
 public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandler {
 
@@ -15,26 +14,31 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
         connection = new DatabaseConnection();
     }
 
+    @Override
     public void insertProductionInfo(int productionListID, int BreweryMachineID, float humidity, float temperature) {
         connection.queryUpdate("INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature) VALUES (?,?,?,?)",
                 productionListID, BreweryMachineID, humidity, temperature);
     }
 
-    public void insertTimesInStates(int ProductionListID, int BreweryMachineID, String StartTimeInState, int MachinestateID) {
-        connection.queryUpdate("INSERT INTO timeInstate (productionListID, breweryMachineID, startTimeInState, machineStateID) VALUES (?,?,?,?)",
-                ProductionListID, BreweryMachineID, Time.valueOf(StartTimeInState), MachinestateID);
+    @Override
+    public void insertTimesInStates(int ProductionListID, int BreweryMachineID, int MachinestateID) {
+        connection.queryUpdate("INSERT INTO timeInstate (productionListID, breweryMachineID, machineStateID) VALUES (?,?,?)",
+                ProductionListID, BreweryMachineID, MachinestateID);
     }
 
+    @Override
     public void insertStopsDuringProduction(int ProductionListID, int BreweryMachineID, int stopReasonID) {
         connection.queryUpdate("INSERT INTO stopDuringProduction (ProductionListID, BreweryMachineID, stopReasonID) VALUES (?,?,?)",
                 ProductionListID, BreweryMachineID, stopReasonID);
     }
 
-    public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID, String deadline, String dateOfCreation, String dateOfCompleation, int productID, float totalCount, int defectCount, int acceptedCount) {
-        connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, dateOfCompletion, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?,?)",
-                ProductionListID, BreweryMachineID, Date.valueOf(deadline), Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation), productID, totalCount, defectCount, acceptedCount);
+    @Override
+    public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID, String deadline, String dateOfCreation, int productID, float totalCount, int defectCount, int acceptedCount) {
+        connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?,?)",
+                ProductionListID, BreweryMachineID, Date.valueOf(deadline), Date.valueOf(dateOfCreation), productID, totalCount, defectCount, acceptedCount);
     }
 
+    @Override
     public Batch getNextBatch() {
         SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'Queued' ORDER BY deadline ASC limit 1"); // hent queue
         if (batchSet.isEmpty()) {
@@ -53,7 +57,6 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                         String.valueOf(batchSet.get(i, "dateofcreation"))
                 );
             }
-
             return batch;
         }
     }
