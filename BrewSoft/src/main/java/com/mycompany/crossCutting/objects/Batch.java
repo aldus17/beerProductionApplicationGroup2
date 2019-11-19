@@ -44,14 +44,14 @@ public class Batch {
         this.defectAmount = new SimpleStringProperty(defectAmount);
     }
 
-    public Batch(String productionListID, String BatchID, String type, String totalAmount, String deadline, String speedforProduction) {
+    public Batch(String productionListID, String BatchID, String type, String totalAmount, String deadline, String speedforProduction, String dateofCreation) {
         this.productionListID = new SimpleStringProperty(productionListID);
         this.BatchID = new SimpleStringProperty(BatchID);
         this.type = new SimpleStringProperty(type);
         this.totalAmount = new SimpleStringProperty(totalAmount);
         this.deadline = new SimpleStringProperty(deadline);
         this.speedforProduction = new SimpleStringProperty(speedforProduction);
-
+        this.dateofCreation = new SimpleStringProperty(dateofCreation);
     }
 
     public StringProperty getBatchID() {
