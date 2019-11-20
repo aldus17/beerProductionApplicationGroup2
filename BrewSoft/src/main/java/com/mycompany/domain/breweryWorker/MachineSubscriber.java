@@ -87,7 +87,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     // TODO pull ip and port from DB
     public MachineSubscriber() {
-        this("127.0.0.1", 4840);
+        this("192.168.0.122", 4840);
     }
 
     public MachineSubscriber(String hostname, int port) {
@@ -209,14 +209,28 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
 
     public void completedBatch() {
-        //Batch batch = msdh.getNextBatch();
-
-        msdh.changeProductionListStatus(Integer.parseInt(batch.getProductionListID().getValue()), "Completed");
-
-        if (Float.parseFloat(batch.getTotalAmount().getValue()) == Float.parseFloat(this.productionCountValue)) {
+        System.out.println(batch.getDateofCreation());
+        System.out.println(batch.getBatchID());
+        System.out.println(batch.getDateofCompletion());
+        System.out.println(batch.getDeadline());
+        System.out.println(batch.getDefectAmount());
+        System.out.println(batch.getGoodAmount());
+        System.out.println(batch.getMachineID());
+        System.out.println(batch.getProductionListID());
+        System.out.println(batch.getSpeedforProduction());
+        System.out.println(batch.getTotalAmount());
+        System.out.println(batch.getType());
+        System.out.println("Completed: "+Float.parseFloat(batch.getTotalAmount().getValue()) +" <= " +Float.parseFloat(this.productionCountValue));
+        if (Float.parseFloat(batch.getTotalAmount().getValue()) <= Float.parseFloat(this.productionCountValue)) {
+            msdh.changeProductionListStatus(Integer.parseInt(batch.getProductionListID().getValue()), "Completed");
+            System.out.println("completed test");
+            System.out.println(Integer.parseInt(batch.getProductionListID().getValue())+ 1+ batch.getDeadline().getValue());
+                    System.out.println(batch.getDateofCreation().getValue()+ Integer.parseInt(batch.getType().getValue()));
+                    System.out.println(Float.parseFloat(batch.getTotalAmount().getValue())+ Integer.parseInt(defectCountValue)+ Integer.parseInt(acceptableCountValue));
             msdh.insertFinalBatchInformation(Integer.parseInt(batch.getProductionListID().getValue()), 1, batch.getDeadline().getValue(),
                     batch.getDateofCreation().getValue(), Integer.parseInt(batch.getType().getValue()),
                     Float.parseFloat(totalProductValue), Integer.parseInt(defectCountValue), Integer.parseInt(acceptableCountValue));
+            System.out.println("completed test 2");
         }
     }
 

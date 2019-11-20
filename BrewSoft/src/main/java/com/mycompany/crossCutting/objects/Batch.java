@@ -104,5 +104,7 @@ public class Batch {
 
         return new SimpleStringProperty(String.valueOf(productionTime));
     }
-
+    public String toString() {
+        return this.BatchID.getValue() + this.MachineID.getValue() + this.dateofCompletion.getValue() + this.dateofCreation.getValue() + this.deadline.getValue() + this.defectAmount.getValue() + this.goodAmount.getValue() + this.productionListID.getValue() + this.speedforProduction.getValue() + this.totalAmount.getValue() + this.type.getValue();
+    }
 }

@@ -1,16 +1,16 @@
 package com.mycompany.domain.breweryWorker;
 
+import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
+import com.mycompany.domain.breweryWorker.interfaces.IMachineControl;
 import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
-import com.mycompany.crossCutting.objects.Batch;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 import org.eclipse.milo.opcua.stack.core.types.builtin.NodeId;
 import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
-import com.mycompany.domain.breweryWorker.interfaces.IMachineControl;
 
 public class MachineController implements IMachineControl {
 
@@ -24,7 +24,7 @@ public class MachineController implements IMachineControl {
     private IMachineSubscribe subscriber;
 
     public MachineController() {
-        this("127.0.0.1", 4840, null);
+        this("192.168.0.122", 4840, null);
     }
 
     public MachineController(String hostname, int port) {

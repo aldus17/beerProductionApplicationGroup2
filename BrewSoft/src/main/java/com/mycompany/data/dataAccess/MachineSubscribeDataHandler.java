@@ -34,7 +34,8 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID, String deadline, String dateOfCreation, int productID, float totalCount, int defectCount, int acceptedCount) {
-        connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?,?)",
+        System.out.println("datahandler");
+        connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?)",
                 ProductionListID, BreweryMachineID, Date.valueOf(deadline), Date.valueOf(dateOfCreation), productID, totalCount, defectCount, acceptedCount);
     }
 
