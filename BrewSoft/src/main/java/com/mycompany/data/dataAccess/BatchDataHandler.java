@@ -1,12 +1,15 @@
 package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
+import com.mycompany.domain.management.ManagementDomain;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BatchDataHandler implements IBatchDataHandler {
 
@@ -72,6 +75,44 @@ public class BatchDataHandler implements IBatchDataHandler {
         }
     }
 
+    @Override
+    public MachineState getMachineState(String prodListID) {
+
+        SimpleSet stateSet = dbConnection.query("SELECT tis.machinestateid, tis.starttimeinstate "
+                + "FROM timeinstate AS tis, productionlist AS pl "
+                + "WHERE pl.productionlistid = 410 "
+                + "ORDER BY starttimeinstate ASC;");
+        
+        if (stateSet.isEmpty()) {
+            return null;
+        } else {
+            MachineState machineState = new MachineState("", "");
+            List<Object> list = new ArrayList<>();
+            for (int i = 0; i < stateSet.getRows(); i++) {
+                list.add(
+                        machineState = new MachineState(
+                                String.valueOf(stateSet.get(i, "machinestateid")),
+                                String.valueOf(stateSet.get(i, "starttimeinstate"))
+                        ));
+            }
+            machineState.setStateObjList(list);
+            return machineState;
+        }
+    }
+
+    public static void main(String[] args) {
+        BatchDataHandler b = new BatchDataHandler();
+        MachineState ms = b.getMachineState("410");
+        ManagementDomain md = new ManagementDomain();
+        
+        for (Object o : ms.getStateObjList()) {
+            String s = o.toString();
+            System.out.println(s);
+        }
+        
+        System.out.println("Test " + md.getDifferenceTimeInState("12:31:22", "13:40:49"));
+        
+      
     // private helper-method to convert simpleSet to arrayList
     private ArrayList<BatchReport> simpleSetToArrayList(SimpleSet set) {
         ArrayList<BatchReport> list = new ArrayList<>();
