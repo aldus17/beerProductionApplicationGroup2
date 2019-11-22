@@ -111,7 +111,7 @@ public class BrewWorker_UI_Controller implements Initializable {
     private void OnControlAction(ActionEvent event) {
         
         if(event.getSource()==btn_Start){
-            controls.startProduction(1, 1, 11000, 100);
+            controls.startProduction(1, 1, 11000, 150);
         } else if(event.getSource() == btn_Reset){
             
             controls.resetMachine();

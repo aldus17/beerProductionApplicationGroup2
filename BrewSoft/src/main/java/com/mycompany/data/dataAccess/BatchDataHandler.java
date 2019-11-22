@@ -7,6 +7,7 @@ package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
+import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -14,6 +15,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,28 +34,45 @@ public class BatchDataHandler implements IBatchDataHandler {
     public BatchDataHandler() {
         dbConnection = new DatabaseConnection();
     }
-//ldsc.fromString(batchObject.getStringDateofCompletion())
+
     @Override
     public void insertBatchToQueue(Batch batch) {
         Batch batchObject = batch;
-        dbConnection.queryUpdate("INSERT INTO ProductionList VALUES(?,?,?,?,?,?)",
-                Integer.parseInt(batchObject.getStringBatchID()),
-                Float.parseFloat(batchObject.getStringType()),
-                Float.parseFloat(batchObject.getStringTotalAmount()),
-                Date.valueOf(batchObject.getStringDateofCompletion()),
-                Float.parseFloat(batchObject.getStringSpeedforProduction()),
+        dbConnection.queryUpdate("INSERT INTO ProductionList "
+                + "(batchid, productid, productamount, deadline, speed, status)"
+                + "VALUES(?,?,?,?,?,?)",
+                Integer.parseInt(batchObject.getBatchID().getValue()),
+                Float.parseFloat(batchObject.getType().getValue()),
+                Float.parseFloat(batchObject.getTotalAmount().getValue()),
+                Date.valueOf(batchObject.getDeadline().getValue()),
+                Float.parseFloat(batchObject.getSpeedforProduction().getValue()),
                 QUEUED_STATUS
         );
     }
+   public ArrayList<Batch> getQueuedBatches(){
+       ArrayList <Batch> queuedbatches = new ArrayList<>();
+       SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status=?", QUEUED_STATUS);
+       for(int i = 0; i<set.getRows();i++){
+           queuedbatches.add(
+                   new Batch(
+                           String.valueOf(set.get(i, "batchid")),
+                           String.valueOf(set.get(i, "productid")),
+                           String.valueOf(set.get(i, "deadline")),
+                           String.valueOf(set.get(i, "speed")),
+                           String.valueOf(set.get(i, "productamount"))
+           ));
+       }
+       return queuedbatches;
+   }
     
-    
-    //TODO: Implement method that gets the latest queued batch id. 
-    // if queue is empty, look at the last produced batch.
     @Override
-    public int getLatestBatchID() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Integer getLatestBatchID() {
+        SimpleSet batchSet = dbConnection.query("SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1");
+        if (batchSet.isEmpty()) {
+            return null;
+        } else {
+            return new Integer(String.valueOf(batchSet.get(0, "batchid")));
+        }
     }
-
-
 
 }
