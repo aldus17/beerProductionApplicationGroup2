@@ -58,20 +58,7 @@ public class BatchDataHandler implements IBatchDataHandler {
         if (batchSet.isEmpty()) {
             return null;
         } else {
-            Batch batch = null;
-            for (int i = 0; i < batchSet.getRows(); i++) {
-                // TODO Why set a full batch object, when only the batch ID is returned?
-                batch = new Batch(
-                        // TODO Check order of insert to object.
-                        String.valueOf(batchSet.get(i, "batchid")),
-                        String.valueOf(batchSet.get(i, "productid")),
-                        String.valueOf(batchSet.get(i, "productamount")),
-                        String.valueOf(batchSet.get(i, "deadline")),
-                        String.valueOf(batchSet.get(i, "speed"))
-                        // TODO Get DateofCreation.
-                );
-            }
-            return new Integer(batch.getBatchID().getValue());
+            return new Integer(String.valueOf(batchSet.get(0, "batchid")));
         }
     }
 
