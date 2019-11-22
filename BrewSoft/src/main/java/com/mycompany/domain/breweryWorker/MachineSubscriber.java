@@ -87,7 +87,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     // TODO pull ip and port from DB
     public MachineSubscriber() {
-        this("192.168.0.122", 4840);
+        this("127.0.0.1", 4840);
     }
 
     public MachineSubscriber(String hostname, int port) {
