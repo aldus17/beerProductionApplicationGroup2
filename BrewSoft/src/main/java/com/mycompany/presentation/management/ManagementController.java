@@ -259,6 +259,7 @@ public class ManagementController implements Initializable {
             if (Integer.parseInt(amounttoProduce) >= 0 && Integer.parseInt(amounttoProduce) < 65535) {
                 managementDomain.createBatch(new Batch("", typeofProduct, deadline, speed, amounttoProduce));
                 System.out.println("Batch created");
+
                 queuedBatcheslist.clear();                                  //Clears list of queued batches
                 queuedBatcheslist = managementDomain.getQueuedBatches();    //Repopulate the list, with the addition of a new batch. 
                 updateObservableOrderList(queuedBatchesDate);               //Updates the observableorderlist
@@ -315,7 +316,6 @@ public class ManagementController implements Initializable {
     }
 
     private void InitializeObervableOrderList() {
-
         tw_CreateBatchOrder_BatchesOnSpecificDay.setPlaceholder(new Label());
         tw_CreateBatchOrder_BatchesOnSpecificDay.setItems(queuedBatchesObservableList);
 
@@ -329,6 +329,9 @@ public class ManagementController implements Initializable {
     }
 
     private void updateObservableOrderList(LocalDate dateToCompare) {
+        if (!queuedBatchesObservableList.isEmpty()) {
+            queuedBatchesObservableList.clear();
+        }
         for (Batch b : queuedBatcheslist) {
             if (b.getDeadline().getValue().equals(dateToCompare.toString())) {
                 queuedBatchesObservableList.add(b);
