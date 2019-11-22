@@ -39,7 +39,7 @@ public class BrewWorker_UI_Controller implements Initializable {
     private ProgressBar pb_Maintenance;
 
     private final IMachineSubscribe subscriber = new MachineSubscriber();
-    private final IMachineControl controls = new MachineController("127.0.0.1", 4840, subscriber);
+    private final IMachineControl controls = new MachineController("192.168.0.122", 4840, subscriber);
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
