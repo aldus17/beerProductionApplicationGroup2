@@ -9,6 +9,7 @@ import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
+import com.mycompany.data.interfaces.IManagementData;
 import java.time.LocalDate;
 import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
@@ -25,6 +26,7 @@ public class ManagementDomain implements IManagementDomain {
     private final int BATCHID_MAX = 65535;
     
     private IBatchDataHandler batchDataHandler = new BatchDataHandler();
+    private IManagementData managementData;
 
     @Override
     public void CreateBatch(Batch batch) {
@@ -53,7 +55,7 @@ public class ManagementDomain implements IManagementDomain {
 
     @Override
     public List<BeerTypes> GetBeerTypes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return managementData.getBeerTypes();
     }
     
     private int createBatchID(int batchIDRetrieve){

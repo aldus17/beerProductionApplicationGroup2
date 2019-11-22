@@ -28,6 +28,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.control.CheckBox;
 import javafx.scene.paint.Color;
 import javafx.util.converter.LocalDateStringConverter;
 import javax.swing.JOptionPane;
@@ -125,6 +126,10 @@ public class ManagementController implements Initializable {
     private TextArea Texta_ShowOEE_Text;
     @FXML
     private AnchorPane ap_ShowOEE;
+    @FXML
+    private Label lbl_CreateBatchOrder_error;
+    @FXML
+    private CheckBox toggleSpeedBtn;
 
     // Class calls
     private IManagementDomain managementDomain;
@@ -135,8 +140,6 @@ public class ManagementController implements Initializable {
     private List<BeerTypes> beerTypes;
     private ObservableList<Batch> batcheObservableList;
     private ObservableList<BeerTypes> beerTypesObservableList;
-    @FXML
-    private Label lbl_CreateBatchOrder_error;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -157,6 +160,8 @@ public class ManagementController implements Initializable {
         ap_ProductionQueueLayout.toFront();
 
         managementDomain = new ManagementDomain();
+        
+        //textf_CreateBatchOrder_Speed.setText(beerTypes.get(0).getProductionSpeed());
     }
 
     @FXML
@@ -308,6 +313,20 @@ public class ManagementController implements Initializable {
         tc_CreatBatchOrder_Deadline.setCellValueFactory(callData -> callData.getValue().getDeadline());
         tc_CreatBatchOrder_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
         tc_CreatBatchOrder_ProductionTime.setCellValueFactory(callData -> callData.getValue().CalulateProductionTime());
+    }
+
+    @FXML
+    private void toggleSpeed(ActionEvent event) {
+        
+        if (toggleSpeedBtn.isSelected()) {
+            textf_CreateBatchOrder_Speed.setEditable(true);
+            textf_CreateBatchOrder_Speed.setDisable(false);
+        } else {
+            textf_CreateBatchOrder_Speed.setText(""); //test, use next line
+            //textf_CreateBatchOrder_Speed.setText(beerTypes.get(Integer.parseInt(tc_CreatBatchOrder_Type.getText())).getProductionSpeed());
+            textf_CreateBatchOrder_Speed.setEditable(false);
+            textf_CreateBatchOrder_Speed.setDisable(true);
+        }
     }
 
 }
