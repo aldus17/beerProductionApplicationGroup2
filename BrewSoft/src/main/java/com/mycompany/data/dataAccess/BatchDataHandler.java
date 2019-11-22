@@ -99,20 +99,7 @@ public class BatchDataHandler implements IBatchDataHandler {
             return machineState;
         }
     }
-
-    public static void main(String[] args) {
-        BatchDataHandler b = new BatchDataHandler();
-        MachineState ms = b.getMachineState("410");
-        ManagementDomain md = new ManagementDomain();
-        
-        for (Object o : ms.getStateObjList()) {
-            String s = o.toString();
-            System.out.println(s);
-        }
-        
-        System.out.println("Test " + md.getDifferenceTimeInState("12:31:22", "13:40:49"));
-        
-      
+    
     // private helper-method to convert simpleSet to arrayList
     private ArrayList<BatchReport> simpleSetToArrayList(SimpleSet set) {
         ArrayList<BatchReport> list = new ArrayList<>();
@@ -136,4 +123,17 @@ public class BatchDataHandler implements IBatchDataHandler {
         return list;
     }
 
+    public static void main(String[] args) {
+        BatchDataHandler b = new BatchDataHandler();
+        MachineState ms = b.getMachineState("410");
+        ManagementDomain md = new ManagementDomain();
+        
+        for (Object o : ms.getStateObjList()) {
+            String s = o.toString();
+            System.out.println(s);
+        }
+        
+        System.out.println("Test " + md.getDifferenceTimeInState("12:31:22", "13:40:49"));
+    
+    }
 }
