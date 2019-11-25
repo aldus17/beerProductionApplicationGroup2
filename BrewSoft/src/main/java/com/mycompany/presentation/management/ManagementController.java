@@ -133,7 +133,7 @@ public class ManagementController implements Initializable {
     private CheckBox toggleSpeedBtn;
 
     // Class calls
-    private IManagementDomain managementDomain;
+    private IManagementDomain managementDomain = new ManagementDomain();
     private IBatchReportGenerate ibrg; // TODO Get class ..
 
     // Variables
@@ -150,6 +150,7 @@ public class ManagementController implements Initializable {
 
         batcheObservableList = FXCollections.observableArrayList();
         queuedBatchesObservableList = FXCollections.observableArrayList();
+        beerTypesObservableList = FXCollections.observableArrayList();
         queuedBatcheslist = new ArrayList<>();
 
         InitializeObservableBatchList();
@@ -164,8 +165,6 @@ public class ManagementController implements Initializable {
         ap_ShowOEE.setVisible(false);
         ap_ProductionQueueLayout.setVisible(true);
         ap_ProductionQueueLayout.toFront();
-
-        managementDomain = new ManagementDomain();
 
         queuedBatchesDate = LocalDate.now();
         dp_CreateBatchOrder.setValue(queuedBatchesDate);
@@ -260,7 +259,7 @@ public class ManagementController implements Initializable {
         if (!amounttoProduce.isEmpty() && !typeofProduct.isEmpty() && !speed.isEmpty() && !deadline.isEmpty()) {
             lbl_CreateBatchOrder_error.setText("");
             if (Integer.parseInt(amounttoProduce) >= 0 && Integer.parseInt(amounttoProduce) < 65535) {
-                managementDomain.createBatch(new Batch("", typeofProduct, deadline, speed, amounttoProduce));
+                managementDomain.createBatch(new Batch("", typeofProduct, amounttoProduce, deadline, speed));
                 System.out.println("Batch created");
 
                 queuedBatcheslist.clear();                                  //Clears list of queued batches

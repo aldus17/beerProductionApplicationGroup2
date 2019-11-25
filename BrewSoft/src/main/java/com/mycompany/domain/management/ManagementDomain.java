@@ -41,7 +41,7 @@ public class ManagementDomain implements IManagementDomain {
     private final int BATCHID_MAX = 65535;
 
     private IBatchDataHandler batchDataHandler = new BatchDataHandler();
-    private IManagementData managementData; // = new ManagementData(); Missing the class that implements the interface
+    private IManagementData managementData = new BatchDataHandler(); // = new ManagementData(); Missing the class that implements the interface
 
     /**
      * Method that creates takes a batch with no batch ID and generates a new
@@ -57,9 +57,9 @@ public class ManagementDomain implements IManagementDomain {
         Batch batchWithID = new Batch(
                 createBatchID(batchDataHandler.getLatestBatchID()),
                 idLessBatch.getType().getValue(),
+                idLessBatch.getTotalAmount().getValue(),
                 idLessBatch.getDeadline().getValue(),
-                idLessBatch.getSpeedforProduction().getValue(),
-                idLessBatch.getTotalAmount().getValue());
+                idLessBatch.getSpeedforProduction().getValue());
         batchDataHandler.insertBatchToQueue(batchWithID);
     }
 

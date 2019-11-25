@@ -3,15 +3,16 @@ package com.mycompany.data.dataAccess;
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.crossCutting.objects.BatchReport;
+import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
-import com.mycompany.domain.management.ManagementDomain;
+import com.mycompany.data.interfaces.IManagementData;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BatchDataHandler implements IBatchDataHandler {
+public class BatchDataHandler implements IBatchDataHandler, IManagementData {
 
     private final String QUEUED_STATUS = "Queued";
     private DatabaseConnection dbConnection;
@@ -109,17 +110,15 @@ public class BatchDataHandler implements IBatchDataHandler {
         return list;
     }
 
-    public static void main(String[] args) {
-        BatchDataHandler b = new BatchDataHandler();
-        MachineState ms = b.getMachineState("410");
-        ManagementDomain md = new ManagementDomain();
+    @Override
+    public List<BeerTypes> getBeerTypes() {
+        List<BeerTypes> beerTypeList = new ArrayList<>();
+        SimpleSet beerTypes = dbConnection.query("SELECT * FROM producttype");
         
-        for (Object o : ms.getStateObjList()) {
-            String s = o.toString();
-            System.out.println(s);
+        for (int i = 0; i < beerTypes.getRows(); i++) {
+            beerTypeList.add(new BeerTypes("productid", "productname"));
         }
         
-        System.out.println("Test " + md.getDifferenceTimeInState("12:31:22", "13:40:49"));
-    
+        return beerTypeList;
     }
 }
