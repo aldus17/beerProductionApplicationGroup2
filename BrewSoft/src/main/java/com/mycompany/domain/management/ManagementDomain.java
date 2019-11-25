@@ -10,6 +10,7 @@ import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
+import com.mycompany.data.interfaces.IManagementData;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
 import java.time.LocalDate;
 import java.util.List;
@@ -40,6 +41,7 @@ public class ManagementDomain implements IManagementDomain {
     private final int BATCHID_MAX = 65535;
 
     private IBatchDataHandler batchDataHandler = new BatchDataHandler();
+    private IManagementData managementData; // = new ManagementData(); Missing the class that implements the interface
 
     /**
      * Method that creates takes a batch with no batch ID and generates a new
