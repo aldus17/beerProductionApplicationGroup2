@@ -166,8 +166,6 @@ public class ManagementController implements Initializable {
         ap_ProductionQueueLayout.toFront();
 
         managementDomain = new ManagementDomain();
-        
-        //textf_CreateBatchOrder_Speed.setText(beerTypes.get(0).getProductionSpeed());
 
         queuedBatchesDate = LocalDate.now();
         dp_CreateBatchOrder.setValue(queuedBatchesDate);
