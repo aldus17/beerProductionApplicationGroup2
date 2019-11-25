@@ -11,6 +11,6 @@ public interface IBatchDataHandler {
      public ArrayList<Batch> getQueuedBatches();
 
      public Integer getLatestBatchID();
-     public MachineState getMachineState(String prodListID);
+     public MachineState getMachineState(int prodListID);
     
 }

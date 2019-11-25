@@ -14,10 +14,6 @@ import com.mycompany.domain.breweryWorker.MachineSubscriber;
 import java.time.LocalDate;
 import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
-import java.util.ArrayList;
-import java.util.Random;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -76,7 +72,7 @@ public class ManagementDomain implements IManagementDomain {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Map<Integer, String> getTimeInStates(String prodListID) {
+    public Map<Integer, String> getTimeInStates(int prodListID) {
 
         MachineState ms = batchDataHandler.getMachineState(prodListID);
         Map<Integer, String> finalTimeInStatesList = new TreeMap<>();
@@ -87,24 +83,37 @@ public class ManagementDomain implements IManagementDomain {
 
         for (Object object : ms.getStateObjList()) {
             msl.add((MachineState) object);
+            
         }
         System.out.println(Arrays.toString(msl.toArray()));
         Collections.sort(msl, Comparator.comparing(MachineState::getTimeInState));
-        
+
         System.out.println(Arrays.toString(msl.toArray()));
         for (int i = 1; i < msl.size(); i++) {
             // tag første object, gemmer det object i variable, checke den variable mod det næste object, hvis det samme continue
             MachineState firstObj = msl.get(i - 1);
             MachineState secondObj = msl.get(i);
-
+            System.out.println("firstObj: " + firstObj.toString());
+//            System.out.println("secondObj: " + secondObj.toString());
             if (!firstObj.getMachinestateID().equals(secondObj.getMachinestateID())) {
+                String g = getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState());
+                System.out.println(g);
+                System.out.println(firstObj.getMachinestateID());
                 finalTimeInStatesList.put(Integer.valueOf(firstObj.getMachinestateID()), getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState()));
-            } else {
+            }
+            if (firstObj.getMachinestateID().equals(secondObj.getMachinestateID())) {
+                String getDiff = getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState());
+                System.out.println(firstObj.toString() + " " + secondObj.toString() + " " + getDiff);
+                if (finalTimeInStatesList.containsKey(Integer.parseInt(firstObj.getMachinestateID()))) {
+                    finalTimeInStatesList.replace(Integer.valueOf(firstObj.getMachinestateID()), getAdditionTimeInState(firstObj.getTimeInState(), getDiff));
+                }
 
             }
+
         }
         System.out.println(finalTimeInStatesList.toString());
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        return finalTimeInStatesList;
 
     }
 
@@ -177,9 +186,10 @@ public class ManagementDomain implements IManagementDomain {
         ManagementDomain md = new ManagementDomain();
 
         Map<Integer, String> testMap = new TreeMap<>();
-        testMap = md.getTimeInStates("410");
+        testMap = md.getTimeInStates(110);
 
-        System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
+        System.out.println(testMap.toString());
+
     }
 
 }

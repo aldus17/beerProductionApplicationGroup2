@@ -9,6 +9,7 @@ import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.domain.management.ManagementDomain;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class BatchDataHandler implements IBatchDataHandler {
@@ -35,21 +36,21 @@ public class BatchDataHandler implements IBatchDataHandler {
         );
     }
 
-   public ArrayList<Batch> getQueuedBatches(){
-       ArrayList <Batch> queuedbatches = new ArrayList<>();
-       SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status=?", QUEUED_STATUS);
-       for(int i = 0; i<set.getRows();i++){
-           queuedbatches.add(
-                   new Batch(
-                           String.valueOf(set.get(i, "batchid")),
-                           String.valueOf(set.get(i, "productid")),
-                           String.valueOf(set.get(i, "deadline")),
-                           String.valueOf(set.get(i, "speed")),
-                           String.valueOf(set.get(i, "productamount"))
-           ));
-       }
-       return queuedbatches;
-   }
+    public ArrayList<Batch> getQueuedBatches() {
+        ArrayList<Batch> queuedbatches = new ArrayList<>();
+        SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status=?", QUEUED_STATUS);
+        for (int i = 0; i < set.getRows(); i++) {
+            queuedbatches.add(
+                    new Batch(
+                            String.valueOf(set.get(i, "batchid")),
+                            String.valueOf(set.get(i, "productid")),
+                            String.valueOf(set.get(i, "deadline")),
+                            String.valueOf(set.get(i, "speed")),
+                            String.valueOf(set.get(i, "productamount"))
+                    ));
+        }
+        return queuedbatches;
+    }
 
     @Override
     public Integer getLatestBatchID() {
@@ -62,14 +63,22 @@ public class BatchDataHandler implements IBatchDataHandler {
     }
 
     @Override
-    public MachineState getMachineState(String prodListID) {
+    public MachineState getMachineState(int prodListID) {
 
+        /* TEST QUERY IN DATABASE
+        SELECT tis.machinestateid, tis.starttimeinstate, pl.productionlistid
+        FROM timeinstate AS tis, productionlist AS pl
+        WHERE pl.productionlistid = 110
+        ORDER BY starttimeinstate ASC;
+         */
         SimpleSet stateSet = dbConnection.query("SELECT tis.machinestateid, tis.starttimeinstate "
                 + "FROM timeinstate AS tis, productionlist AS pl "
-                + "WHERE pl.productionlistid = 410 "
-                + "ORDER BY starttimeinstate ASC;");
-        
+                + "WHERE pl.productionlistid =? "
+                + "AND tis.starttimeinstate IS NOT NULL "
+                + "ORDER BY starttimeinstate ASC; ", prodListID);
+
         if (stateSet.isEmpty()) {
+            System.out.println("stateSet is empty");
             return null;
         } else {
             MachineState machineState = new MachineState("", "");
@@ -85,7 +94,7 @@ public class BatchDataHandler implements IBatchDataHandler {
             return machineState;
         }
     }
-    
+
     // private helper-method to convert simpleSet to arrayList
     private ArrayList<BatchReport> simpleSetToArrayList(SimpleSet set) {
         ArrayList<BatchReport> list = new ArrayList<>();
@@ -111,15 +120,12 @@ public class BatchDataHandler implements IBatchDataHandler {
 
     public static void main(String[] args) {
         BatchDataHandler b = new BatchDataHandler();
-        MachineState ms = b.getMachineState("410");
+        MachineState ms = b.getMachineState(110);
         ManagementDomain md = new ManagementDomain();
-        
-        for (Object o : ms.getStateObjList()) {
-            String s = o.toString();
-            System.out.println(s);
-        }
-        
+
+        System.out.println(Arrays.toString(ms.getStateObjList().toArray()));
+
         System.out.println("Test " + md.getDifferenceTimeInState("12:31:22", "13:40:49"));
-    
+
     }
 }
