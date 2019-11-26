@@ -36,21 +36,21 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         );
     }
 
-   public ArrayList<Batch> getQueuedBatches(){
-       ArrayList <Batch> queuedbatches = new ArrayList<>();
-       SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status=?", QUEUED_STATUS);
-       for(int i = 0; i<set.getRows();i++){
-           queuedbatches.add(
-                   new Batch(
-                           String.valueOf(set.get(i, "batchid")),
-                           String.valueOf(set.get(i, "productid")),
-                           String.valueOf(set.get(i, "productamount")),
-                           String.valueOf(set.get(i, "deadline")),
-                           String.valueOf(set.get(i, "speed"))
-           ));
-       }
-       return queuedbatches;
-   }
+    public ArrayList<Batch> getQueuedBatches() {
+        ArrayList<Batch> queuedbatches = new ArrayList<>();
+        SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status=?", QUEUED_STATUS);
+        for (int i = 0; i < set.getRows(); i++) {
+            queuedbatches.add(
+                    new Batch(
+                            String.valueOf(set.get(i, "batchid")),
+                            String.valueOf(set.get(i, "productid")),
+                            String.valueOf(set.get(i, "productamount")),
+                            String.valueOf(set.get(i, "deadline")),
+                            String.valueOf(set.get(i, "speed"))
+                    ));
+        }
+        return queuedbatches;
+    }
 
     @Override
     public Integer getLatestBatchID() {
@@ -69,7 +69,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                 + "FROM timeinstate AS tis, productionlist AS pl "
                 + "WHERE pl.productionlistid = 410 "
                 + "ORDER BY starttimeinstate ASC;");
-        
+
         if (stateSet.isEmpty()) {
             return null;
         } else {
@@ -86,7 +86,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             return machineState;
         }
     }
-    
+
     // private helper-method to convert simpleSet to arrayList
     private ArrayList<BatchReport> simpleSetToArrayList(SimpleSet set) {
         ArrayList<BatchReport> list = new ArrayList<>();
@@ -114,11 +114,11 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     public List<BeerTypes> getBeerTypes() {
         List<BeerTypes> beerTypeList = new ArrayList<>();
         SimpleSet beerTypes = dbConnection.query("SELECT * FROM producttype");
-        
+
         for (int i = 0; i < beerTypes.getRows(); i++) {
             beerTypeList.add(new BeerTypes("productid", "productname"));
         }
-        
+
         return beerTypeList;
     }
 
@@ -132,5 +132,5 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                 Date.valueOf(batch.getDeadline().getValue()),
                 Float.parseFloat(batch.getSpeedforProduction().getValue()),
                 Integer.parseInt(batch.getProductionListID().getValue()));
-    }    
+    }
 }

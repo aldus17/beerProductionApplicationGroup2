@@ -27,8 +27,7 @@ public class Batch {
         this.deadline = new SimpleStringProperty(deadline);
         this.speedforProduction = new SimpleStringProperty(speedforProduction);
     }
-    
-    
+
     public Batch(String BatchID, String MachineID, String type,
             String dateofCreation, String deadline, String dateofCompletion,
             String speedforProduction, String totalAmount, String goodAmount,
@@ -54,8 +53,8 @@ public class Batch {
         this.speedforProduction = new SimpleStringProperty(speedforProduction);
         this.dateofCreation = new SimpleStringProperty(dateofCreation);
     }
-    
-     public Batch(String productionListID, String BatchID, String type, String totalAmount, String deadline, String speedforProduction) {
+    // this is used for editQueuedBatch
+    public Batch(String productionListID, String BatchID, String type, String totalAmount, String deadline, String speedforProduction) {
         this.productionListID = new SimpleStringProperty(productionListID);
         this.BatchID = new SimpleStringProperty(BatchID);
         this.type = new SimpleStringProperty(type);
@@ -103,7 +102,7 @@ public class Batch {
     public StringProperty getDefectAmount() {
         return defectAmount;
     }
-    
+
     public StringProperty getProductionListID() {
         return productionListID;
     }
@@ -114,6 +113,7 @@ public class Batch {
 
         return new SimpleStringProperty(String.valueOf(productionTime));
     }
+
     public String toString() {
         return this.BatchID.getValue() + this.MachineID.getValue() + this.dateofCompletion.getValue() + this.dateofCreation.getValue() + this.deadline.getValue() + this.defectAmount.getValue() + this.goodAmount.getValue() + this.productionListID.getValue() + this.speedforProduction.getValue() + this.totalAmount.getValue() + this.type.getValue();
     }
