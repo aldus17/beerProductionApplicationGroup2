@@ -12,5 +12,7 @@ public interface IBatchDataHandler {
 
      public Integer getLatestBatchID();
      public MachineState getMachineState(String prodListID);
+     
+     public void editQueuedBatch (Batch batch);
     
 }

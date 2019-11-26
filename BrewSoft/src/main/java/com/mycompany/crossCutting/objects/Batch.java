@@ -54,6 +54,15 @@ public class Batch {
         this.speedforProduction = new SimpleStringProperty(speedforProduction);
         this.dateofCreation = new SimpleStringProperty(dateofCreation);
     }
+    
+     public Batch(String productionListID, String BatchID, String type, String totalAmount, String deadline, String speedforProduction) {
+        this.productionListID = new SimpleStringProperty(productionListID);
+        this.BatchID = new SimpleStringProperty(BatchID);
+        this.type = new SimpleStringProperty(type);
+        this.totalAmount = new SimpleStringProperty(totalAmount);
+        this.deadline = new SimpleStringProperty(deadline);
+        this.speedforProduction = new SimpleStringProperty(speedforProduction);
+    }
 
     public StringProperty getBatchID() {
         return BatchID;
