@@ -42,11 +42,13 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
        for(int i = 0; i<set.getRows();i++){
            queuedbatches.add(
                    new Batch(
+                           String.valueOf(set.get(i, "productionlistid")),
                            String.valueOf(set.get(i, "batchid")),
                            String.valueOf(set.get(i, "productid")),
                            String.valueOf(set.get(i, "productamount")),
                            String.valueOf(set.get(i, "deadline")),
-                           String.valueOf(set.get(i, "speed"))
+                           String.valueOf(set.get(i, "speed")),
+                           String.valueOf(set.get(i, "dateofcreation"))
            ));
        }
        return queuedbatches;
