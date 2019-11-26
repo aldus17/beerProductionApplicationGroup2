@@ -71,7 +71,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                 + "FROM timeinstate AS tis, productionlist AS pl "
                 + "WHERE pl.productionlistid = 410 "
                 + "ORDER BY starttimeinstate ASC;");
-        
+
         if (stateSet.isEmpty()) {
             return null;
         } else {
@@ -88,7 +88,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             return machineState;
         }
     }
-    
+
     // private helper-method to convert simpleSet to arrayList
     private ArrayList<BatchReport> simpleSetToArrayList(SimpleSet set) {
         ArrayList<BatchReport> list = new ArrayList<>();
@@ -116,18 +116,23 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     public List<BeerTypes> getBeerTypes() {
         List<BeerTypes> beerTypeList = new ArrayList<>();
         SimpleSet beerTypes = dbConnection.query("SELECT * FROM producttype");
-        
+
         for (int i = 0; i < beerTypes.getRows(); i++) {
             beerTypeList.add(new BeerTypes("productid", "productname"));
         }
-        
+
         return beerTypeList;
     }
 
     @Override
     public void editQueuedBatch(Batch batch) {
-        dbConnection.queryUpdate("____", batch);
+        dbConnection.queryUpdate("UPDATE productionlist SET batchid = ?, productid = ?, "
+                + "productamount = ? ,deadline =?, speed =? WHERE productionlistid =?",
+                Integer.parseInt(batch.getBatchID().getValue()),
+                Integer.parseInt(batch.getType().getValue()),
+                Integer.parseInt(batch.getTotalAmount().getValue()),
+                Date.valueOf(batch.getDeadline().getValue()),
+                Float.parseFloat(batch.getSpeedforProduction().getValue()),
+                Integer.parseInt(batch.getProductionListID().getValue()));
     }
-
-    
 }
