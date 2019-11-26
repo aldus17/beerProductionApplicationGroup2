@@ -1,8 +1,8 @@
 package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
-import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.crossCutting.objects.BatchReport;
+import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
@@ -61,6 +61,8 @@ public class BatchDataHandler implements IBatchDataHandler {
             return new Integer(String.valueOf(batchSet.get(0, "batchid")));
         }
     }
+    
+    
 
     @Override
     public MachineState getMachineState(int prodListID) {
@@ -70,24 +72,38 @@ public class BatchDataHandler implements IBatchDataHandler {
         FROM timeinstate AS tis, productionlist AS pl
         WHERE pl.productionlistid = 110
         ORDER BY starttimeinstate ASC;
+        
+        SELECT *
+        FROM timeinstate AS tis
+        WHERE tis.productionlistid = 109
+        ORDER BY starttimeinstate ASC;
          */
-        SimpleSet stateSet = dbConnection.query("SELECT tis.machinestateid, tis.starttimeinstate "
-                + "FROM timeinstate AS tis, productionlist AS pl "
-                + "WHERE pl.productionlistid =? "
-                + "AND tis.starttimeinstate IS NOT NULL "
+        SimpleSet stateSet1 = dbConnection.query("SELECT * "
+                + "FROM timeinstate "
+                + "WHERE productionlistid =? "
+                + "AND starttimeinstate IS NOT NULL "
                 + "ORDER BY starttimeinstate ASC; ", prodListID);
-
-        if (stateSet.isEmpty()) {
+        
+        /*
+        SELECT fbi.dateofcompletion, tis.machinestateid
+        FROM finalbatchinformation AS fbi, timeinstate AS tis
+        WHERE tis.productionlistid = (
+            SELECT machinestateid
+            FROM timeinstate AS tis2, finalbatchinformation AS fbi2
+            WHERE tis2.productionlistid = fbi2.productionlistid)
+        AND tis.brewerymachineid = fbi.brewerymachineid
+        */
+        if (stateSet1.isEmpty()) {
             System.out.println("stateSet is empty");
             return null;
         } else {
             MachineState machineState = new MachineState("", "");
             List<Object> list = new ArrayList<>();
-            for (int i = 0; i < stateSet.getRows(); i++) {
+            for (int i = 0; i < stateSet1.getRows(); i++) {
                 list.add(
                         machineState = new MachineState(
-                                String.valueOf(stateSet.get(i, "machinestateid")),
-                                String.valueOf(stateSet.get(i, "starttimeinstate"))
+                                String.valueOf(stateSet1.get(i, "machinestateid")),
+                                String.valueOf(stateSet1.get(i, "starttimeinstate"))
                         ));
             }
             machineState.setStateObjList(list);
@@ -120,7 +136,7 @@ public class BatchDataHandler implements IBatchDataHandler {
 
     public static void main(String[] args) {
         BatchDataHandler b = new BatchDataHandler();
-        MachineState ms = b.getMachineState(110);
+        MachineState ms = b.getMachineState(410);
         ManagementDomain md = new ManagementDomain();
 
         System.out.println(Arrays.toString(ms.getStateObjList().toArray()));

@@ -11,16 +11,16 @@ import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
-import java.time.LocalDate;
-import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -83,35 +83,33 @@ public class ManagementDomain implements IManagementDomain {
 
         for (Object object : ms.getStateObjList()) {
             msl.add((MachineState) object);
-            
+
         }
         System.out.println(Arrays.toString(msl.toArray()));
         Collections.sort(msl, Comparator.comparing(MachineState::getTimeInState));
 
+        MachineState firstObj = msl.get(0);
+
         System.out.println(Arrays.toString(msl.toArray()));
         for (int i = 1; i < msl.size(); i++) {
             // tag første object, gemmer det object i variable, checke den variable mod det næste object, hvis det samme continue
-            MachineState firstObj = msl.get(i - 1);
+
             MachineState secondObj = msl.get(i);
-            System.out.println("firstObj: " + firstObj.toString());
+//            System.out.println("firstObj: " + firstObj.toString());
 //            System.out.println("secondObj: " + secondObj.toString());
+            String diff = getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState());
+            if (finalTimeInStatesList.containsKey(Integer.valueOf(firstObj.getMachinestateID()))) {
+                String t = finalTimeInStatesList.get(Integer.valueOf(firstObj.getMachinestateID()));
+                diff = getAdditionTimeInState(diff, t);
+
+            }
+            finalTimeInStatesList.put(Integer.valueOf(firstObj.getMachinestateID()), diff);
+//            System.out.println(getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState()));
             if (!firstObj.getMachinestateID().equals(secondObj.getMachinestateID())) {
-                String g = getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState());
-                System.out.println(g);
-                System.out.println(firstObj.getMachinestateID());
-                finalTimeInStatesList.put(Integer.valueOf(firstObj.getMachinestateID()), getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState()));
-            }
-            if (firstObj.getMachinestateID().equals(secondObj.getMachinestateID())) {
-                String getDiff = getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState());
-                System.out.println(firstObj.toString() + " " + secondObj.toString() + " " + getDiff);
-                if (finalTimeInStatesList.containsKey(Integer.parseInt(firstObj.getMachinestateID()))) {
-                    finalTimeInStatesList.replace(Integer.valueOf(firstObj.getMachinestateID()), getAdditionTimeInState(firstObj.getTimeInState(), getDiff));
-                }
 
+                firstObj = msl.get(i);
             }
-
         }
-        System.out.println(finalTimeInStatesList.toString());
 
         return finalTimeInStatesList;
 
@@ -127,9 +125,6 @@ public class ManagementDomain implements IManagementDomain {
             Date date2 = format.parse(stateValue2);
             difference = date2.getTime() - date1.getTime();
 
-//            Date differenceInTime = new Date(difference);
-//            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-//            formatted = formatter.format(differenceInTime);
         } catch (ParseException ex) {
             System.out.println("The beginning of the specified string cannot be parsed");
             Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
@@ -137,32 +132,41 @@ public class ManagementDomain implements IManagementDomain {
         long seconds = (difference / 1000) % 60;
         long minutes = (difference / (1000 * 60)) % 60;
         long hours = difference / (1000 * 60 * 60);
-//        long s = difference % 60;
-//        long m = (difference / 60) % 60;
-//        long h = (difference / (60 * 60)) % 24;
-//        return String.format("%d:%02d:%02d", h, m, s);
+
         return String.format("%02d:%02d:%02d", hours, minutes, seconds); //02d e.g. 01 or 00 or 22
 //        return formatted;
     }
 
     public String getAdditionTimeInState(String stateValue1, String stateValue2) {
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
-        long difference = 0;
-        try {
 
-            Date date1 = format.parse(stateValue1);
-            Date date2 = format.parse(stateValue2);
-            difference = date2.getTime() + date1.getTime();
+        String[] s1 = stateValue1.split(":");
+        String[] s2 = stateValue2.split(":");
 
-        } catch (ParseException ex) {
-            System.out.println("The beginning of the specified string cannot be parsed");
-            Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
+        int hours = Integer.valueOf(s1[0]) + Integer.valueOf(s2[0]);
+        int minutes = Integer.valueOf(s1[1]) + Integer.valueOf(s2[1]);
+
+        int seconds = Integer.valueOf(s1[2]) + Integer.valueOf(s2[2]);
+
+        if (seconds > 60) {
+            int remainer = seconds % 60;
+            minutes += (seconds - remainer) / 60;
+            seconds = remainer;
         }
+        if (minutes > 60) {
+            int remainer = minutes & 60;
+            hours += (minutes - remainer) / 60;
+            minutes = remainer;
+        }
+        String daysIncluded = "";
+        int days = 0;
 
-        long seconds = (difference / 1000) % 60;
-        long minutes = (difference / (1000 * 60)) % 60;
-        long hours = difference / (1000 * 60 * 60);
-
+        if (hours > 24) {
+            int remainer = hours % 24;
+            days += (hours - remainer) / 24;
+            hours = remainer;
+            daysIncluded = String.format("%02d:%02d:%02d:%02d", days, hours, minutes, seconds);
+            return daysIncluded;
+        }
         return String.format("%02d:%02d:%02d", hours, minutes, seconds); //02d e.g. 01 or 00 or 22
     }
 
@@ -186,9 +190,11 @@ public class ManagementDomain implements IManagementDomain {
         ManagementDomain md = new ManagementDomain();
 
         Map<Integer, String> testMap = new TreeMap<>();
-        testMap = md.getTimeInStates(110);
+        testMap = md.getTimeInStates(410);
 
         System.out.println(testMap.toString());
+        System.out.println("Test Addition: " + md.getAdditionTimeInState("13:10:10", "12:10:10"));
+        System.out.println("Test Get difference " + md.getDifferenceTimeInState("12:03:05", "13:05:10"));
 
     }
 
