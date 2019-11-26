@@ -124,8 +124,13 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
 
     @Override
     public void editQueuedBatch(Batch batch) {
-        dbConnection.queryUpdate("____", batch);
-    }
-
-    
+        dbConnection.queryUpdate("UPDATE productionlist SET batchid = ?, productid = ?, "
+                + "productamount = ? ,deadline =?, speed =? WHERE productionlistid =?",
+                Integer.parseInt(batch.getBatchID().getValue()),
+                Integer.parseInt(batch.getType().getValue()),
+                Integer.parseInt(batch.getTotalAmount().getValue()),
+                Date.valueOf(batch.getDeadline().getValue()),
+                Float.parseFloat(batch.getSpeedforProduction().getValue()),
+                Integer.parseInt(batch.getProductionListID().getValue()));
+    }    
 }
