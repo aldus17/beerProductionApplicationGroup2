@@ -24,7 +24,8 @@ public class MachineController implements IMachineControl {
     private IMachineSubscribe subscriber;
 
     public MachineController() {
-        this("192.168.0.122", 4840, null);
+        this("127.0.0.1", 4840, null);
+        //this("192.168.0.122", 4840, null);
     }
 
     public MachineController(String hostname, int port) {
