@@ -1,6 +1,7 @@
 package com.mycompany.domain.breweryWorker;
 
 import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.TemporaryProductionBatch;
 import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
@@ -443,4 +444,9 @@ public class MachineSubscriber implements IMachineSubscribe {
         }
         return "Unknown State code: " + state;
     }
+    public void stoppedproduction(int productionlistid){
+        TemporaryProductionBatch tpb = new TemporaryProductionBatch(productionlistid, Float.parseFloat(acceptableCountValue), Float.parseFloat(defectCountValue), Float.parseFloat(totalProductValue));
+        msdh.insertStoppedProductionToTempTable(tpb);
+    }
+    
 }

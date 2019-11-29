@@ -1,6 +1,7 @@
 package com.mycompany.data.interfaces;
 
 import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.TemporaryProductionBatch;
 
 public interface IMachineSubscriberDataHandler {
 
@@ -13,10 +14,11 @@ public interface IMachineSubscriberDataHandler {
     public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID,
             String deadline, String dateOfCreation, int productID, float totalCount, int defectCount, int acceptedCount);
 
+    public void insertStoppedProductionToTempTable(TemporaryProductionBatch tempBatch);
+
     public void changeProductionListStatus(int productionListID, String newStatus);
 
     public Batch getNextBatch();
-    
     
 
 }
