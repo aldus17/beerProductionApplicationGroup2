@@ -29,7 +29,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.CheckBox;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.util.converter.LocalDateStringConverter;
 import javax.swing.JOptionPane;
@@ -196,6 +199,16 @@ public class ManagementController implements Initializable {
                 queuedBatcheslist = managementDomain.getQueuedBatches();
                 updateObservableOrderList(queuedBatchesDate);
             }
+            tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+                @Override
+                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                    if(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem() != null){
+                        textf_CreateBatchOrder_TypeofProduct.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getType().getValue());
+                        textf_CreateBatchOrder_AmountToProduces.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getTotalAmount().getValue());
+                        textf_CreateBatchOrder_Speed.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getSpeedforProduction().getValue());
+                    }
+                }
+            });
             beerTypes = managementDomain.getBeerTypes();
 
             beerTypes.forEach((beer) -> {
@@ -258,7 +271,7 @@ public class ManagementController implements Initializable {
 
         if (!amounttoProduce.isEmpty() && !typeofProduct.isEmpty() && !speed.isEmpty() && !deadline.isEmpty()) {
             lbl_CreateBatchOrder_error.setText("");
-            if (Integer.parseInt(amounttoProduce) >= 0 && Integer.parseInt(amounttoProduce) < 65535) {
+            if (Float.valueOf(amounttoProduce) >= 0.0f && Float.valueOf(amounttoProduce) < 65535.0f) {
                 managementDomain.createBatch(new Batch("", typeofProduct, amounttoProduce, deadline, speed));
                 System.out.println("Batch created");
 
@@ -332,7 +345,7 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void toggleSpeed(ActionEvent event) {
-        
+
         if (toggleSpeedBtn.isSelected()) {
             textf_CreateBatchOrder_Speed.setEditable(true);
             textf_CreateBatchOrder_Speed.setDisable(false);
@@ -343,7 +356,7 @@ public class ManagementController implements Initializable {
             textf_CreateBatchOrder_Speed.setDisable(true);
         }
     }
-        
+
     private void updateObservableOrderList(LocalDate dateToCompare) {
         if (!queuedBatchesObservableList.isEmpty()) {
             queuedBatchesObservableList.clear();
