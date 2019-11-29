@@ -2,6 +2,7 @@ package com.mycompany.presentation.management;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
+import com.mycompany.crossCutting.objects.SearchData;
 import com.mycompany.domain.management.ManagementDomain;
 import com.mycompany.domain.management.interfaces.IBatchReportGenerate;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
@@ -225,12 +226,13 @@ public class ManagementController implements Initializable {
         batcheObservableList.clear();
 
         if (event.getSource() == btn_SearchCompletedBatches) {
-            batches = managementDomain.batchObjects("CompletedBatches", text_SearchCompletedBarches.getText());
+            SearchData sd = new SearchData(text_SearchCompletedBarches.getText(), 0.0f);
+            batches = managementDomain.batchObjects("CompletedBatches", sd);
             tw_SearchTableCompletedBatches.refresh();
         }
 
         if (event.getSource() == btn_SearchProductionQueue) {
-            batches = managementDomain.batchObjects("BatchesinQueue", text_SearchProductionQueue.getText());
+            //batches = managementDomain.batchObjects("BatchesinQueue", text_SearchProductionQueue.getText());
             tw_SearchTableProductionQueue.refresh();
         }
 

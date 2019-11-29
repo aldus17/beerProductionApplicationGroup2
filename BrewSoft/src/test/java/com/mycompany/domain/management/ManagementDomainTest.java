@@ -20,24 +20,24 @@ import org.junit.Test;
  * @author PCATG
  */
 public class ManagementDomainTest {
-    
+
     private IBatchDataHandler batchDataHandler = new BatchDataHandler();
-    
+
     public ManagementDomainTest() {
     }
-    
+
     @BeforeClass
     public static void setUpClass() {
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
@@ -99,7 +99,7 @@ public class ManagementDomainTest {
 //        // TODO review the generated test code and remove the default call to fail.
 //        fail("The test case is a prototype.");
 //    }
-//    
+//
     @Test
     public void getDifferenceTimeInState() {
         System.out.println("getDifferenceTimeInState");
@@ -108,10 +108,10 @@ public class ManagementDomainTest {
         String value2 = "13:40:49";
         String expectedValue = "01:09:27";
         String actualValue = instance.getDifferenceTimeInState(value1,value2);
-        
+
         System.out.println("Expected: " + expectedValue + "\nActualValue: " + actualValue);
         assertEquals(expectedValue, actualValue);
-        
+
     }
 
     /**
@@ -127,14 +127,14 @@ public class ManagementDomainTest {
 //        TreeMap<Integer, String> timeDifferenceMap = new TreeMap<>();
 //        System.out.println(instance.getDifferenceTimeInState("12:31:22", "13:40:49"));
 //
-//        
+//
 //        TreeMap<Integer, String> exp = new TreeMap<>();
-//        
+//
 //        assertEquals(exp, timeDifferenceMap);
-//        
-    
-  
-        
-        
-    
+//
+
+
+
+
+
 }

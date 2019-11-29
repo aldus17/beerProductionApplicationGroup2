@@ -107,6 +107,10 @@ public class Batch {
         return productionListID;
     }
 
+    public StringProperty getProductionListID() {
+        return productionListID;
+    }
+
     public StringProperty CalulateProductionTime() {
 
         int productionTime = (int) (Double.parseDouble(totalAmount.getValue()) / Double.parseDouble(speedforProduction.getValue()));

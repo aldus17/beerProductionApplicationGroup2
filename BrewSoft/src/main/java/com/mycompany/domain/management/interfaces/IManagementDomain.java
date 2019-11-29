@@ -2,6 +2,7 @@ package com.mycompany.domain.management.interfaces;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
+import com.mycompany.crossCutting.objects.SearchData;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,5 +15,5 @@ public interface IManagementDomain {
     public List<Batch> batchObjects (String searchKey, String searchValue);
     public List<BeerTypes> getBeerTypes();
     public String calculateOEE (LocalDate dateofcompletion, int plannedproductiontime);
-    
+
 }

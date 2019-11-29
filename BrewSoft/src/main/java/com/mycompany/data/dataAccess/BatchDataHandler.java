@@ -62,7 +62,17 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         if (batchSet.isEmpty()) {
             return null;
         } else {
-            return new Integer(String.valueOf(batchSet.get(0, "batchid")));
+            Batch batch = null;
+            for (int i = 0; i < batchSet.getRows(); i++) {
+                batch = new Batch(
+                        String.valueOf(batchSet.get(i, "batchid")),
+                        String.valueOf(batchSet.get(i, "productid")),
+                        String.valueOf(batchSet.get(i, "productamount")),
+                        String.valueOf(batchSet.get(i, "deadline")),
+                        String.valueOf(batchSet.get(i, "speed"))
+                );
+            }
+            return new Integer(batch.getBatchID().getValue());
         }
     }
 

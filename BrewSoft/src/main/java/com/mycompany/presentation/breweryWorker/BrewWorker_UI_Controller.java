@@ -14,6 +14,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import org.eclipse.milo.opcua.stack.core.types.builtin.DataValue;
 
 public class BrewWorker_UI_Controller implements Initializable {
 
@@ -110,5 +113,9 @@ public class BrewWorker_UI_Controller implements Initializable {
             controls.abortProduction();
         }
 
+//        subscriber.completedBatch();
+        subscriber.sendProductionData();
+        subscriber.sendStopDuingProduction();
+        subscriber.sendTimeInState();
     }
 }

@@ -5,6 +5,7 @@ import com.mycompany.crossCutting.objects.TemporaryProductionBatch;
 import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.time.LocalTime;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaMonitoredItem;
 import org.eclipse.milo.opcua.sdk.client.api.subscriptions.UaSubscription;
 import org.eclipse.milo.opcua.stack.core.AttributeId;
@@ -448,5 +450,5 @@ public class MachineSubscriber implements IMachineSubscribe {
         TemporaryProductionBatch tpb = new TemporaryProductionBatch(productionlistid, Float.parseFloat(acceptableCountValue), Float.parseFloat(defectCountValue), Float.parseFloat(totalProductValue));
         msdh.insertStoppedProductionToTempTable(tpb);
     }
-    
+
 }

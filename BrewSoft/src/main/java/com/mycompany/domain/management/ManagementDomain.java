@@ -4,20 +4,19 @@ import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.crossCutting.objects.OeeObject;
+import com.mycompany.crossCutting.objects.SearchData;
 import com.mycompany.data.dataAccess.BatchDataHandler;
+import com.mycompany.data.dataAccess.SearchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
-import com.mycompany.data.interfaces.IManagementData;
+import com.mycompany.data.interfaces.ISearchDataHandler;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
+import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -28,8 +27,13 @@ public class ManagementDomain implements IManagementDomain {
     private final int BATCHID_MIN = 0;
     private final int BATCHID_MAX = 65535;
 
-    private IBatchDataHandler batchDataHandler = new BatchDataHandler();
-    private IManagementData managementData = new BatchDataHandler(); // = new ManagementData(); Missing the class that implements the interface
+    private IBatchDataHandler batchDataHandler;
+    private ISearchDataHandler searchDataHandler;
+
+    public ManagementDomain() {
+        this.batchDataHandler = new BatchDataHandler();
+        this.searchDataHandler = new SearchDataHandler();
+    }
 
     /**
      * Method that creates takes a batch with no batch ID and generates a new
@@ -45,9 +49,9 @@ public class ManagementDomain implements IManagementDomain {
         Batch batchWithID = new Batch(
                 createBatchID(batchDataHandler.getLatestBatchID()),
                 idLessBatch.getType().getValue(),
-                idLessBatch.getTotalAmount().getValue(),
                 idLessBatch.getDeadline().getValue(),
-                idLessBatch.getSpeedforProduction().getValue());
+                idLessBatch.getSpeedforProduction().getValue(),
+                idLessBatch.getTotalAmount().getValue());
         batchDataHandler.insertBatchToQueue(batchWithID);
     }
 
@@ -56,13 +60,14 @@ public class ManagementDomain implements IManagementDomain {
     }
 
     @Override
-    public List<Batch> batchObjects(String searchKey, String searchValue) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Batch> batchObjects(String searchKey, SearchData searchDataObj) {
+
+        return searchDataHandler.getBatchList(searchDataObj);
     }
 
     @Override
     public List<BeerTypes> getBeerTypes() {
-        return managementData.getBeerTypes();
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     public Map<Integer, String> getTimeInStates(String prodListID) {
@@ -121,7 +126,7 @@ public class ManagementDomain implements IManagementDomain {
 //        long m = (difference / 60) % 60;
 //        long h = (difference / (60 * 60)) % 24;
 //        return String.format("%d:%02d:%02d", h, m, s);
-        return String.format("%02d:%02d:%02d", hours, minutes, seconds); //02d e.g. 01 or 00 or 22
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 //        return formatted;
     }
 
@@ -170,7 +175,7 @@ public class ManagementDomain implements IManagementDomain {
 
         }
 
-        float calculatedOEE = (OEE / plannedproductiontime)/100;
+        float calculatedOEE = (OEE / plannedproductiontime) / 100;
         return String.format("%.2f", calculatedOEE);
     }
 
@@ -179,12 +184,4 @@ public class ManagementDomain implements IManagementDomain {
         return batchDataHandler.getQueuedBatches();
     }
 
-    public static void main(String[] args) {
-        ManagementDomain md = new ManagementDomain();
-
-        Map<Integer, String> testMap = new TreeMap<>();
-        testMap = md.getTimeInStates("410");
-
-        System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
-    }
 }
