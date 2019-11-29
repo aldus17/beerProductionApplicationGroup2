@@ -134,6 +134,18 @@ public class ManagementController implements Initializable {
     private Label lbl_CreateBatchOrder_error;
     @FXML
     private CheckBox toggleSpeedBtn;
+    @FXML
+    private Button btn_Edit;
+    @FXML
+    private AnchorPane ap_editBatch;
+    @FXML
+    private DatePicker dp_EditBatch;
+    @FXML
+    private TextField tf_SpeedEditBatch;
+    @FXML
+    private TextField tf_AmountToProduceEditBatch;
+    @FXML
+    private TextField tf_TypeOfProductEditBatch;
 
     // Class calls
     private IManagementDomain managementDomain = new ManagementDomain();
@@ -166,6 +178,7 @@ public class ManagementController implements Initializable {
         ap_CompletedBatchesLayout.setVisible(false);
         ap_CreateBatchOrder.setVisible(false);
         ap_ShowOEE.setVisible(false);
+        ap_editBatch.setVisible(false);
         ap_ProductionQueueLayout.setVisible(true);
         ap_ProductionQueueLayout.toFront();
 
@@ -181,6 +194,7 @@ public class ManagementController implements Initializable {
             ap_CompletedBatchesLayout.setVisible(false);
             ap_CreateBatchOrder.setVisible(false);
             ap_ShowOEE.setVisible(false);
+            ap_editBatch.setVisible(false);
         }
         if (event.getSource() == mi_CompletedBatches) {
             ap_CompletedBatchesLayout.setVisible(true);
@@ -188,6 +202,7 @@ public class ManagementController implements Initializable {
             ap_ProductionQueueLayout.setVisible(false);
             ap_CreateBatchOrder.setVisible(false);
             ap_ShowOEE.setVisible(false);
+            ap_editBatch.setVisible(false);
         }
         if (event.getSource() == mi_CreateBatchOrder) {
             ap_CreateBatchOrder.setVisible(true);
@@ -195,6 +210,7 @@ public class ManagementController implements Initializable {
             ap_ProductionQueueLayout.setVisible(false);
             ap_CompletedBatchesLayout.setVisible(false);
             ap_ShowOEE.setVisible(false);
+            ap_editBatch.setVisible(false);
             if (queuedBatcheslist.isEmpty()) {
                 queuedBatcheslist = managementDomain.getQueuedBatches();
                 updateObservableOrderList(queuedBatchesDate);
@@ -202,7 +218,7 @@ public class ManagementController implements Initializable {
             tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
                 @Override
                 public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                    if(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem() != null){
+                    if (tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem() != null) {
                         textf_CreateBatchOrder_TypeofProduct.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getType().getValue());
                         textf_CreateBatchOrder_AmountToProduces.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getTotalAmount().getValue());
                         textf_CreateBatchOrder_Speed.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getSpeedforProduction().getValue());
@@ -217,6 +233,7 @@ public class ManagementController implements Initializable {
             lv_CreateBatchOrder_TypeofBeer.refresh();
         }
         if (event.getSource() == mi_ShowOEE) {
+            ap_editBatch.setVisible(false);
             ap_ProductionQueueLayout.setVisible(false);
             ap_CompletedBatchesLayout.setVisible(false);
             ap_CreateBatchOrder.setVisible(false);
@@ -367,6 +384,24 @@ public class ManagementController implements Initializable {
             }
         }
         InitializeObervableOrderList();
+    }
+
+    @FXML
+    private void onEditSelectedBatch(ActionEvent event) {
+        ap_CompletedBatchesLayout.setVisible(false);
+        ap_CreateBatchOrder.setVisible(false);
+        ap_ProductionQueueLayout.setVisible(false);
+        ap_ShowOEE.setVisible(false);
+        ap_editBatch.setVisible(true);
+    }
+
+    @FXML
+    private void onCompleteEditActionHandler(ActionEvent event) {
+        ap_CompletedBatchesLayout.setVisible(false);
+        ap_CreateBatchOrder.setVisible(false);
+        ap_ProductionQueueLayout.setVisible(true);
+        ap_ShowOEE.setVisible(false);
+        ap_editBatch.setVisible(false);
     }
 
 }
