@@ -98,7 +98,7 @@
                                  </font>
                               </Label>
                               <Button fx:id="btn_Edit" mnemonicParsing="false" onAction="#onEditSelectedBatch" prefHeight="31.0" prefWidth="89.0" text="Edit " GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <RadioButton fx:id="rb_QueuedBatchID" mnemonicParsing="false" onAction="#onQueuedRbBatchIDActionhandler" text="Batch ID" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                              <RadioButton fx:id="rb_QueuedBatchID" mnemonicParsing="false" onAction="#onQueued_RbBatchIDActionhandler" text="Batch ID" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets left="10.0" />
                                  </GridPane.margin>
@@ -106,7 +106,7 @@
                                     <ToggleGroup fx:id="tg_queuedbatches" />
                                  </toggleGroup>
                               </RadioButton>
-                              <RadioButton fx:id="rb_QueuedDeadline" mnemonicParsing="false" onAction="#onQueuedRbDeadlineActionhandler" text="Deadline" toggleGroup="$tg_queuedbatches" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                              <RadioButton fx:id="rb_QueuedDeadline" mnemonicParsing="false" onAction="#onQueued_RbDeadlineActionhandler" text="Deadline" toggleGroup="$tg_queuedbatches" GridPane.columnIndex="3" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets left="110.0" />
                                  </GridPane.margin>

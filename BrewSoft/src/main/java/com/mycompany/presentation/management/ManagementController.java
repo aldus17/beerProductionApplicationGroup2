@@ -153,10 +153,10 @@ public class ManagementController implements Initializable {
     private List<Batch> batches;
     private List<BeerTypes> beerTypes;
     private ObservableList<Batch> queuedBatcheObservableList;
-    private ObservableList<Batch> orderListObservableList;
+    private ObservableList<Batch> productionListObservableList;
     private ObservableList<BeerTypes> beerTypesObservableList;
     private ArrayList<Batch> queuedBathchesList;
-    private LocalDate orderListDate;
+    private LocalDate productionListDate;
     private Batch selectedQueuedBatch;
     @FXML
     private ToggleGroup tg_queuedbatches;
@@ -170,21 +170,21 @@ public class ManagementController implements Initializable {
         managementDomain = new ManagementDomain();
 
         queuedBatcheObservableList = FXCollections.observableArrayList();
-        orderListObservableList = FXCollections.observableArrayList();
+        productionListObservableList = FXCollections.observableArrayList();
         beerTypesObservableList = FXCollections.observableArrayList();
         queuedBathchesList = new ArrayList<>();
 
         InitializeObservableBatchList();
         InitializeObservableQueueList();
-        InitializeObervableOrderList();
+        InitializeObervableProductionList();
 
         lv_CreateBatchOrder_TypeofBeer.setPlaceholder(new Label());
         lv_CreateBatchOrder_TypeofBeer.setItems(beerTypesObservableList);
 
         setVisibleAnchorPane(ap_ProductionQueueLayout);
 
-        orderListDate = LocalDate.now();
-        dp_CreateBatchOrder.setValue(orderListDate);
+        productionListDate = LocalDate.now();
+        dp_CreateBatchOrder.setValue(productionListDate);
         btn_Edit.setDisable(true);
 
     }
@@ -194,10 +194,11 @@ public class ManagementController implements Initializable {
         if (event.getSource() == mi_ProductionQueue) {
             setVisibleAnchorPane(ap_ProductionQueueLayout);
             updateQueuedArrayList();
-            //updateObservableQueueudList(text_SearchProductionQueue.getText());
             updateObservableQueueudList();
             filterQueuedList();
             btn_Edit.setDisable(true);
+            
+            //Sets values in the text fields on the edit page in the system
             tw_SearchTableProductionQueue.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
                 @Override
                 public void changed(ObservableValue observable, Object oldValue, Object newValue) {
@@ -211,7 +212,6 @@ public class ManagementController implements Initializable {
                     }
                 }
             });
-
         }
         if (event.getSource() == mi_CompletedBatches) {
             setVisibleAnchorPane(ap_CompletedBatchesLayout);
@@ -219,7 +219,8 @@ public class ManagementController implements Initializable {
         if (event.getSource() == mi_CreateBatchOrder) {
             setVisibleAnchorPane(ap_CreateBatchOrder);
             updateQueuedArrayList();
-            updateObservableOrderList(orderListDate);
+            updateObservableProductionList(productionListDate);
+            //Sets values in the textfields on the create batch page in the system.
             tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
                 @Override
                 public void changed(ObservableValue observable, Object oldValue, Object newValue) {
@@ -246,16 +247,13 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void OnSearchAction(ActionEvent event) {
-
         queuedBatcheObservableList.clear();
-
         if (event.getSource() == btn_SearchCompletedBatches) {
             batches = managementDomain.batchObjects("CompletedBatches", text_SearchCompletedBarches.getText());
             tw_SearchTableCompletedBatches.refresh();
         }
 
         if (event.getSource() == btn_SearchProductionQueue) {
-            //  updateObservableQueueudList(text_SearchProductionQueue.getText());
             updateObservableQueueudList();
 //            batches = managementDomain.batchObjects("BatchesinQueue", text_SearchProductionQueue.getText());
 //            tw_SearchTableProductionQueue.refresh();
@@ -274,10 +272,10 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void GetOrdersForSpecificDay(ActionEvent event) {
-        orderListObservableList.clear();
-        orderListDate = dp_CreateBatchOrder.getValue();
+        productionListObservableList.clear();
+        productionListDate = dp_CreateBatchOrder.getValue();
         updateQueuedArrayList();
-        updateObservableOrderList(orderListDate);
+        updateObservableProductionList(productionListDate);
     }
 
     @FXML
@@ -293,7 +291,7 @@ public class ManagementController implements Initializable {
                 managementDomain.createBatch(new Batch("", typeofProduct, amounttoProduce, deadline, speed));
                 System.out.println("Batch created");
                 updateQueuedArrayList();
-                updateObservableOrderList(orderListDate);
+                updateObservableProductionList(productionListDate);
 
             } else {
                 System.out.println("Invalid amount");
@@ -346,9 +344,9 @@ public class ManagementController implements Initializable {
         tc_ProductionQueue_Amount.setCellValueFactory(callData -> callData.getValue().getTotalAmount());
     }
 
-    private void InitializeObervableOrderList() {
+    private void InitializeObervableProductionList() {
         tw_CreateBatchOrder_BatchesOnSpecificDay.setPlaceholder(new Label());
-        tw_CreateBatchOrder_BatchesOnSpecificDay.setItems(orderListObservableList);
+        tw_CreateBatchOrder_BatchesOnSpecificDay.setItems(productionListObservableList);
 
         tc_CreatBatchOrder_BatchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
         tc_CreatBatchOrder_DateofCreation.setCellValueFactory(callData -> callData.getValue().getDateofCreation());
@@ -358,7 +356,7 @@ public class ManagementController implements Initializable {
         tc_CreatBatchOrder_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
         tc_CreatBatchOrder_ProductionTime.setCellValueFactory(callData -> callData.getValue().CalulateProductionTime());
     }
-
+    
     @FXML
     private void toggleSpeed(ActionEvent event) {
 
@@ -372,26 +370,41 @@ public class ManagementController implements Initializable {
             textf_CreateBatchOrder_Speed.setDisable(true);
         }
     }
-
+    
+    /**
+     * Pulls all the queued bathces from the productionlist in the database.
+     * Should be called everytime something is updated in the ordertable.
+     */
     private void updateQueuedArrayList() {
         if (!queuedBathchesList.isEmpty()) {
             queuedBathchesList.clear();
         }
         queuedBathchesList = managementDomain.getQueuedBatches();
     }
-
-    private void updateObservableOrderList(LocalDate dateToCompare) {
-        if (!orderListObservableList.isEmpty()) {
-            orderListObservableList.clear();
+    
+    /**
+     * Updates the observable production list based on a date, so that you only
+     * see bathces for the selected date.
+     * @param dateToCompare is of type localdate.
+     */
+    private void updateObservableProductionList(LocalDate dateToCompare) {
+        if (!productionListObservableList.isEmpty()) {
+            productionListObservableList.clear();
         }
         for (Batch b : queuedBathchesList) {
             if (b.getDeadline().getValue().equals(dateToCompare.toString())) {
-                orderListObservableList.add(b);
+                productionListObservableList.add(b);
             }
         }
-        InitializeObervableOrderList();
+        InitializeObervableProductionList();
     }
-
+    
+    /**
+     * Updates the observable queued list.
+     * Initializes the queued batch tableview
+     * Makes sure that you can live search the queued list, 
+     * by calling filterQueuedList
+     */
     private void updateObservableQueueudList() {
         if (!queuedBatcheObservableList.isEmpty()) {
             queuedBatcheObservableList.clear();
@@ -407,7 +420,10 @@ public class ManagementController implements Initializable {
     private void onEditSelectedBatch(ActionEvent event) {
         setVisibleAnchorPane(ap_editBatch);
     }
-
+    
+    //Action handler for when you are done editing a batch.
+    //Saves the edited batch, pulls a new list with queued batches from the database
+    //updates the tableviews throughout the system.
     @FXML
     private void onCompleteEditActionHandler(ActionEvent event) {
         Batch oldBatch = selectedQueuedBatch;
@@ -419,8 +435,7 @@ public class ManagementController implements Initializable {
 
         managementDomain.editQueuedBatch(newBatch);
         updateQueuedArrayList();
-        updateObservableOrderList(orderListDate);
-        //updateObservableQueueudList(text_SearchProductionQueue.getText());
+        updateObservableProductionList(productionListDate);
         updateObservableQueueudList();
         rb_QueuedBatchID.setSelected(false);
         rb_QueuedDeadline.setSelected(false);
@@ -428,7 +443,9 @@ public class ManagementController implements Initializable {
         filterQueuedList();
         setVisibleAnchorPane(ap_ProductionQueueLayout);
     }
-
+    /**
+     * Adds support for live search to the queued batch list. 
+     */
     private void filterQueuedList() {
         // 1. Wrap the ObservableList in a FilteredList (initially display all data).
         FilteredList<Batch> filteredData = new FilteredList<>(queuedBatcheObservableList, p -> true);
@@ -461,6 +478,12 @@ public class ManagementController implements Initializable {
         tw_SearchTableProductionQueue.setItems(sortedData);
     }
 
+    /**
+     * The method dictates what anchorpane is visible
+     *
+     * @param pane The pane that is sent with the method, is the pane that is
+     * set to be visible
+     */
     private void setVisibleAnchorPane(AnchorPane pane) {
         ap_CompletedBatchesLayout.setVisible(false);
         ap_CreateBatchOrder.setVisible(false);
@@ -479,19 +502,16 @@ public class ManagementController implements Initializable {
             ap_editBatch.setVisible(true);
         }
     }
-
+    
+    //Sets the live search to react to batc ID
     @FXML
-    private void onQueuedRbBatchIDActionhandler(ActionEvent event) {
-        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+    private void onQueued_RbBatchIDActionhandler(ActionEvent event) {
         FilteredList<Batch> filteredData = new FilteredList<>(queuedBatcheObservableList, p -> true);
-        // 2. Set the filter Predicate whenever the filter changes.
         text_SearchProductionQueue.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(batch -> {
-                // If filter text is empty, display all persons.
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
-                // Compare first name and last name of every person with filter text.
                 String lowerCaseFilter = newValue.toLowerCase();
                 if (batch.getBatchID().getValue().toLowerCase().contentEquals(lowerCaseFilter)) {
                     return true;
@@ -499,45 +519,29 @@ public class ManagementController implements Initializable {
                 return false; // Does not match.
             });
         });
-
-        // 3. Wrap the FilteredList in a SortedList. 
         SortedList<Batch> sortedData = new SortedList<>(filteredData);
-
-        // 4. Bind the SortedList comparator to the TableView comparator.
         sortedData.comparatorProperty().bind(tw_SearchTableProductionQueue.comparatorProperty());
-
-        // 5. Add sorted (and filtered) data to the table.
         tw_SearchTableProductionQueue.setItems(sortedData);
     }
-
+    
+    //Sets the live search to react to deadline
     @FXML
-    private void onQueuedRbDeadlineActionhandler(ActionEvent event) {
-        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+    private void onQueued_RbDeadlineActionhandler(ActionEvent event) {
         FilteredList<Batch> filteredData = new FilteredList<>(queuedBatcheObservableList, p -> true);
-        // 2. Set the filter Predicate whenever the filter changes.
         text_SearchProductionQueue.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(batch -> {
-                // If filter text is empty, display all persons.
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
-                // Compare first name and last name of every person with filter text.
                 String lowerCaseFilter = newValue.toLowerCase();
                 if (batch.getDeadline().getValue().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
                 }
-                return false; // Does not match.
+                return false;
             });
         });
-
-        // 3. Wrap the FilteredList in a SortedList. 
         SortedList<Batch> sortedData = new SortedList<>(filteredData);
-
-        // 4. Bind the SortedList comparator to the TableView comparator.
         sortedData.comparatorProperty().bind(tw_SearchTableProductionQueue.comparatorProperty());
-
-        // 5. Add sorted (and filtered) data to the table.
         tw_SearchTableProductionQueue.setItems(sortedData);
-
     }
 }
