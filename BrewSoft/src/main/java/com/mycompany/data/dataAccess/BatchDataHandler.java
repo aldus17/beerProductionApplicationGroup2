@@ -135,4 +135,14 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                 Float.parseFloat(batch.getSpeedforProduction().getValue()),
                 Integer.parseInt(batch.getProductionListID().getValue()));
     }
+
+    @Override
+    public ArrayList<Integer> getAcceptedCount(String dateofcompleation) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public ArrayList<Integer> getIdealCycleTime(String dateofcompleation) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

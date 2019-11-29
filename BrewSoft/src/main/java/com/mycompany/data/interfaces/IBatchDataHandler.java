@@ -14,5 +14,7 @@ public interface IBatchDataHandler {
      public MachineState getMachineState(String prodListID);
      
      public void editQueuedBatch (Batch batch);
+     public ArrayList<Integer> getAcceptedCount (String dateofcompleation);
+     public ArrayList<Integer> getIdealCycleTime (String dateofcompleation);
     
 }

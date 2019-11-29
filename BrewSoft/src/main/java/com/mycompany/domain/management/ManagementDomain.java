@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.domain.management;
 
 import com.mycompany.crossCutting.objects.Batch;
@@ -12,29 +7,21 @@ import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.data.interfaces.IManagementData;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
-import java.time.LocalDate;
-import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
-import java.util.ArrayList;
-import java.util.Random;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author jacob
- */
 public class ManagementDomain implements IManagementDomain {
 
     private final int BATCHID_MIN = 0;
@@ -61,6 +48,10 @@ public class ManagementDomain implements IManagementDomain {
                 idLessBatch.getDeadline().getValue(),
                 idLessBatch.getSpeedforProduction().getValue());
         batchDataHandler.insertBatchToQueue(batchWithID);
+    }
+    
+    public void editQueuedBatch(Batch batch){
+        batchDataHandler.editQueuedBatch(batch);
     }
 
     @Override
