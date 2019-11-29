@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
@@ -193,13 +194,15 @@ public class ManagementController implements Initializable {
         if (event.getSource() == mi_ProductionQueue) {
             setVisibleAnchorPane(ap_ProductionQueueLayout);
             updateQueuedArrayList();
-            updateObservableQueueudList(text_SearchProductionQueue.getText());
+            //updateObservableQueueudList(text_SearchProductionQueue.getText());
+            updateObservableQueueudList();
+            filterQueuedList();
             btn_Edit.setDisable(true);
             tw_SearchTableProductionQueue.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
                 @Override
                 public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                     if (tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem() != null) {
-                        selectedQueuedBatch = queuedBathchesList.get(tw_SearchTableProductionQueue.getSelectionModel().getSelectedIndex());
+                        selectedQueuedBatch = tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem();
                         tf_TypeOfProductEditBatch.setText(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getType().getValue());
                         tf_AmountToProduceEditBatch.setText(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getTotalAmount().getValue());
                         tf_SpeedEditBatch.setText(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getSpeedforProduction().getValue());
@@ -208,6 +211,7 @@ public class ManagementController implements Initializable {
                     }
                 }
             });
+
         }
         if (event.getSource() == mi_CompletedBatches) {
             setVisibleAnchorPane(ap_CompletedBatchesLayout);
@@ -251,7 +255,8 @@ public class ManagementController implements Initializable {
         }
 
         if (event.getSource() == btn_SearchProductionQueue) {
-            updateObservableQueueudList(text_SearchProductionQueue.getText());
+            //  updateObservableQueueudList(text_SearchProductionQueue.getText());
+            updateObservableQueueudList();
 //            batches = managementDomain.batchObjects("BatchesinQueue", text_SearchProductionQueue.getText());
 //            tw_SearchTableProductionQueue.refresh();
         }
@@ -387,28 +392,15 @@ public class ManagementController implements Initializable {
         InitializeObervableOrderList();
     }
 
-    private void updateObservableQueueudList(String search) {
+    private void updateObservableQueueudList() {
         if (!queuedBatcheObservableList.isEmpty()) {
             queuedBatcheObservableList.clear();
         }
-        if (search.isEmpty()) {
-            for (Batch b : queuedBathchesList) {
-                queuedBatcheObservableList.add(b);
-            }
-        } else if (rb_QueuedBatchID.isSelected()) {
-            for (Batch b : queuedBathchesList) {
-                if (search.equalsIgnoreCase(b.getBatchID().getValue())) {
-                    queuedBatcheObservableList.add(b);
-                }
-            }
-        } else if (rb_QueuedDeadline.isSelected()) {
-            for (Batch b : queuedBathchesList) {
-                if (search.equalsIgnoreCase(b.getDeadline().getValue())) {
-                    queuedBatcheObservableList.add(b);
-                }
-            }
+        for (Batch b : queuedBathchesList) {
+            queuedBatcheObservableList.add(b);
         }
         InitializeObservableQueueList();
+        filterQueuedList();
     }
 
     @FXML
@@ -428,8 +420,45 @@ public class ManagementController implements Initializable {
         managementDomain.editQueuedBatch(newBatch);
         updateQueuedArrayList();
         updateObservableOrderList(orderListDate);
-        updateObservableQueueudList(text_SearchProductionQueue.getText());
+        //updateObservableQueueudList(text_SearchProductionQueue.getText());
+        updateObservableQueueudList();
+        rb_QueuedBatchID.setSelected(false);
+        rb_QueuedDeadline.setSelected(false);
+        text_SearchProductionQueue.clear();
+        filterQueuedList();
         setVisibleAnchorPane(ap_ProductionQueueLayout);
+    }
+
+    private void filterQueuedList() {
+        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+        FilteredList<Batch> filteredData = new FilteredList<>(queuedBatcheObservableList, p -> true);
+        // 2. Set the filter Predicate whenever the filter changes.
+        text_SearchProductionQueue.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(batch -> {
+                // If filter text is empty, display all persons.
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+                if (batch.getBatchID().getValue().toLowerCase().contentEquals(lowerCaseFilter)) {
+                    return true;
+                } else if (batch.getDeadline().getValue().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false; // Does not match.
+            });
+        });
+
+        // 3. Wrap the FilteredList in a SortedList. 
+        SortedList<Batch> sortedData = new SortedList<>(filteredData);
+
+        // 4. Bind the SortedList comparator to the TableView comparator.
+        sortedData.comparatorProperty().bind(tw_SearchTableProductionQueue.comparatorProperty());
+
+        // 5. Add sorted (and filtered) data to the table.
+        tw_SearchTableProductionQueue.setItems(sortedData);
     }
 
     private void setVisibleAnchorPane(AnchorPane pane) {
@@ -449,5 +478,66 @@ public class ManagementController implements Initializable {
         } else if (ap_editBatch.equals(pane)) {
             ap_editBatch.setVisible(true);
         }
+    }
+
+    @FXML
+    private void onQueuedRbBatchIDActionhandler(ActionEvent event) {
+        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+        FilteredList<Batch> filteredData = new FilteredList<>(queuedBatcheObservableList, p -> true);
+        // 2. Set the filter Predicate whenever the filter changes.
+        text_SearchProductionQueue.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(batch -> {
+                // If filter text is empty, display all persons.
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+                if (batch.getBatchID().getValue().toLowerCase().contentEquals(lowerCaseFilter)) {
+                    return true;
+                }
+                return false; // Does not match.
+            });
+        });
+
+        // 3. Wrap the FilteredList in a SortedList. 
+        SortedList<Batch> sortedData = new SortedList<>(filteredData);
+
+        // 4. Bind the SortedList comparator to the TableView comparator.
+        sortedData.comparatorProperty().bind(tw_SearchTableProductionQueue.comparatorProperty());
+
+        // 5. Add sorted (and filtered) data to the table.
+        tw_SearchTableProductionQueue.setItems(sortedData);
+    }
+
+    @FXML
+    private void onQueuedRbDeadlineActionhandler(ActionEvent event) {
+        // 1. Wrap the ObservableList in a FilteredList (initially display all data).
+        FilteredList<Batch> filteredData = new FilteredList<>(queuedBatcheObservableList, p -> true);
+        // 2. Set the filter Predicate whenever the filter changes.
+        text_SearchProductionQueue.textProperty().addListener((observable, oldValue, newValue) -> {
+            filteredData.setPredicate(batch -> {
+                // If filter text is empty, display all persons.
+                if (newValue == null || newValue.isEmpty()) {
+                    return true;
+                }
+                // Compare first name and last name of every person with filter text.
+                String lowerCaseFilter = newValue.toLowerCase();
+                if (batch.getDeadline().getValue().toLowerCase().contains(lowerCaseFilter)) {
+                    return true;
+                }
+                return false; // Does not match.
+            });
+        });
+
+        // 3. Wrap the FilteredList in a SortedList. 
+        SortedList<Batch> sortedData = new SortedList<>(filteredData);
+
+        // 4. Bind the SortedList comparator to the TableView comparator.
+        sortedData.comparatorProperty().bind(tw_SearchTableProductionQueue.comparatorProperty());
+
+        // 5. Add sorted (and filtered) data to the table.
+        tw_SearchTableProductionQueue.setItems(sortedData);
+
     }
 }

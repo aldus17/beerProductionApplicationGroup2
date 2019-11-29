@@ -130,7 +130,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                 + "productamount = ? ,deadline =?, speed =? WHERE productionlistid =?",
                 Integer.parseInt(batch.getBatchID().getValue()),
                 Integer.parseInt(batch.getType().getValue()),
-                Integer.parseInt(batch.getTotalAmount().getValue()),
+                Float.parseFloat(batch.getTotalAmount().getValue()),
                 Date.valueOf(batch.getDeadline().getValue()),
                 Float.parseFloat(batch.getSpeedforProduction().getValue()),
                 Integer.parseInt(batch.getProductionListID().getValue()));
