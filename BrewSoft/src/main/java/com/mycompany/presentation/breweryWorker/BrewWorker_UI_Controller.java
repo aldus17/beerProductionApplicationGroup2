@@ -14,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.application.Platform;
+import javafx.scene.layout.AnchorPane;
 
 public class BrewWorker_UI_Controller implements Initializable {
 
@@ -38,8 +39,12 @@ public class BrewWorker_UI_Controller implements Initializable {
     @FXML
     private ProgressBar pb_Maintenance;
 
-    private final IMachineSubscribe subscriber = new MachineSubscriber();
-    private final IMachineControl controls = new MachineController("192.168.0.122", 4840, subscriber);
+    @FXML
+    private AnchorPane AP_overlay;
+    
+    private final IMachineSubscribe subscriber = new MachineSubscriber("127.0.0.1", 4840);
+    private final IMachineControl controls = new MachineController("127.0.0.1", 4840, subscriber);
+    
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

@@ -16,7 +16,7 @@ public class DatabaseConnection {
     private Connection con;
 
     public DatabaseConnection() {
-        this.url = "jdbc:postgresql://localhost:5432/postgres";
+        this.url = "jdbc:postgresql://localhost:5432/course";
         this.user = "admin";
         this.password = "root";
     }
