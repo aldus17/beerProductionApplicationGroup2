@@ -4,16 +4,21 @@ import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.domain.management.ManagementDomain;
 import com.mycompany.domain.management.interfaces.IBatchReportGenerate;
+import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.net.URL;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -23,20 +28,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import com.mycompany.domain.management.interfaces.IManagementDomain;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.control.CheckBox;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.util.converter.LocalDateStringConverter;
 import javax.swing.JOptionPane;
-import org.eclipse.milo.opcua.stack.core.Identifiers;
 
 public class ManagementController implements Initializable {
 
@@ -202,7 +195,7 @@ public class ManagementController implements Initializable {
             tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
                 @Override
                 public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                    if(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem() != null){
+                    if (tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem() != null) {
                         textf_CreateBatchOrder_TypeofProduct.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getType().getValue());
                         textf_CreateBatchOrder_AmountToProduces.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getTotalAmount().getValue());
                         textf_CreateBatchOrder_Speed.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getSpeedforProduction().getValue());
@@ -293,11 +286,12 @@ public class ManagementController implements Initializable {
     @FXML
     private void GenerateOEEAction(ActionEvent event) {
         LocalDate dateToCreateOEE = dp_ShowOEE.getValue();
-        double oee = managementDomain.calulateOEE(dateToCreateOEE);
-
-        Texta_ShowOEE_Text.appendText(dateToCreateOEE.toString());
-        Texta_ShowOEE_Text.appendText(" | ");
-        Texta_ShowOEE_Text.appendText(String.valueOf(oee) + "\n");
+        if (dateToCreateOEE != null) {
+            String oee = managementDomain.calculateOEE(dateToCreateOEE, 1);
+            Texta_ShowOEE_Text.appendText(dateToCreateOEE.toString());
+            Texta_ShowOEE_Text.appendText(" | ");
+            Texta_ShowOEE_Text.appendText(oee + " %" + "\n");
+        }
     }
 
     private void InitializeObservableBatchList() {

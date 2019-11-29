@@ -1,7 +1,6 @@
 package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
-import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;

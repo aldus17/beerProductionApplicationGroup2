@@ -3,6 +3,7 @@ package com.mycompany.domain.management;
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineState;
+import com.mycompany.crossCutting.objects.OeeObject;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.data.interfaces.IManagementData;
@@ -49,18 +50,13 @@ public class ManagementDomain implements IManagementDomain {
                 idLessBatch.getSpeedforProduction().getValue());
         batchDataHandler.insertBatchToQueue(batchWithID);
     }
-    
-    public void editQueuedBatch(Batch batch){
+
+    public void editQueuedBatch(Batch batch) {
         batchDataHandler.editQueuedBatch(batch);
     }
 
     @Override
     public List<Batch> batchObjects(String searchKey, String searchValue) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public double calulateOEE(LocalDate searchDate) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -83,7 +79,7 @@ public class ManagementDomain implements IManagementDomain {
         }
         System.out.println(Arrays.toString(msl.toArray()));
         Collections.sort(msl, Comparator.comparing(MachineState::getTimeInState));
-        
+
         System.out.println(Arrays.toString(msl.toArray()));
         for (int i = 1; i < msl.size(); i++) {
             // tag første object, gemmer det object i variable, checke den variable mod det næste object, hvis det samme continue
@@ -159,6 +155,23 @@ public class ManagementDomain implements IManagementDomain {
         } else {
             return String.valueOf(BATCHID_MIN);
         }
+    }
+
+    public String calculateOEE(LocalDate dateofcompletion, int plannedproductiontime) {
+        List<OeeObject> list = new ArrayList<>();
+
+        float OEE = 0.0f;
+
+        list = batchDataHandler.getAcceptedCount(dateofcompletion);
+
+        for (OeeObject oeeObject : list) {
+
+            OEE += (oeeObject.getAcceptedCount() * oeeObject.getIdealcycletime());
+
+        }
+
+        float calculatedOEE = (OEE / plannedproductiontime)/100;
+        return String.format("%.2f", calculatedOEE);
     }
 
     @Override

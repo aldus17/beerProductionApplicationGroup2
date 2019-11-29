@@ -4,11 +4,13 @@ import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineState;
+import com.mycompany.crossCutting.objects.OeeObject;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.data.interfaces.IManagementData;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,23 +38,23 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         );
     }
 
-   public ArrayList<Batch> getQueuedBatches(){
-       ArrayList <Batch> queuedbatches = new ArrayList<>();
-       SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status=?", QUEUED_STATUS);
-       for(int i = 0; i<set.getRows();i++){
-           queuedbatches.add(
-                   new Batch(
-                           String.valueOf(set.get(i, "productionlistid")),
-                           String.valueOf(set.get(i, "batchid")),
-                           String.valueOf(set.get(i, "productid")),
-                           String.valueOf(set.get(i, "productamount")),
-                           String.valueOf(set.get(i, "deadline")),
-                           String.valueOf(set.get(i, "speed")),
-                           String.valueOf(set.get(i, "dateofcreation"))
-           ));
-       }
-       return queuedbatches;
-   }
+    public ArrayList<Batch> getQueuedBatches() {
+        ArrayList<Batch> queuedbatches = new ArrayList<>();
+        SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status=?", QUEUED_STATUS);
+        for (int i = 0; i < set.getRows(); i++) {
+            queuedbatches.add(
+                    new Batch(
+                            String.valueOf(set.get(i, "productionlistid")),
+                            String.valueOf(set.get(i, "batchid")),
+                            String.valueOf(set.get(i, "productid")),
+                            String.valueOf(set.get(i, "productamount")),
+                            String.valueOf(set.get(i, "deadline")),
+                            String.valueOf(set.get(i, "speed")),
+                            String.valueOf(set.get(i, "dateofcreation"))
+                    ));
+        }
+        return queuedbatches;
+    }
 
     @Override
     public Integer getLatestBatchID() {
@@ -137,12 +139,18 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     }
 
     @Override
-    public ArrayList<Integer> getAcceptedCount(String dateofcompleation) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List getAcceptedCount(LocalDate dateofcompleation) {
+     List list = new ArrayList<>();
+        SimpleSet set;
+        set = dbConnection.query("SELECT fbi.productid, fbi.acceptedcount, pt.idealcycletime FROM finalbatchinformation AS fbi, producttype AS pt WHERE fbi.dateofcompletion = ? AND fbi.productid = pt.productid", dateofcompleation);
+
+         for (int i = 0; i < set.getRows(); i++) {
+             list.add(new OeeObject(
+                     (int)set.get(i, "productid"), 
+                     (int)set.get(i, "acceptedcount"),
+                     (double)set.get(i, "idealcycletime")));
+         }
+        return list;
     }
 
-    @Override
-    public ArrayList<Integer> getIdealCycleTime(String dateofcompleation) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
 }
