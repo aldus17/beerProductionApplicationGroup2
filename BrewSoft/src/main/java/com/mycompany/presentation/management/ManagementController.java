@@ -29,8 +29,14 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import com.mycompany.domain.management.interfaces.IManagementDomain;
+import java.util.ArrayList;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.CheckBox;
 import javafx.scene.paint.Color;
 import javax.swing.JOptionPane;
+import sun.security.krb5.internal.APOptions;
 
 public class ManagementController implements Initializable {
 
@@ -128,27 +134,42 @@ public class ManagementController implements Initializable {
     private Label lbl_CreateBatchOrder_error;
     @FXML
     private CheckBox toggleSpeedBtn;
+    @FXML
+    private Button btn_Edit;
+    @FXML
+    private AnchorPane ap_editBatch;
+    @FXML
+    private DatePicker dp_EditBatch;
+    @FXML
+    private TextField tf_SpeedEditBatch;
+    @FXML
+    private TextField tf_AmountToProduceEditBatch;
+    @FXML
+    private TextField tf_TypeOfProductEditBatch;
 
     // Class calls
-    private IManagementDomain managementDomain = new ManagementDomain();
+    private IManagementDomain managementDomain;
     private IBatchReportGenerate ibrg; // TODO Get class ..
 
     // Variables
     private List<Batch> batches;
     private List<BeerTypes> beerTypes;
-    private ObservableList<Batch> batcheObservableList;
-    private ObservableList<Batch> queuedBatchesObservableList;
+    private ObservableList<Batch> queuedBatcheObservableList;
+    private ObservableList<Batch> orderListObservableList;
     private ObservableList<BeerTypes> beerTypesObservableList;
-    private ArrayList<Batch> queuedBatcheslist;
-    private LocalDate queuedBatchesDate;
+    private ArrayList<Batch> queuedBathchesList;
+    private LocalDate orderListDate;
+    private Batch selectedQueuedBatch;
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        managementDomain = new ManagementDomain();
 
-        batcheObservableList = FXCollections.observableArrayList();
-        queuedBatchesObservableList = FXCollections.observableArrayList();
+        queuedBatcheObservableList = FXCollections.observableArrayList();
+        orderListObservableList = FXCollections.observableArrayList();
         beerTypesObservableList = FXCollections.observableArrayList();
-        queuedBatcheslist = new ArrayList<>();
+        queuedBathchesList = new ArrayList<>();
 
         InitializeObservableBatchList();
         InitializeObservableQueueList();
@@ -157,42 +178,41 @@ public class ManagementController implements Initializable {
         lv_CreateBatchOrder_TypeofBeer.setPlaceholder(new Label());
         lv_CreateBatchOrder_TypeofBeer.setItems(beerTypesObservableList);
 
-        ap_CompletedBatchesLayout.setVisible(false);
-        ap_CreateBatchOrder.setVisible(false);
-        ap_ShowOEE.setVisible(false);
-        ap_ProductionQueueLayout.setVisible(true);
-        ap_ProductionQueueLayout.toFront();
+        setVisibleAnchorPane(ap_ProductionQueueLayout);
 
-        queuedBatchesDate = LocalDate.now();
-        dp_CreateBatchOrder.setValue(queuedBatchesDate);
+        orderListDate = LocalDate.now();
+        dp_CreateBatchOrder.setValue(orderListDate);
+        btn_Edit.setDisable(true);
     }
 
     @FXML
     private void MenuItemChangesAction(ActionEvent event) {
         if (event.getSource() == mi_ProductionQueue) {
-            ap_ProductionQueueLayout.setVisible(true);
-            ap_ProductionQueueLayout.toFront();
-            ap_CompletedBatchesLayout.setVisible(false);
-            ap_CreateBatchOrder.setVisible(false);
-            ap_ShowOEE.setVisible(false);
+            setVisibleAnchorPane(ap_ProductionQueueLayout);
+            updateQueuedArrayList();
+            updateObservableQueueudList();
+            btn_Edit.setDisable(true);
+            tw_SearchTableProductionQueue.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+                @Override
+                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                    if (tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem() != null) {
+                        selectedQueuedBatch = queuedBathchesList.get(tw_SearchTableProductionQueue.getSelectionModel().getSelectedIndex());
+                        tf_TypeOfProductEditBatch.setText(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getType().getValue());
+                        tf_AmountToProduceEditBatch.setText(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getTotalAmount().getValue());
+                        tf_SpeedEditBatch.setText(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getSpeedforProduction().getValue());
+                        dp_EditBatch.setValue(LocalDate.parse(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getDeadline().getValue()));
+                        btn_Edit.setDisable(false);
+                    }
+                }
+            });
         }
         if (event.getSource() == mi_CompletedBatches) {
-            ap_CompletedBatchesLayout.setVisible(true);
-            ap_CompletedBatchesLayout.toFront();
-            ap_ProductionQueueLayout.setVisible(false);
-            ap_CreateBatchOrder.setVisible(false);
-            ap_ShowOEE.setVisible(false);
+            setVisibleAnchorPane(ap_CompletedBatchesLayout);
         }
         if (event.getSource() == mi_CreateBatchOrder) {
-            ap_CreateBatchOrder.setVisible(true);
-            ap_CreateBatchOrder.toFront();
-            ap_ProductionQueueLayout.setVisible(false);
-            ap_CompletedBatchesLayout.setVisible(false);
-            ap_ShowOEE.setVisible(false);
-            if (queuedBatcheslist.isEmpty()) {
-                queuedBatcheslist = managementDomain.getQueuedBatches();
-                updateObservableOrderList(queuedBatchesDate);
-            }
+            setVisibleAnchorPane(ap_CreateBatchOrder);
+            updateQueuedArrayList();
+            updateObservableOrderList(orderListDate);
             tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
                 @Override
                 public void changed(ObservableValue observable, Object oldValue, Object newValue) {
@@ -211,10 +231,7 @@ public class ManagementController implements Initializable {
             lv_CreateBatchOrder_TypeofBeer.refresh();
         }
         if (event.getSource() == mi_ShowOEE) {
-            ap_ProductionQueueLayout.setVisible(false);
-            ap_CompletedBatchesLayout.setVisible(false);
-            ap_CreateBatchOrder.setVisible(false);
-            ap_ShowOEE.setVisible(true);
+            setVisibleAnchorPane(ap_ShowOEE);
             Texta_ShowOEE_Text.setText("Date\t\t | OEE in Procentes" + "\n");
             ap_ShowOEE.toFront();
         }
@@ -223,7 +240,7 @@ public class ManagementController implements Initializable {
     @FXML
     private void OnSearchAction(ActionEvent event) {
 
-        batcheObservableList.clear();
+        queuedBatcheObservableList.clear();
 
         if (event.getSource() == btn_SearchCompletedBatches) {
             SearchData sd = new SearchData(text_SearchCompletedBarches.getText(), 0.0f);
@@ -237,7 +254,7 @@ public class ManagementController implements Initializable {
         }
 
         batches.forEach((batch) -> {
-            batcheObservableList.add(batch);
+            queuedBatcheObservableList.add(batch);
         });
     }
 
@@ -249,12 +266,10 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void GetOrdersForSpecificDay(ActionEvent event) {
-        queuedBatchesObservableList.clear();
-        queuedBatchesDate = dp_CreateBatchOrder.getValue();
-        if (queuedBatcheslist.isEmpty()) {
-            queuedBatcheslist = managementDomain.getQueuedBatches();
-        }
-        updateObservableOrderList(queuedBatchesDate);
+        orderListObservableList.clear();
+        orderListDate = dp_CreateBatchOrder.getValue();
+        updateQueuedArrayList();
+        updateObservableOrderList(orderListDate);
     }
 
     @FXML
@@ -269,10 +284,8 @@ public class ManagementController implements Initializable {
             if (Float.valueOf(amounttoProduce) >= 0.0f && Float.valueOf(amounttoProduce) < 65535.0f) {
                 managementDomain.createBatch(new Batch("", typeofProduct, amounttoProduce, deadline, speed));
                 System.out.println("Batch created");
-
-                queuedBatcheslist.clear();                                  //Clears list of queued batches
-                queuedBatcheslist = managementDomain.getQueuedBatches();    //Repopulate the list, with the addition of a new batch. 
-                updateObservableOrderList(queuedBatchesDate);               //Updates the observableorderlist
+                updateQueuedArrayList();
+                updateObservableOrderList(orderListDate);
 
             } else {
                 System.out.println("Invalid amount");
@@ -299,7 +312,7 @@ public class ManagementController implements Initializable {
     private void InitializeObservableBatchList() {
 
         tw_SearchTableCompletedBatches.setPlaceholder(new Label());
-        tw_SearchTableCompletedBatches.setItems(batcheObservableList);
+        tw_SearchTableCompletedBatches.setItems(queuedBatcheObservableList);
 
         tc_CompletedBatches_batchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
         tc_CompletedBatches_MacineID.setCellValueFactory(callData -> callData.getValue().getMachineID());
@@ -316,7 +329,7 @@ public class ManagementController implements Initializable {
     private void InitializeObservableQueueList() {
 
         tw_SearchTableProductionQueue.setPlaceholder(new Label());
-        tw_SearchTableProductionQueue.setItems(batcheObservableList);
+        tw_SearchTableProductionQueue.setItems(queuedBatcheObservableList);
 
         tc_ProductionQueue_BatchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
         tc_ProductionQueue_Type.setCellValueFactory(callData -> callData.getValue().getType());
@@ -328,7 +341,7 @@ public class ManagementController implements Initializable {
 
     private void InitializeObervableOrderList() {
         tw_CreateBatchOrder_BatchesOnSpecificDay.setPlaceholder(new Label());
-        tw_CreateBatchOrder_BatchesOnSpecificDay.setItems(queuedBatchesObservableList);
+        tw_CreateBatchOrder_BatchesOnSpecificDay.setItems(orderListObservableList);
 
         tc_CreatBatchOrder_BatchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
         tc_CreatBatchOrder_DateofCreation.setCellValueFactory(callData -> callData.getValue().getDateofCreation());
@@ -352,17 +365,71 @@ public class ManagementController implements Initializable {
             textf_CreateBatchOrder_Speed.setDisable(true);
         }
     }
-
-    private void updateObservableOrderList(LocalDate dateToCompare) {
-        if (!queuedBatchesObservableList.isEmpty()) {
-            queuedBatchesObservableList.clear();
+    private void updateQueuedArrayList(){
+        if(!queuedBathchesList.isEmpty()){
+            queuedBathchesList.clear();
         }
-        for (Batch b : queuedBatcheslist) {
+        queuedBathchesList = managementDomain.getQueuedBatches();
+    }
+    private void updateObservableOrderList(LocalDate dateToCompare) {
+        if (!orderListObservableList.isEmpty()) {
+            orderListObservableList.clear();
+        }
+        for (Batch b : queuedBathchesList) {
             if (b.getDeadline().getValue().equals(dateToCompare.toString())) {
-                queuedBatchesObservableList.add(b);
+                orderListObservableList.add(b);
             }
         }
         InitializeObervableOrderList();
     }
 
+    private void updateObservableQueueudList() {
+        if (!queuedBatcheObservableList.isEmpty()) {
+            queuedBatcheObservableList.clear();
+        }
+        for(Batch b : queuedBathchesList){
+            queuedBatcheObservableList.add(b);
+        }
+        InitializeObservableQueueList();
+    }
+
+    @FXML
+    private void onEditSelectedBatch(ActionEvent event) {
+        setVisibleAnchorPane(ap_editBatch);
+    }
+
+    @FXML
+    private void onCompleteEditActionHandler(ActionEvent event) {
+        Batch oldBatch = selectedQueuedBatch;
+        Batch newBatch = new Batch(oldBatch.getProductionListID().getValue(),
+                oldBatch.getBatchID().getValue(),
+                tf_TypeOfProductEditBatch.getText(),
+                tf_AmountToProduceEditBatch.getText(), dp_EditBatch.getValue().toString(),
+                tf_SpeedEditBatch.getText(), oldBatch.getDateofCreation().getValue());
+
+        managementDomain.editQueuedBatch(newBatch);
+        updateQueuedArrayList();
+        updateObservableOrderList(orderListDate);
+        updateObservableQueueudList();
+        setVisibleAnchorPane(ap_ProductionQueueLayout);
+    }
+
+    private void setVisibleAnchorPane(AnchorPane pane){
+        ap_CompletedBatchesLayout.setVisible(false);
+        ap_CreateBatchOrder.setVisible(false);
+        ap_ProductionQueueLayout.setVisible(false);
+        ap_ShowOEE.setVisible(false);
+        ap_editBatch.setVisible(false);
+        if(ap_CompletedBatchesLayout.equals(pane)){
+            ap_CompletedBatchesLayout.setVisible(true);
+        } else if(ap_CreateBatchOrder.equals(pane)){
+            ap_CreateBatchOrder.setVisible(true);
+        } else if(ap_ProductionQueueLayout.equals(pane)){
+            ap_ProductionQueueLayout.setVisible(true);
+        } else if(ap_ShowOEE.equals(pane)){
+            ap_ShowOEE.setVisible(true);
+        } else if(ap_editBatch.equals(pane)){
+            ap_editBatch.setVisible(true);
+        }
+    }
 }
