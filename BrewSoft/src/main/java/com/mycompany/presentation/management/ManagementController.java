@@ -404,11 +404,6 @@ public class ManagementController implements Initializable {
         updateObservableOrderList(orderListDate);
         updateObservableQueueudList();
         setVisibleAnchorPane(ap_ProductionQueueLayout);
-//        ap_CompletedBatchesLayout.setVisible(false);
-//        ap_CreateBatchOrder.setVisible(false);
-//        ap_ProductionQueueLayout.setVisible(true);
-//        ap_ShowOEE.setVisible(false);
-//        ap_editBatch.setVisible(false);
     }
     
     private void setVisibleAnchorPane(AnchorPane pane){
