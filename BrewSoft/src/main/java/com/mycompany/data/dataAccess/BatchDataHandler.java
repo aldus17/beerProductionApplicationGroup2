@@ -1,8 +1,8 @@
 package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
-import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.crossCutting.objects.BatchReport;
+import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class BatchDataHandler implements IBatchDataHandler {
 
-    private final String QUEUED_STATUS = "Queued";
+    private final String QUEUED_STATUS = "queued";
     private DatabaseConnection dbConnection;
 
     public BatchDataHandler() {
@@ -31,7 +31,7 @@ public class BatchDataHandler implements IBatchDataHandler {
                 Float.parseFloat(batchObject.getTotalAmount().getValue()),
                 Date.valueOf(batchObject.getDeadline().getValue()),
                 Float.parseFloat(batchObject.getSpeedforProduction().getValue()),
-                QUEUED_STATUS
+                QUEUED_STATUS.toLowerCase()
         );
     }
 
