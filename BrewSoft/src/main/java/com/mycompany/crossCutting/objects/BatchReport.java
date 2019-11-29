@@ -1,36 +1,35 @@
 package com.mycompany.crossCutting.objects;
 
 public class BatchReport {
-    private int finalBatchInformationID;
-    private int productionListID;
+
+    private int batchID;
     private int BreweryMachineID;
     private String deadline;
     private String dateOfCreation;
     private String dateOfCompletion;
-    private int productID;
+    private String productType;
     private int totalCount;
     private int defectCount;
     private int AcceptedCount;
 
-    public BatchReport(int finalBatchInformationID, int productionListID, int BreweryMachineID, String deadline, String dateOfCreation, String dateOfCompletion, int productID, int totalCount, int defectCount, int AcceptedCount) {
-        this.finalBatchInformationID = finalBatchInformationID;
-        this.productionListID = productionListID;
+    public BatchReport() {
+        
+    }
+    public BatchReport(int batchID, int BreweryMachineID, String deadline, String dateOfCreation, String dateOfCompletion, String productType, int totalCount, int defectCount, int AcceptedCount) {
+        this.batchID = batchID;
         this.BreweryMachineID = BreweryMachineID;
         this.deadline = deadline;
         this.dateOfCreation = dateOfCreation;
         this.dateOfCompletion = dateOfCompletion;
-        this.productID = productID;
+        this.productType = productType;
         this.totalCount = totalCount;
         this.defectCount = defectCount;
         this.AcceptedCount = AcceptedCount;
+
     }
 
-    public int getFinalBatchInformationID() {
-        return finalBatchInformationID;
-    }
-
-    public int getProductionListID() {
-        return productionListID;
+    public int getBatchID() {
+        return batchID;
     }
 
     public int getBreweryMachineID() {
@@ -49,8 +48,8 @@ public class BatchReport {
         return dateOfCompletion;
     }
 
-    public int getProductID() {
-        return productID;
+    public String getProductType() {
+        return productType;
     }
 
     public int getTotalCount() {
@@ -64,5 +63,20 @@ public class BatchReport {
     public int getAcceptedCount() {
         return AcceptedCount;
     }
+
+    @Override
+    public String toString() {
+        return "BatchReport{" 
+                + "batchID=" + batchID 
+                + ", BreweryMachineID=" + BreweryMachineID 
+                + ", deadline=" + deadline 
+                + ", dateOfCreation=" + dateOfCreation 
+                + ", dateOfCompletion=" + dateOfCompletion 
+                + ", productType=" + productType 
+                + ", totalCount=" + totalCount 
+                + ", defectCount=" + defectCount 
+                + ", AcceptedCount=" + AcceptedCount + '}';
+    }
+
     
 }
