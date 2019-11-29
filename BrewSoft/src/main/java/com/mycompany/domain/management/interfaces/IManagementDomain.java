@@ -12,7 +12,7 @@ public interface IManagementDomain {
     public void createBatch(Batch batch);
     public ArrayList<Batch> getQueuedBatches();
     public List<Batch> batchObjects (String searchKey, String searchValue);
-    public double calulateOEE(LocalDate searchDate);
     public List<BeerTypes> getBeerTypes();
+    public String calculateOEE (LocalDate dateofcompletion, int plannedproductiontime);
     
 }

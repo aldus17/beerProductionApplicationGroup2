@@ -35,3 +35,6 @@ nbdist/
 
 BrewSoft/target/maven-archiver/pom.properties
 /BrewSoft/nbproject/
+BrewSoft/target/surefire-reports/com.mycompany.domain.management.ManagementDomainTest.txt
+
+BrewSoft/target/surefire-reports/TEST-com.mycompany.domain.management.ManagementDomainTest.xml

@@ -1,45 +1,35 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.domain.management;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineState;
+import com.mycompany.crossCutting.objects.OeeObject;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
+import com.mycompany.data.interfaces.IManagementData;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
-import java.time.LocalDate;
-import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
-import java.util.ArrayList;
-import java.util.Random;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author jacob
- */
 public class ManagementDomain implements IManagementDomain {
 
     private final int BATCHID_MIN = 0;
     private final int BATCHID_MAX = 65535;
 
     private IBatchDataHandler batchDataHandler = new BatchDataHandler();
+    private IManagementData managementData = new BatchDataHandler(); // = new ManagementData(); Missing the class that implements the interface
 
     /**
      * Method that creates takes a batch with no batch ID and generates a new
@@ -55,10 +45,14 @@ public class ManagementDomain implements IManagementDomain {
         Batch batchWithID = new Batch(
                 createBatchID(batchDataHandler.getLatestBatchID()),
                 idLessBatch.getType().getValue(),
+                idLessBatch.getTotalAmount().getValue(),
                 idLessBatch.getDeadline().getValue(),
-                idLessBatch.getSpeedforProduction().getValue(),
-                idLessBatch.getTotalAmount().getValue());
+                idLessBatch.getSpeedforProduction().getValue());
         batchDataHandler.insertBatchToQueue(batchWithID);
+    }
+
+    public void editQueuedBatch(Batch batch) {
+        batchDataHandler.editQueuedBatch(batch);
     }
 
     @Override
@@ -67,13 +61,8 @@ public class ManagementDomain implements IManagementDomain {
     }
 
     @Override
-    public double calulateOEE(LocalDate searchDate) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
     public List<BeerTypes> getBeerTypes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return managementData.getBeerTypes();
     }
 
     public Map<Integer, String> getTimeInStates(String prodListID) {
@@ -90,7 +79,7 @@ public class ManagementDomain implements IManagementDomain {
         }
         System.out.println(Arrays.toString(msl.toArray()));
         Collections.sort(msl, Comparator.comparing(MachineState::getTimeInState));
-        
+
         System.out.println(Arrays.toString(msl.toArray()));
         for (int i = 1; i < msl.size(); i++) {
             // tag første object, gemmer det object i variable, checke den variable mod det næste object, hvis det samme continue
@@ -168,6 +157,23 @@ public class ManagementDomain implements IManagementDomain {
         }
     }
 
+    public String calculateOEE(LocalDate dateofcompletion, int plannedproductiontime) {
+        List<OeeObject> list = new ArrayList<>();
+
+        float OEE = 0.0f;
+
+        list = batchDataHandler.getAcceptedCount(dateofcompletion);
+
+        for (OeeObject oeeObject : list) {
+
+            OEE += (oeeObject.getAcceptedCount() * oeeObject.getIdealcycletime());
+
+        }
+
+        float calculatedOEE = (OEE / plannedproductiontime)/100;
+        return String.format("%.2f", calculatedOEE);
+    }
+
     @Override
     public ArrayList<Batch> getQueuedBatches() {
         return batchDataHandler.getQueuedBatches();
@@ -181,5 +187,4 @@ public class ManagementDomain implements IManagementDomain {
 
         System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
     }
-
 }
