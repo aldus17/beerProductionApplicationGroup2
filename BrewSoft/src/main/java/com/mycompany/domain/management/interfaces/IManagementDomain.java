@@ -14,7 +14,6 @@ public interface IManagementDomain {
     public ArrayList<Batch> getQueuedBatches();
     public void editQueuedBatch(Batch batch);
     public List<Batch> batchObjects(String searchKey, SearchData searchDataObj);
-    public double calulateOEE(LocalDate searchDate);
     public List<BeerTypes> getBeerTypes();
     public String calculateOEE (LocalDate dateofcompletion, int plannedproductiontime);
 
