@@ -15,7 +15,8 @@ public class BatchReport {
     public BatchReport() {
         
     }
-    public BatchReport(int batchID, int BreweryMachineID, String deadline, String dateOfCreation, String dateOfCompletion, String productType, int totalCount, int defectCount, int AcceptedCount) {
+    public BatchReport(int batchID, int BreweryMachineID, String deadline, String dateOfCreation, 
+            String dateOfCompletion, String productType, int totalCount, int defectCount, int AcceptedCount) {
         this.batchID = batchID;
         this.BreweryMachineID = BreweryMachineID;
         this.deadline = deadline;

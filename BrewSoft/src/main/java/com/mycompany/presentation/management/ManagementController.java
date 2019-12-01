@@ -24,15 +24,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.scene.paint.Color;
-import javafx.util.converter.LocalDateStringConverter;
 import javax.swing.JOptionPane;
-import org.eclipse.milo.opcua.stack.core.Identifiers;
 
 public class ManagementController implements Initializable {
 
@@ -233,8 +227,9 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void GeneratingBatchreportAction(ActionEvent event) {
-        tw_SearchTableCompletedBatches.getSelectionModel().getSelectedItem();
-        ibrg.GeneratePDFDocument(); // TODO Find out witch part the batch should be found on.
+        // TODO: Use createPDF from Domain
+        // Extract batch id, machine id, production list ID, from the the list to use in the createPDF method
+        // generated batchreport pdf will then be created, and needs to be loaded in.
     }
 
     @FXML
