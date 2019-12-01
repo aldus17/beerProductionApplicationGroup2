@@ -5,6 +5,8 @@ import com.mycompany.crossCutting.objects.MachineData;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -39,15 +41,18 @@ public class CreatePDF {
             temperatureDataList.add(md.getTemperature());
             humidityDataList.add(md.getHumidity());
         }
-        
+
         try {
             document = new PDDocument();
 
             document.addPage(addPageWithBatchInfo(batchRep));
             document.addPage(addXYChartToDocument("Temprature for Batch", temperatureDataList, "Time", "Temprature"));
             document.addPage(addCategoryChartToDocument("Humidity for Batch", humidityDataList, temperatureDataList, "Temperature", "Humidity"));
-
-            document.save("BatchReport.pdf"); // TODO: Changes Path or it will save it in project folder.
+           
+            LocalDateTime myDateObj = LocalDateTime.now();
+            DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            String formattedDate = myDateObj.format(myFormatObj);
+            document.save("BatchReport" + formattedDate + ".pdf"); // TODO: Changes Path or it will save it in project folder.
             document.close();
         } catch (IOException ex) {
             Logger.getLogger(CreatePDF.class.getName()).log(Level.SEVERE, null, ex);
