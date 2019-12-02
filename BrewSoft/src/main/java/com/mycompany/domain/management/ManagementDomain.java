@@ -11,16 +11,16 @@ import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
-import java.time.LocalDate;
-import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
@@ -72,7 +72,7 @@ public class ManagementDomain implements IManagementDomain {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
-    public Map<Integer, String> getTimeInStates(String prodListID) {
+    public Map<Integer, String> getTimeInStates(int prodListID) {
 
         MachineState ms = batchDataHandler.getMachineState(prodListID);
         Map<Integer, String> finalTimeInStatesList = new TreeMap<>();
@@ -169,13 +169,13 @@ public class ManagementDomain implements IManagementDomain {
         return batchDataHandler.getQueuedBatches();
     }
 
-    public static void main(String[] args) {
-        ManagementDomain md = new ManagementDomain();
-
-        Map<Integer, String> testMap = new TreeMap<>();
-        testMap = md.getTimeInStates("410");
-
-        System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
-    }
+//    public static void main(String[] args) {
+//        ManagementDomain md = new ManagementDomain();
+//
+//        Map<Integer, String> testMap = new TreeMap<>();
+//        testMap = md.getTimeInStates("410");
+//
+//        System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
+//    }
 
 }

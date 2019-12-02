@@ -1,13 +1,16 @@
 package com.mycompany.domain.management.pdf;
 
 import com.mycompany.crossCutting.objects.BatchReport;
-import com.mycompany.crossCutting.objects.MachineData;
+import com.mycompany.crossCutting.objects.MachineHumiData;
+import com.mycompany.crossCutting.objects.MachineTempData;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,39 +29,52 @@ public class CreatePDF {
 
     private List<Double> temperatureDataList = new ArrayList<>();
     private List<Double> humidityDataList = new ArrayList<>();
+    private List<Date> timeList = new ArrayList<>();
     private IBatchDataHandler batchDataHandler;
 
     // https://www.tutorialspoint.com/pdfbox/pdfbox_quick_guide.htm
-    public void createNewPDF(int batchID, int prodListID, int machineID) {
+    public File createNewPDF(int batchID, int prodListID, int machineID) {
         batchDataHandler = new BatchDataHandler();
         BatchReport batchRep = batchDataHandler.getBatchReportProductionData(batchID, machineID);
-        MachineData machineData = batchDataHandler.getMachineData(prodListID, machineID);
-        List<MachineData> mdl = new ArrayList<>();
-        for (Object object : machineData.getMachineDataObjList()) {
-            mdl.add((MachineData) object);
-        }
-        for (MachineData md : mdl) {
+        MachineTempData machineTempData = batchDataHandler.getMachineTempData(prodListID, machineID);
+        MachineHumiData machineHumiData = batchDataHandler.getMachineHumiData(prodListID, machineID);
+
+        List<MachineTempData> mtd = new ArrayList<>();
+        List<MachineHumiData> mhd = new ArrayList<>();
+
+        machineTempData.getMachineTempDataObjList().forEach((object) -> {
+            mtd.add((MachineTempData) object);
+        });
+        machineHumiData.getMachineHumiDataObjList().forEach((object) -> {
+            mhd.add((MachineHumiData) object);
+        });
+
+        for (MachineTempData md : mtd) {
             temperatureDataList.add(md.getTemperature());
+
+        }
+        double count = 0.0;
+        List<Double> countDouble = new ArrayList<>();
+        for (MachineHumiData md : mhd) {
+
             humidityDataList.add(md.getHumidity());
+            count++;
+            countDouble.add(count);
         }
 
+        document = new PDDocument();
+        File file = null;
         try {
-            document = new PDDocument();
-
             document.addPage(addPageWithBatchInfo(batchRep));
-            document.addPage(addXYChartToDocument("Temprature for Batch", temperatureDataList, "Time", "Temprature"));
-            document.addPage(addCategoryChartToDocument("Humidity for Batch", humidityDataList, temperatureDataList, "Temperature", "Humidity"));
-           
-            LocalDateTime myDateObj = LocalDateTime.now();
-            DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            String formattedDate = myDateObj.format(myFormatObj);
-            document.save("BatchReport" + formattedDate + ".pdf"); // TODO: Changes Path or it will save it in project folder.
-            document.close();
+            document.addPage(addXYChartToDocument("Temprature for Batch", temperatureDataList, "Point", "Temprature"));
+            document.addPage(addCategoryChartToDocument("Humidity for Batch", countDouble, humidityDataList, "Point", "Humidity"));
+
+            file = savePDObj();
         } catch (IOException ex) {
             Logger.getLogger(CreatePDF.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    public void createPage1() {
+        return file;
 
     }
 
@@ -108,16 +124,15 @@ public class CreatePDF {
         pdfChart.setRotation(90);
 
         float pageWidth = pdfChart.getMediaBox().getWidth();
-        float pageHeight = pdfChart.getMediaBox().getHeight();
+        // float pageHeight = pdfChart.getMediaBox().getHeight();
 
         try (PDPageContentStream contentStream = new PDPageContentStream(document, pdfChart)) {
             PDImageXObject chartImage = JPEGFactory.createFromImage(document,
                     chart.createXYChart(chartName, data, nameOfXAxis, nameOfYAxis,
-                            (int) pageWidth,
-                            (int) pageHeight));
-            contentStream.transform(new Matrix(0, 1, -1, 0, pageWidth, 0));
+                            (int) PDRectangle.A4.getHeight(), (int) PDRectangle.A4.getWidth()));
+            contentStream.transform(new Matrix(0, 1, -1, 0, pageWidth, 100));
 
-            contentStream.drawImage(chartImage, 0, 0);
+            contentStream.drawImage(chartImage, -100, 0);
             System.out.println("XYChart added");
         } catch (IOException ex) {
             Logger.getLogger(CreatePDF.class.getName()).log(Level.SEVERE, null, ex);
@@ -135,13 +150,12 @@ public class CreatePDF {
         pdfChart.setRotation(90);
 
         float pageWidth = pdfChart.getMediaBox().getWidth();
-        float pageHeight = pdfChart.getMediaBox().getHeight();
+        // float pageHeight = pdfChart.getMediaBox().getHeight();
 
         try (PDPageContentStream contentStream = new PDPageContentStream(document, pdfChart)) {
             PDImageXObject chartImage = JPEGFactory.createFromImage(document,
                     chart.createCategoryChart(chartName, xData, yData, nameOfXAxis, nameOfYAxis,
-                            (int) pageWidth,
-                            (int) pageHeight));
+                            (int) PDRectangle.A4.getHeight(), (int) PDRectangle.A4.getWidth()));
             contentStream.transform(new Matrix(0, 1, -1, 0, pageWidth, 0));
             contentStream.drawImage(chartImage, 0, 0);
             System.out.println("CategoryChart added");
@@ -152,17 +166,20 @@ public class CreatePDF {
         return pdfChart;
     }
 
-//    public void saveandClose() {
-//        try {
-//            document.save("Test.pdf"); // TODO: Changes Path or it will save it in project folder.
-//            document.close();
-//        } catch (IOException ex) {
-//            Logger.getLogger(CreatePDF.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//    }
+    public void savePDF() throws IOException {
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedDate = myDateObj.format(myFormatObj);
+
+        document.save("Batch_Report_" + formattedDate + ".pdf"); // TODO: Changes Path or it will save it in project folder.
+
+        document.close();
+
+    }
+
     public static void main(String[] args) {
         CreatePDF c = new CreatePDF();
-        c.createNewPDF(8, 195, 1);
+        c.createNewPDF(8, 117, 1);
         //c.AddChartToDocument(null, null, null, null);
     }
 

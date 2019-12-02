@@ -1,8 +1,11 @@
 package com.mycompany.domain.management.pdf;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.List;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import net.coobird.thumbnailator.Thumbnails;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
@@ -19,27 +22,29 @@ public class Chart {
     }
 
     public BufferedImage createXYChart(String chartName, List<Double> data,
-            String nameOfXAxis, String nameOfYAxis, int width, int height) {
+            String nameOfXAxis, String nameOfYAxis, int imageWidth, int imageHeight) {
 
         XYChart xyChart = new XYChartBuilder()
                 .xAxisTitle(nameOfXAxis)
                 .yAxisTitle(nameOfYAxis)
-                .width(width)
-                .height(height)
                 .theme(ChartTheme.Matlab)
                 .build();
         XYSeries series = xyChart.addSeries(chartName, data);
         series.setMarker(SeriesMarkers.CIRCLE);
+        BufferedImage bi = BitmapEncoder.getBufferedImage(xyChart);
+        try {
+            bi = Thumbnails.of(bi).size(imageWidth, imageHeight).asBufferedImage();
+        } catch (IOException ex) {
+            Logger.getLogger(Chart.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-        return BitmapEncoder.getBufferedImage(xyChart);
+        return bi;
     }
 
     public BufferedImage createCategoryChart(String chartName, List<Double> xData, List<Double> yData,
-            String nameOfXAxis, String nameOfYAxis, int width, int height) {
+            String nameOfXAxis, String nameOfYAxis, int imageWidth, int imageHeight) {
 
         CategoryChart categoryChart = new CategoryChartBuilder()
-                .width(width)
-                .height(height)
                 .title(chartName)
                 .xAxisTitle(nameOfXAxis)
                 .yAxisTitle(nameOfYAxis)
@@ -47,11 +52,17 @@ public class Chart {
         // Use below for styling purpose
         categoryChart.getStyler().setLegendPosition(LegendPosition.InsideNW);
         categoryChart.getStyler().setHasAnnotations(true);
+
         // categoryChart.getStyler().setDefaultSeriesRenderStyle(CategorySeriesRenderStyle.Stick);
-
         categoryChart.addSeries(chartName, xData, yData);
+        BufferedImage bi = BitmapEncoder.getBufferedImage(categoryChart);
+        try {
+            bi = Thumbnails.of(bi).size(imageWidth, imageHeight).asBufferedImage();
+        } catch (IOException ex) {
+            Logger.getLogger(Chart.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
+        return bi;
 
-        return BitmapEncoder.getBufferedImage(categoryChart);
     }
 }

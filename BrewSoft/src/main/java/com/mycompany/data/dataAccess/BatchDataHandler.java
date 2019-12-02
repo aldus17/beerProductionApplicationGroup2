@@ -2,12 +2,12 @@ package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BatchReport;
-import com.mycompany.crossCutting.objects.MachineData;
+import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.MachineState;
+import com.mycompany.crossCutting.objects.MachineTempData;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
-import com.mycompany.domain.management.ManagementDomain;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -63,23 +63,45 @@ public class BatchDataHandler implements IBatchDataHandler {
     }
 
     @Override
-    public MachineState getMachineState(String prodListID) {
+    public MachineState getMachineState(int prodListID) {
 
-        SimpleSet stateSet = dbConnection.query("SELECT tis.machinestateid, tis.starttimeinstate "
-                + "FROM timeinstate AS tis, productionlist AS pl "
-                + "WHERE pl.productionlistid = 410 "
-                + "ORDER BY starttimeinstate ASC;");
+        /* TEST QUERY IN DATABASE
+        SELECT tis.machinestateid, tis.starttimeinstate, pl.productionlistid
+        FROM timeinstate AS tis, productionlist AS pl
+        WHERE pl.productionlistid = 110
+        ORDER BY starttimeinstate ASC;
+        
+        SELECT *
+        FROM timeinstate AS tis
+        WHERE tis.productionlistid = 109
+        ORDER BY starttimeinstate ASC;
+         */
+        SimpleSet stateSet1 = dbConnection.query("SELECT * "
+                + "FROM timeinstate "
+                + "WHERE productionlistid =? "
+                + "AND starttimeinstate IS NOT NULL "
+                + "ORDER BY starttimeinstate ASC; ", prodListID);
 
-        if (stateSet.isEmpty()) {
+        /*
+        SELECT fbi.dateofcompletion, tis.machinestateid
+        FROM finalbatchinformation AS fbi, timeinstate AS tis
+        WHERE tis.productionlistid = (
+            SELECT machinestateid
+            FROM timeinstate AS tis2, finalbatchinformation AS fbi2
+            WHERE tis2.productionlistid = fbi2.productionlistid)
+        AND tis.brewerymachineid = fbi.brewerymachineid
+         */
+        if (stateSet1.isEmpty()) {
+            System.out.println("stateSet is empty");
             return null;
         } else {
             MachineState machineState = new MachineState("", "");
             List<Object> list = new ArrayList<>();
-            for (int i = 0; i < stateSet.getRows(); i++) {
+            for (int i = 0; i < stateSet1.getRows(); i++) {
                 list.add(
                         machineState = new MachineState(
-                                String.valueOf(stateSet.get(i, "machinestateid")),
-                                String.valueOf(stateSet.get(i, "starttimeinstate"))
+                                String.valueOf(stateSet1.get(i, "machinestateid")),
+                                String.valueOf(stateSet1.get(i, "starttimeinstate"))
                         ));
             }
             machineState.setStateObjList(list);
@@ -136,27 +158,45 @@ public class BatchDataHandler implements IBatchDataHandler {
     WHERE pl.productionlistid = 195 AND pl.brewerymachineid = 1
     GROUP BY pl.temperature, pl.humidity    
      */
-    @Override
-    public MachineData getMachineData(int prodID, int machineID) {
-        SimpleSet prodInfoDataSet = dbConnection.query("SELECT DISTINCT pl.brewerymachineid, pl.temperature, pl.humidity "
+    public MachineTempData getMachineTempData(int prodID, int machineID) {
+        SimpleSet prodInfoDataSet = dbConnection.query("SELECT DISTINCT pl.brewerymachineid, pl.temperature "
                 + "FROM productioninfo AS pl "
-                + "WHERE pl.productionlistid = ? AND pl.brewerymachineid = ? "
-                + "ORDER BY pl.temperature; ",
+                + "WHERE pl.productionlistid = ? AND pl.brewerymachineid = ?; ",
                 prodID, machineID);
         if (prodInfoDataSet.isEmpty()) {
             return null;
         } else {
-            MachineData machineData = new MachineData();
+            MachineTempData machineTempData = new MachineTempData();
             List<Object> list = new ArrayList<>();
             for (int i = 0; i < prodInfoDataSet.getRows(); i++) {
-                list.add(machineData = new MachineData(
+                list.add(machineTempData = new MachineTempData(
                         Integer.valueOf(String.valueOf(prodInfoDataSet.get(i, "brewerymachineid"))),
-                        Double.valueOf(String.valueOf(prodInfoDataSet.get(i, "temperature"))),
+                        Double.valueOf(String.valueOf(prodInfoDataSet.get(i, "temperature"))))
+                );
+            }
+            machineTempData.setMachineTempDataObjList(list);
+            return machineTempData;
+        }
+    }
+
+    public MachineHumiData getMachineHumiData(int prodID, int machineID) {
+        SimpleSet prodInfoDataSet = dbConnection.query("SELECT DISTINCT pl.brewerymachineid, pl.humidity "
+                + "FROM productioninfo AS pl "
+                + "WHERE pl.productionlistid = ? AND pl.brewerymachineid = ?; ",
+                prodID, machineID);
+        if (prodInfoDataSet.isEmpty()) {
+            return null;
+        } else {
+            MachineHumiData machineHumiData = new MachineHumiData();
+            List<Object> list = new ArrayList<>();
+            for (int i = 0; i < prodInfoDataSet.getRows(); i++) {
+                list.add(machineHumiData = new MachineHumiData(
+                        Integer.valueOf(String.valueOf(prodInfoDataSet.get(i, "brewerymachineid"))),
                         Double.valueOf(String.valueOf(prodInfoDataSet.get(i, "humidity"))))
                 );
             }
-            machineData.setMachineDataObjList(list);
-            return machineData;
+            machineHumiData.setMachineHumiDataObjList(list);
+            return machineHumiData;
         }
     }
 
@@ -184,21 +224,26 @@ public class BatchDataHandler implements IBatchDataHandler {
 
     public static void main(String[] args) {
         BatchDataHandler b = new BatchDataHandler();
-        MachineState ms = b.getMachineState("410");
-        ManagementDomain md = new ManagementDomain();
+//        MachineState ms = b.getMachineState("410");
+//        ManagementDomain md = new ManagementDomain();
+//
+//        for (Object o : ms.getStateObjList()) {
+//            String s = o.toString();
+//            System.out.println(s);
+//        }
+//
+//        System.out.println("Test " + md.getDifferenceTimeInState("12:31:22", "13:40:49"));
+//
+//        BatchReport batchReport = b.getBatchReportProductionData(8, 1);
+//        System.out.println("Test\n" + batchReport.toString());
 
-        for (Object o : ms.getStateObjList()) {
+        MachineTempData machineTempData = b.getMachineTempData(195, 1);
+        for (Object o : machineTempData.getMachineTempDataObjList()) {
             String s = o.toString();
             System.out.println(s);
         }
-
-        System.out.println("Test " + md.getDifferenceTimeInState("12:31:22", "13:40:49"));
-
-        BatchReport batchReport = b.getBatchReportProductionData(8, 1);
-        System.out.println("Test\n" + batchReport.toString());
-
-        MachineData machineData = b.getMachineData(195, 1);
-        for (Object o : machineData.getMachineDataObjList()) {
+        MachineHumiData machineHumiData = b.getMachineHumiData(195, 1);
+        for (Object o : machineHumiData.getMachineHumiDataObjList()) {
             String s = o.toString();
             System.out.println(s);
         }

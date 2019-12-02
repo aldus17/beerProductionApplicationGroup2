@@ -17,7 +17,7 @@ public class Batch {
     private StringProperty totalAmount;
     private StringProperty goodAmount;
     private StringProperty defectAmount;
-
+    
     //Queue batch object
     public Batch(String batchID, String type, String totalAmount,
             String deadline, String speedforProduction) {
