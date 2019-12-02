@@ -31,7 +31,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                 + "VALUES(?,?,?,?,?,?)",
                 Integer.parseInt(batchObject.getBatchID().getValue()),
                 Float.parseFloat(batchObject.getType().getValue()),
-                Float.parseFloat(batchObject.getTotalAmount().getValue()),
+                Float.valueOf(batchObject.getTotalAmount().getValue()),
                 Date.valueOf(batchObject.getDeadline().getValue()),
                 Float.parseFloat(batchObject.getSpeedforProduction().getValue()),
                 QUEUED_STATUS.toLowerCase()
@@ -166,5 +166,6 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
          }
         return list;
     }
+
 
 }

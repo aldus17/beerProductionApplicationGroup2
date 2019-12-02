@@ -8,6 +8,7 @@ import com.mycompany.crossCutting.objects.SearchData;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.dataAccess.SearchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
+import com.mycompany.data.interfaces.IManagementData;
 import com.mycompany.data.interfaces.ISearchDataHandler;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
 import java.util.List;
@@ -32,10 +33,14 @@ public class ManagementDomain implements IManagementDomain {
 
     private IBatchDataHandler batchDataHandler;
     private ISearchDataHandler searchDataHandler;
+    private IManagementData managementData;
 
     public ManagementDomain() {
         this.batchDataHandler = new BatchDataHandler();
         this.searchDataHandler = new SearchDataHandler();
+        this.managementData = new BatchDataHandler(); // missing suitable class
+        
+        
     }
 
     /**
@@ -52,8 +57,8 @@ public class ManagementDomain implements IManagementDomain {
         Batch batchWithID = new Batch(
                 createBatchID(batchDataHandler.getLatestBatchID()),
                 idLessBatch.getType().getValue(),
-                idLessBatch.getDeadline().getValue(),
                 idLessBatch.getSpeedforProduction().getValue(),
+                idLessBatch.getDeadline().getValue(),
                 idLessBatch.getTotalAmount().getValue());
         batchDataHandler.insertBatchToQueue(batchWithID);
     }
@@ -70,7 +75,7 @@ public class ManagementDomain implements IManagementDomain {
 
     @Override
     public List<BeerTypes> getBeerTypes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return managementData.getBeerTypes();
     }
 
     public Map<Integer, String> getTimeInStates(String prodListID) {
