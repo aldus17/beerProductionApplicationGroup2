@@ -400,8 +400,6 @@ public class ManagementController implements Initializable {
             textf_CreateBatchOrder_Speed.setEditable(true);
             textf_CreateBatchOrder_Speed.setDisable(false);
         } else {
-            textf_CreateBatchOrder_Speed.setText(""); //test, use next line
-            //textf_CreateBatchOrder_Speed.setText(beerTypes.get(Integer.parseInt(tc_CreatBatchOrder_Type.getText())).getProductionSpeed());
             textf_CreateBatchOrder_Speed.setEditable(false);
             textf_CreateBatchOrder_Speed.setDisable(true);
         }
