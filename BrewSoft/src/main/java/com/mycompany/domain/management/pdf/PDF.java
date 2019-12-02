@@ -5,12 +5,11 @@ import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.MachineTempData;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
-import java.io.File;
+import com.mycompany.domain.management.interfaces.IBatchReportGenerate;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,17 +22,21 @@ import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.util.Matrix;
 
-public class CreatePDF {
+public class PDF implements IBatchReportGenerate {
 
     private PDDocument document;
 
     private List<Double> temperatureDataList = new ArrayList<>();
     private List<Double> humidityDataList = new ArrayList<>();
-    private List<Date> timeList = new ArrayList<>();
     private IBatchDataHandler batchDataHandler;
 
+    public PDF() {
+
+    }
+
     // https://www.tutorialspoint.com/pdfbox/pdfbox_quick_guide.htm
-    public File createNewPDF(int batchID, int prodListID, int machineID) {
+    @Override
+    public PDDocument createNewPDF(int batchID, int prodListID, int machineID) {
         batchDataHandler = new BatchDataHandler();
         BatchReport batchRep = batchDataHandler.getBatchReportProductionData(batchID, machineID);
         MachineTempData machineTempData = batchDataHandler.getMachineTempData(prodListID, machineID);
@@ -63,19 +66,12 @@ public class CreatePDF {
         }
 
         document = new PDDocument();
-        File file = null;
-        try {
-            document.addPage(addPageWithBatchInfo(batchRep));
-            document.addPage(addXYChartToDocument("Temprature for Batch", temperatureDataList, "Point", "Temprature"));
-            document.addPage(addCategoryChartToDocument("Humidity for Batch", countDouble, humidityDataList, "Point", "Humidity"));
 
-            file = savePDObj();
-        } catch (IOException ex) {
-            Logger.getLogger(CreatePDF.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        document.addPage(addPageWithBatchInfo(batchRep));
+        document.addPage(addXYChartToDocument("Temprature for Batch", temperatureDataList, "Point", "Temprature"));
+        document.addPage(addCategoryChartToDocument("Humidity for Batch", countDouble, humidityDataList, "Point", "Humidity"));
 
-        return file;
-
+        return document;
     }
 
     private PDPage addPageWithBatchInfo(BatchReport batchReport) {
@@ -109,7 +105,7 @@ public class CreatePDF {
             System.out.println("BatchInfo added");
 
         } catch (IOException ex) {
-            Logger.getLogger(CreatePDF.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PDF.class.getName()).log(Level.SEVERE, null, ex);
         }
         return page;
     }
@@ -135,7 +131,7 @@ public class CreatePDF {
             contentStream.drawImage(chartImage, -100, 0);
             System.out.println("XYChart added");
         } catch (IOException ex) {
-            Logger.getLogger(CreatePDF.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PDF.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return pdfChart;
@@ -160,27 +156,27 @@ public class CreatePDF {
             contentStream.drawImage(chartImage, 0, 0);
             System.out.println("CategoryChart added");
         } catch (IOException ex) {
-            Logger.getLogger(CreatePDF.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PDF.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return pdfChart;
     }
 
-    public void savePDF() throws IOException {
+    @Override
+    public void savePDF(PDDocument document, String fileName, String directory) throws IOException {
         LocalDateTime myDateObj = LocalDateTime.now();
-        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd_MM_yyyy__HH_mm_ss");
         String formattedDate = myDateObj.format(myFormatObj);
 
-        document.save("Batch_Report_" + formattedDate + ".pdf"); // TODO: Changes Path or it will save it in project folder.
-
+        document.save(directory + "\\" + fileName + formattedDate + ".pdf"); // TODO: Changes Path or it will save it in project folder.
         document.close();
 
     }
 
     public static void main(String[] args) {
-        CreatePDF c = new CreatePDF();
+        PDF c = new PDF();
         c.createNewPDF(8, 117, 1);
-        //c.AddChartToDocument(null, null, null, null);
+
     }
 
 }

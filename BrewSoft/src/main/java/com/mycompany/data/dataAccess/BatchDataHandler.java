@@ -160,8 +160,10 @@ public class BatchDataHandler implements IBatchDataHandler {
      */
     public MachineTempData getMachineTempData(int prodID, int machineID) {
         SimpleSet prodInfoDataSet = dbConnection.query("SELECT DISTINCT pl.brewerymachineid, pl.temperature "
-                + "FROM productioninfo AS pl "
-                + "WHERE pl.productionlistid = ? AND pl.brewerymachineid = ?; ",
+                + "FROM productioninfo AS pl, finalbatchinformation AS fbi "
+                + "WHERE pl.productionlistid =? AND "
+                + "pl.brewerymachineid =? AND "
+                + "fbi.productionlistid = pl.productionlistid; ",
                 prodID, machineID);
         if (prodInfoDataSet.isEmpty()) {
             return null;
@@ -181,8 +183,10 @@ public class BatchDataHandler implements IBatchDataHandler {
 
     public MachineHumiData getMachineHumiData(int prodID, int machineID) {
         SimpleSet prodInfoDataSet = dbConnection.query("SELECT DISTINCT pl.brewerymachineid, pl.humidity "
-                + "FROM productioninfo AS pl "
-                + "WHERE pl.productionlistid = ? AND pl.brewerymachineid = ?; ",
+                + "FROM productioninfo AS pl, finalbatchinformation AS fbi "
+                + "WHERE pl.productionlistid =? AND "
+                + "pl.brewerymachineid =? AND "
+                + "fbi.productionlistid = pl.productionlistid; ",
                 prodID, machineID);
         if (prodInfoDataSet.isEmpty()) {
             return null;
@@ -237,12 +241,12 @@ public class BatchDataHandler implements IBatchDataHandler {
 //        BatchReport batchReport = b.getBatchReportProductionData(8, 1);
 //        System.out.println("Test\n" + batchReport.toString());
 
-        MachineTempData machineTempData = b.getMachineTempData(195, 1);
+        MachineTempData machineTempData = b.getMachineTempData(117, 1);
         for (Object o : machineTempData.getMachineTempDataObjList()) {
             String s = o.toString();
             System.out.println(s);
         }
-        MachineHumiData machineHumiData = b.getMachineHumiData(195, 1);
+        MachineHumiData machineHumiData = b.getMachineHumiData(117, 1);
         for (Object o : machineHumiData.getMachineHumiDataObjList()) {
             String s = o.toString();
             System.out.println(s);

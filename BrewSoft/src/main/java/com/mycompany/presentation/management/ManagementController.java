@@ -5,17 +5,16 @@ import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.domain.management.ManagementDomain;
 import com.mycompany.domain.management.interfaces.IBatchReportGenerate;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
+import com.mycompany.domain.management.pdf.PDF;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,9 +29,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.swing.JOptionPane;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -151,6 +151,7 @@ public class ManagementController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         batcheObservableList = FXCollections.observableArrayList();
+        batcheObservableList.add(new Batch("117", "8", "1", "2", "2019-11-12 00:00:00.000", "2019-11-12", "2019-11-12 00:00:00.000", "300", "12345", "10345", "2000"));
         queuedBatchesObservableList = FXCollections.observableArrayList();
         queuedBatcheslist = new ArrayList<>();
 
@@ -285,46 +286,53 @@ public class ManagementController implements Initializable {
     }
 
     @FXML
-    private void GeneratingBatchreportAction(ActionEvent e) {
+    private void generatingBatchreportAction(ActionEvent e) {
         Stage primaryStage = new Stage();
         // TODO: Use createPDF from Domain
         // Extract batch id, machine id, production list ID, from the the list to use in the createPDF method
         // generated batchreport pdf will then be created, and needs to be loaded in.
+        if (e.getSource() == btn_generateBatch) {
 
-        tw_SearchTableCompletedBatches.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-            @Override
-            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                if (tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem() != null) {
+            tw_SearchTableCompletedBatches.setOnMouseClicked((MouseEvent event) -> {
+                if (e.getSource() == btn_generateBatch) {
+                    int index = tw_SearchTableCompletedBatches.getSelectionModel().getSelectedIndex();
+                    Batch batch = tw_SearchTableCompletedBatches.getItems().get(index);
 
-                    int batchID = Integer.valueOf(tw_SearchTableCompletedBatches.getSelectionModel().getSelectedItem().getBatchID().getValue());
-                    int machineID = Integer.valueOf(tw_SearchTableCompletedBatches.getSelectionModel().getSelectedItem().getMachineID().getValue());
-                    int prodListID = Integer.valueOf(tw_SearchTableCompletedBatches.getSelectionModel().getSelectedItem().getProductionListID().getValue());
-                    if (e.getSource() == btn_generateBatch) {
-                        File file = ibrg.createNewPDF(batchID, prodListID, machineID);
-                        DirectoryChooser directoryChooser = new DirectoryChooser();
-                        File selectedDirectory = directoryChooser.showDialog(primaryStage);
+                    System.out.println("Test1");
+                    FileChooser fileChooser = new FileChooser();
+                    fileChooser.setTitle("Save Report");
+                    fileChooser.setInitialFileName("BatchReport"); // Ignore user filename input
+                    fileChooser.getExtensionFilters().addAll(
+                            new FileChooser.ExtensionFilter("pdf Files", "*.pdf"),
+                            new FileChooser.ExtensionFilter("Text Files", "*.txt"));
 
-                        if (selectedDirectory == null) {
-                            //No Directory selected
-                        } else {
-                            System.out.println(selectedDirectory.getAbsolutePath());
+                    try {
+                        File file = fileChooser.showSaveDialog(primaryStage);
+                        if (file != null) {
+                            File dir = file.getParentFile();    //gets the selected directory
+                            //update the file chooser directory to user selected so the choice is "remembered"
+                            fileChooser.setInitialDirectory(dir);
+                            System.out.println(fileChooser.getInitialDirectory().getAbsolutePath());
+                            ibrg = new PDF();
+                            System.out.println(Integer.valueOf(batch.getBatchID().getValue()) + " "
+                                    + Integer.valueOf(batch.getProductionListID().getValue()) + " "
+                                    + Integer.valueOf(batch.getMachineID().getValue()));
+                            PDDocument doc = ibrg.createNewPDF(
+                                    Integer.valueOf(batch.getBatchID().getValue()),
+                                    Integer.valueOf(batch.getProductionListID().getValue()),
+                                    Integer.valueOf(batch.getMachineID().getValue()));
+
+                            ibrg.savePDF(doc, fileChooser.getInitialFileName(), fileChooser.getInitialDirectory().getAbsolutePath());
+
                         }
-
+                    } catch (NumberFormatException ex) {
+                        Logger.getLogger(ManagementController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (IOException ex) {
+                        Logger.getLogger(ManagementController.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
-            }
+            });
         }
-        );
-    }
-
-    public void savePDF(PDDocument document) throws IOException {
-        LocalDateTime myDateObj = LocalDateTime.now();
-        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        String formattedDate = myDateObj.format(myFormatObj);
-
-        document.save("Batch_Report_" + formattedDate + ".pdf"); // TODO: Changes Path or it will save it in project folder.
-        document.close();
-
     }
 
     private void InitializeObservableBatchList() {
@@ -342,6 +350,7 @@ public class ManagementController implements Initializable {
         tc_CompletedBatches_TotalAmount.setCellValueFactory(callData -> callData.getValue().getTotalAmount());
         tc_CompletedBatches_GoodAmount.setCellValueFactory(callData -> callData.getValue().getGoodAmount());
         tc_CompletedBatches_DefectAmount.setCellValueFactory(callData -> callData.getValue().getDefectAmount());
+
     }
 
     private void InitializeObservableQueueList() {
