@@ -1,19 +1,19 @@
 package com.mycompany.presentation.breweryWorker;
 
-import com.mycompany.domain.breweryWorker.interfaces.IMachineControl;
-import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
 import com.mycompany.domain.breweryWorker.MachineController;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
+import com.mycompany.domain.breweryWorker.interfaces.IMachineControl;
+import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.application.Platform;
 import javafx.scene.layout.AnchorPane;
 
 public class BrewWorker_UI_Controller implements Initializable {
@@ -42,8 +42,8 @@ public class BrewWorker_UI_Controller implements Initializable {
     @FXML
     private AnchorPane AP_overlay;
     
-    private final IMachineSubscribe subscriber = new MachineSubscriber("127.0.0.1", 4840);
-    private final IMachineControl controls = new MachineController("127.0.0.1", 4840, subscriber);
+    private final IMachineSubscribe subscriber = new MachineSubscriber("192.168.0.122", 4840);
+    private final IMachineControl controls = new MachineController("192.168.0.122", 4840, subscriber);
     
 
     @Override

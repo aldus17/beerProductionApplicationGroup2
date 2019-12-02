@@ -67,5 +67,4 @@ public interface IMachineSubscribe {
     public final static String MANUAL_STOP = "12";
     public final static String MOTOR_POWER_LOSS = "13";
     public final static String MANUAL_ABORT = "14";
-
 }

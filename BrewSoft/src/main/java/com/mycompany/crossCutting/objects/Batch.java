@@ -6,17 +6,17 @@ import javafx.beans.property.StringProperty;
 public class Batch {
 
     //StringProperty representations
-    private StringProperty productionListID;
-    private StringProperty BatchID;
-    private StringProperty MachineID;
-    private StringProperty type;
-    private StringProperty dateofCreation;
-    private StringProperty deadline;
-    private StringProperty dateofCompletion;
-    private StringProperty speedforProduction;
-    private StringProperty totalAmount;
-    private StringProperty goodAmount;
-    private StringProperty defectAmount;
+    private StringProperty productionListID; // int 
+    private StringProperty BatchID; //int
+    private StringProperty MachineID; //int 
+    private StringProperty type; //int 
+    private StringProperty dateofCreation; //string
+    private StringProperty deadline; //string
+    private StringProperty dateofCompletion; //string
+    private StringProperty speedforProduction; //float
+    private StringProperty totalAmount; //int
+    private StringProperty goodAmount; //float lav navn om til acceptedcount
+    private StringProperty defectAmount; //float
 
     //Queue batch object
     public Batch(String batchID, String type, String totalAmount,

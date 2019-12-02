@@ -10,12 +10,11 @@ public class TemporaryProductionBatch {
     private float totalAmount;
     private LocalDate DateForStop;
 
-    public TemporaryProductionBatch(int productionListId, float acceptedCount, float defectCount, float totalAmount, LocalDate DateForStop) {
+    public TemporaryProductionBatch(int productionListId, float acceptedCount, float defectCount) {
         this.productionListId = productionListId;
         this.acceptedCount = acceptedCount;
         this.defectCount = defectCount;
-        this.totalAmount = totalAmount;
-        this.DateForStop = DateForStop;
+
     }
 
     public TemporaryProductionBatch(int productionListId, float acceptedCount, float defectCount, float totalAmount) {

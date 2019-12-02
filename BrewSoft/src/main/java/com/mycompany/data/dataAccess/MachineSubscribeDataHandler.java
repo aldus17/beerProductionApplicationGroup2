@@ -6,7 +6,6 @@ import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import java.sql.Date;
-import java.time.LocalDate;
 
 public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandler {
 
@@ -56,18 +55,19 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     @Override
     public Batch getNextBatch() {
         Batch batch = null;
-        SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'Queued' OR status = 'stopped' ORDER BY deadline ASC limit 1"); // hent queue
+        SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'queued' OR status = 'stopped' ORDER BY deadline ASC limit 1"); // hent queue
 
         if (batchSet.isEmpty()) {
             return null;
-        } else if (batchSet.get(0, "status") == "stopped") {
+        } else if ("stopped".equals(String.valueOf(batchSet.get(0, "status")))) {
             TemporaryProductionBatch tpb = getTemporaryProductionBatch((int) batchSet.get(0, "productionlistid"));
+            System.out.println("new count:" + tpb.getAcceptedCount());
             for (int i = 0; i < batchSet.getRows(); i++) {
                 batch = new Batch(
                         String.valueOf(batchSet.get(i, "productionListID")),
                         String.valueOf(batchSet.get(i, "batchid")),
                         String.valueOf(batchSet.get(i, "productid")),
-                        String.valueOf(((int) batchSet.get(i, "productamount")) - tpb.getAcceptedCount()),
+                        String.valueOf((Float.parseFloat(String.valueOf(batchSet.get(i, "productamount")))) - tpb.getAcceptedCount()),
                         String.valueOf(batchSet.get(i, "deadline")),
                         String.valueOf(batchSet.get(i, "speed")),
                         String.valueOf(batchSet.get(i, "dateofcreation"))
@@ -98,26 +98,23 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void insertStoppedProductionToTempTable(TemporaryProductionBatch tempBatch) {
-        connection.queryUpdate("INSERT INTO temporaryproduction (productionlistid, acceptedcount,defectcount,dateforstop) VALUES (?,?,?,?)",
+        connection.queryUpdate("INSERT INTO temporaryproduction (productionlistid, acceptedcount,defectcount) VALUES (?,?,?)",
                 tempBatch.getProductionListId(),
                 tempBatch.getAcceptedCount(),
-                tempBatch.getDefectCount(),
-                tempBatch.getDateForStop());
+                tempBatch.getDefectCount());
     }
 
     private TemporaryProductionBatch getTemporaryProductionBatch(int productionlistid) {
         TemporaryProductionBatch tpb = null;
-        SimpleSet set = connection.query("SELECT tp.*, pl.productamount FROM temporaryproduction AS tp, productiomlist AS pl WHERE tp.productionlistid = ?", productionlistid); // hent queue
+        SimpleSet set = connection.query("SELECT tp.*, pl.productamount FROM temporaryproduction AS tp, productionlist AS pl WHERE tp.productionlistid = ?", productionlistid); // hent queue
         if (set.isEmpty()) {
             return null;
         } else {
             for (int i = 0; i < set.getRows(); i++) {
                 tpb = new TemporaryProductionBatch(
                         productionlistid,
-                        (float) set.get(i, "acceptedcount"),
-                        (float) set.get(i, "defectcount"),
-                        (float) set.get(i, "totalcount"),
-                        (LocalDate) set.get(i, "dateforstop"));
+                        Float.parseFloat(String.valueOf(set.get(i, "acceptedcount"))),
+                        Float.parseFloat(String.valueOf(set.get(i, "defectcount"))));
             }
             return tpb;
         }

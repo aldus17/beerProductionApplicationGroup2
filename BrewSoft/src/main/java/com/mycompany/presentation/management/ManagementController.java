@@ -29,14 +29,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import com.mycompany.domain.management.interfaces.IManagementDomain;
-import java.util.ArrayList;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.control.CheckBox;
 import javafx.scene.paint.Color;
 import javax.swing.JOptionPane;
-import sun.security.krb5.internal.APOptions;
 
 public class ManagementController implements Initializable {
 
@@ -283,12 +277,10 @@ public class ManagementController implements Initializable {
             lbl_CreateBatchOrder_error.setText("");
             if (Float.valueOf(amounttoProduce) >= 0.0f && Float.valueOf(amounttoProduce) < 65535.0f) {
                 managementDomain.createBatch(new Batch("", typeofProduct, amounttoProduce, deadline, speed));
-                System.out.println("Batch created");
                 updateQueuedArrayList();
                 updateObservableOrderList(orderListDate);
 
             } else {
-                System.out.println("Invalid amount");
                 JOptionPane.showMessageDialog(null, "Invalid number: Cannot exceed 65535");
             }
         } else {
