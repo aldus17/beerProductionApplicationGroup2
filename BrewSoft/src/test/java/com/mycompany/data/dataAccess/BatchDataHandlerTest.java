@@ -5,10 +5,15 @@
  */
 package com.mycompany.data.dataAccess;
 
+import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.MachineState;
+import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -82,7 +87,7 @@ public class BatchDataHandlerTest {
 //    @Test
 //    public void testGetMachineState() {
 //        System.out.println("getMachineState");
-//        String prodListID = "410";
+//        String prodListID = "";
 //        BatchDataHandler instance = new BatchDataHandler();
 //        MachineState expResult = null;
 //        MachineState result = instance.getMachineState(prodListID);

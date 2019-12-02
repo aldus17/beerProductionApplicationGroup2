@@ -2,7 +2,6 @@ package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BatchReport;
-import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.crossCutting.objects.MachineTempData;
@@ -11,7 +10,6 @@ import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class BatchDataHandler implements IBatchDataHandler {
@@ -63,8 +61,6 @@ public class BatchDataHandler implements IBatchDataHandler {
             return new Integer(String.valueOf(batchSet.get(0, "batchid")));
         }
     }
-    
-    
 
     @Override
     public MachineState getMachineState(int prodListID) {
@@ -85,7 +81,7 @@ public class BatchDataHandler implements IBatchDataHandler {
                 + "WHERE productionlistid =? "
                 + "AND starttimeinstate IS NOT NULL "
                 + "ORDER BY starttimeinstate ASC; ", prodListID);
-        
+
         /*
         SELECT fbi.dateofcompletion, tis.machinestateid
         FROM finalbatchinformation AS fbi, timeinstate AS tis
@@ -94,7 +90,7 @@ public class BatchDataHandler implements IBatchDataHandler {
             FROM timeinstate AS tis2, finalbatchinformation AS fbi2
             WHERE tis2.productionlistid = fbi2.productionlistid)
         AND tis.brewerymachineid = fbi.brewerymachineid
-        */
+         */
         if (stateSet1.isEmpty()) {
             System.out.println("stateSet is empty");
             return null;
@@ -112,7 +108,6 @@ public class BatchDataHandler implements IBatchDataHandler {
             return machineState;
         }
     }
-
 
     /*
     After a finished batch production the MES must be able to produce a batch report of the produced batch.

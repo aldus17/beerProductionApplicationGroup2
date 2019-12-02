@@ -83,35 +83,24 @@ public class ManagementDomain implements IManagementDomain {
 
         for (Object object : ms.getStateObjList()) {
             msl.add((MachineState) object);
-
         }
         System.out.println(Arrays.toString(msl.toArray()));
         Collections.sort(msl, Comparator.comparing(MachineState::getTimeInState));
-
-        MachineState firstObj = msl.get(0);
-
+        
         System.out.println(Arrays.toString(msl.toArray()));
         for (int i = 1; i < msl.size(); i++) {
             // tag første object, gemmer det object i variable, checke den variable mod det næste object, hvis det samme continue
-
+            MachineState firstObj = msl.get(i - 1);
             MachineState secondObj = msl.get(i);
-//            System.out.println("firstObj: " + firstObj.toString());
-//            System.out.println("secondObj: " + secondObj.toString());
-            String diff = getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState());
-            if (finalTimeInStatesList.containsKey(Integer.valueOf(firstObj.getMachinestateID()))) {
-                String t = finalTimeInStatesList.get(Integer.valueOf(firstObj.getMachinestateID()));
-                diff = getAdditionTimeInState(diff, t);
 
-            }
-            finalTimeInStatesList.put(Integer.valueOf(firstObj.getMachinestateID()), diff);
-//            System.out.println(getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState()));
             if (!firstObj.getMachinestateID().equals(secondObj.getMachinestateID())) {
+                finalTimeInStatesList.put(Integer.valueOf(firstObj.getMachinestateID()), getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState()));
+            } else {
 
-                firstObj = msl.get(i);
             }
         }
-
-        return finalTimeInStatesList;
+        System.out.println(finalTimeInStatesList.toString());
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
     }
 
@@ -125,6 +114,9 @@ public class ManagementDomain implements IManagementDomain {
             Date date2 = format.parse(stateValue2);
             difference = date2.getTime() - date1.getTime();
 
+//            Date differenceInTime = new Date(difference);
+//            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+//            formatted = formatter.format(differenceInTime);
         } catch (ParseException ex) {
             System.out.println("The beginning of the specified string cannot be parsed");
             Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
@@ -132,41 +124,32 @@ public class ManagementDomain implements IManagementDomain {
         long seconds = (difference / 1000) % 60;
         long minutes = (difference / (1000 * 60)) % 60;
         long hours = difference / (1000 * 60 * 60);
-
+//        long s = difference % 60;
+//        long m = (difference / 60) % 60;
+//        long h = (difference / (60 * 60)) % 24;
+//        return String.format("%d:%02d:%02d", h, m, s);
         return String.format("%02d:%02d:%02d", hours, minutes, seconds); //02d e.g. 01 or 00 or 22
 //        return formatted;
     }
 
     public String getAdditionTimeInState(String stateValue1, String stateValue2) {
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+        long difference = 0;
+        try {
 
-        String[] s1 = stateValue1.split(":");
-        String[] s2 = stateValue2.split(":");
+            Date date1 = format.parse(stateValue1);
+            Date date2 = format.parse(stateValue2);
+            difference = date2.getTime() + date1.getTime();
 
-        int hours = Integer.valueOf(s1[0]) + Integer.valueOf(s2[0]);
-        int minutes = Integer.valueOf(s1[1]) + Integer.valueOf(s2[1]);
-
-        int seconds = Integer.valueOf(s1[2]) + Integer.valueOf(s2[2]);
-
-        if (seconds > 60) {
-            int remainer = seconds % 60;
-            minutes += (seconds - remainer) / 60;
-            seconds = remainer;
+        } catch (ParseException ex) {
+            System.out.println("The beginning of the specified string cannot be parsed");
+            Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
         }
-        if (minutes > 60) {
-            int remainer = minutes & 60;
-            hours += (minutes - remainer) / 60;
-            minutes = remainer;
-        }
-        String daysIncluded = "";
-        int days = 0;
 
-        if (hours > 24) {
-            int remainer = hours % 24;
-            days += (hours - remainer) / 24;
-            hours = remainer;
-            daysIncluded = String.format("%02d:%02d:%02d:%02d", days, hours, minutes, seconds);
-            return daysIncluded;
-        }
+        long seconds = (difference / 1000) % 60;
+        long minutes = (difference / (1000 * 60)) % 60;
+        long hours = difference / (1000 * 60 * 60);
+
         return String.format("%02d:%02d:%02d", hours, minutes, seconds); //02d e.g. 01 or 00 or 22
     }
 
@@ -194,14 +177,5 @@ public class ManagementDomain implements IManagementDomain {
 //
 //        System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
 //    }
-
-        Map<Integer, String> testMap = new TreeMap<>();
-        testMap = md.getTimeInStates(410);
-
-        System.out.println(testMap.toString());
-        System.out.println("Test Addition: " + md.getAdditionTimeInState("13:10:10", "12:10:10"));
-        System.out.println("Test Get difference " + md.getDifferenceTimeInState("12:03:05", "13:05:10"));
-
-    }
 
 }
