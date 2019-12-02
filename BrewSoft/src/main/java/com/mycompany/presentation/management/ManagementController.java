@@ -195,7 +195,7 @@ public class ManagementController implements Initializable {
             setVisibleAnchorPane(ap_ProductionQueueLayout);
             updateQueuedArrayList();
             updateObservableQueueudList();
-            filterQueuedList();
+            enableSearchQueuedList();
             btn_Edit.setDisable(true);
             
             //Sets values in the text fields on the edit page in the system
@@ -403,7 +403,7 @@ public class ManagementController implements Initializable {
      * Updates the observable queued list.
      * Initializes the queued batch tableview
      * Makes sure that you can live search the queued list, 
-     * by calling filterQueuedList
+     * by calling enableSearchQueuedList
      */
     private void updateObservableQueueudList() {
         if (!queuedBatcheObservableList.isEmpty()) {
@@ -413,7 +413,7 @@ public class ManagementController implements Initializable {
             queuedBatcheObservableList.add(b);
         }
         InitializeObservableQueueList();
-        filterQueuedList();
+        enableSearchQueuedList();
     }
 
     @FXML
@@ -422,7 +422,7 @@ public class ManagementController implements Initializable {
     }
     
     //Action handler for when you are done editing a batch.
-    //Saves the edited batch, pulls a new list with queued batches from the database
+    //Saves the edited batch to database, pulls a new list with queued batches from the database
     //updates the tableviews throughout the system.
     @FXML
     private void onCompleteEditActionHandler(ActionEvent event) {
@@ -440,13 +440,13 @@ public class ManagementController implements Initializable {
         rb_QueuedBatchID.setSelected(false);
         rb_QueuedDeadline.setSelected(false);
         text_SearchProductionQueue.clear();
-        filterQueuedList();
+        enableSearchQueuedList();
         setVisibleAnchorPane(ap_ProductionQueueLayout);
     }
     /**
      * Adds support for live search to the queued batch list. 
      */
-    private void filterQueuedList() {
+    private void enableSearchQueuedList() {
         // 1. Wrap the ObservableList in a FilteredList (initially display all data).
         FilteredList<Batch> filteredData = new FilteredList<>(queuedBatcheObservableList, p -> true);
         // 2. Set the filter Predicate whenever the filter changes.
@@ -503,7 +503,7 @@ public class ManagementController implements Initializable {
         }
     }
     
-    //Sets the live search to react to batc ID
+    //Sets the live search to search for batch ID
     @FXML
     private void onQueued_RbBatchIDActionhandler(ActionEvent event) {
         FilteredList<Batch> filteredData = new FilteredList<>(queuedBatcheObservableList, p -> true);
@@ -524,7 +524,7 @@ public class ManagementController implements Initializable {
         tw_SearchTableProductionQueue.setItems(sortedData);
     }
     
-    //Sets the live search to react to deadline
+    //Sets the live search to search for deadline
     @FXML
     private void onQueued_RbDeadlineActionhandler(ActionEvent event) {
         FilteredList<Batch> filteredData = new FilteredList<>(queuedBatcheObservableList, p -> true);
