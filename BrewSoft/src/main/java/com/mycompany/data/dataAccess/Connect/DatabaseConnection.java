@@ -61,7 +61,6 @@ public class DatabaseConnection {
                 while (rs.next()) {
 
                     int count = rs.getMetaData().getColumnCount();
-                    // Bonus points for neat looking lines, right?
                     String[] labels = new String[count];
                     Object[] objcts = new Object[count];
                     

@@ -29,7 +29,9 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
@@ -98,7 +100,6 @@ public class ManagementController implements Initializable {
     private Button btn_SearchCompletedBatches;
     @FXML
     private TextField textf_CreateBatchOrder_AmountToProduces;
-    @FXML
     private TextField textf_CreateBatchOrder_TypeofProduct;
     @FXML
     private TextField textf_CreateBatchOrder_Speed;
@@ -142,7 +143,6 @@ public class ManagementController implements Initializable {
     private TextField tf_SpeedEditBatch;
     @FXML
     private TextField tf_AmountToProduceEditBatch;
-    @FXML
     private TextField tf_TypeOfProductEditBatch;
 
     // Class calls
@@ -164,6 +164,10 @@ public class ManagementController implements Initializable {
     private RadioButton rb_QueuedBatchID;
     @FXML
     private RadioButton rb_QueuedDeadline;
+    @FXML
+    private ComboBox<BeerTypes> cb_beerType;
+    @FXML
+    private ComboBox<BeerTypes> cb_beertypeCreateBatch;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -178,6 +182,8 @@ public class ManagementController implements Initializable {
         InitializeObservableQueueList();
         InitializeObervableProductionList();
 
+        updateQueuedArrayList();
+        updateObservableQueueudList();
         lv_CreateBatchOrder_TypeofBeer.setPlaceholder(new Label());
         lv_CreateBatchOrder_TypeofBeer.setItems(beerTypesObservableList);
 
@@ -187,31 +193,50 @@ public class ManagementController implements Initializable {
         dp_CreateBatchOrder.setValue(productionListDate);
         btn_Edit.setDisable(true);
 
+        beerTypes = managementDomain.getBeerTypes();
+        beerTypes.forEach((beer) -> {
+            beerTypesObservableList.add(beer);
+        });
+
+        cb_beerType.setItems(beerTypesObservableList);
+        cb_beertypeCreateBatch.setItems(beerTypesObservableList);
+        //Sets values in the text fields on the edit page in the system
+        tw_SearchTableProductionQueue.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                if (tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem() != null) {
+                    selectedQueuedBatch = tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem();
+                    if (tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getType().getValue().equalsIgnoreCase("0")) {
+                        cb_beerType.getSelectionModel().select(0);
+                    } else if (tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getType().getValue().equalsIgnoreCase("1")) {
+                        cb_beerType.getSelectionModel().select(1);
+                    } else if (tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getType().getValue().equalsIgnoreCase("2")) {
+                        cb_beerType.getSelectionModel().select(2);
+                    } else if (tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getType().getValue().equalsIgnoreCase("3")) {
+                        cb_beerType.getSelectionModel().select(3);
+                    } else if (tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getType().getValue().equalsIgnoreCase("4")) {
+                        cb_beerType.getSelectionModel().select(4);
+                    } else if (tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getType().getValue().equalsIgnoreCase("5")) {
+                        cb_beerType.getSelectionModel().select(5);
+                    }
+                    tf_AmountToProduceEditBatch.setText(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getTotalAmount().getValue());
+                    tf_SpeedEditBatch.setText(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getSpeedforProduction().getValue());
+                    dp_EditBatch.setValue(LocalDate.parse(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getDeadline().getValue()));
+                    btn_Edit.setDisable(false);
+                }
+            }
+        });
+        
     }
 
     @FXML
     private void MenuItemChangesAction(ActionEvent event) {
         if (event.getSource() == mi_ProductionQueue) {
             setVisibleAnchorPane(ap_ProductionQueueLayout);
-            updateQueuedArrayList();
+            //updateQueuedArrayList();
             updateObservableQueueudList();
             enableSearchQueuedList();
             btn_Edit.setDisable(true);
-            
-            //Sets values in the text fields on the edit page in the system
-            tw_SearchTableProductionQueue.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
-                @Override
-                public void changed(ObservableValue observable, Object oldValue, Object newValue) {
-                    if (tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem() != null) {
-                        selectedQueuedBatch = tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem();
-                        tf_TypeOfProductEditBatch.setText(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getType().getValue());
-                        tf_AmountToProduceEditBatch.setText(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getTotalAmount().getValue());
-                        tf_SpeedEditBatch.setText(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getSpeedforProduction().getValue());
-                        dp_EditBatch.setValue(LocalDate.parse(tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem().getDeadline().getValue()));
-                        btn_Edit.setDisable(false);
-                    }
-                }
-            });
         }
         if (event.getSource() == mi_CompletedBatches) {
             setVisibleAnchorPane(ap_CompletedBatchesLayout);
@@ -225,17 +250,29 @@ public class ManagementController implements Initializable {
                 @Override
                 public void changed(ObservableValue observable, Object oldValue, Object newValue) {
                     if (tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem() != null) {
-                        textf_CreateBatchOrder_TypeofProduct.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getType().getValue());
+                        if (tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getType().getValue().equalsIgnoreCase("0")) {
+                            cb_beertypeCreateBatch.getSelectionModel().select(0);
+                        } else if (tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getType().getValue().equalsIgnoreCase("1")) {
+                            cb_beertypeCreateBatch.getSelectionModel().select(1);
+                        } else if (tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getType().getValue().equalsIgnoreCase("2")) {
+                            cb_beertypeCreateBatch.getSelectionModel().select(2);
+                        } else if (tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getType().getValue().equalsIgnoreCase("3")) {
+                            cb_beertypeCreateBatch.getSelectionModel().select(3);
+                        } else if (tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getType().getValue().equalsIgnoreCase("4")) {
+                            cb_beertypeCreateBatch.getSelectionModel().select(4);
+                        } else if (tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getType().getValue().equalsIgnoreCase("5")) {
+                            cb_beertypeCreateBatch.getSelectionModel().select(5);
+                        }
                         textf_CreateBatchOrder_AmountToProduces.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getTotalAmount().getValue());
                         textf_CreateBatchOrder_Speed.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getSpeedforProduction().getValue());
                     }
                 }
             });
-            beerTypes = managementDomain.getBeerTypes();
+            //beerTypes = managementDomain.getBeerTypes();
 
-            beerTypes.forEach((beer) -> {
-                beerTypesObservableList.add(beer);
-            });
+//            beerTypes.forEach((beer) -> {
+//                beerTypesObservableList.add(beer);
+//            });
             lv_CreateBatchOrder_TypeofBeer.refresh();
         }
         if (event.getSource() == mi_ShowOEE) {
@@ -252,7 +289,6 @@ public class ManagementController implements Initializable {
             batches = managementDomain.batchObjects("CompletedBatches", text_SearchCompletedBarches.getText());
             tw_SearchTableCompletedBatches.refresh();
         }
-
         if (event.getSource() == btn_SearchProductionQueue) {
             updateObservableQueueudList();
 //            batches = managementDomain.batchObjects("BatchesinQueue", text_SearchProductionQueue.getText());
@@ -280,7 +316,7 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void CreateBatchAction(ActionEvent event) {
-        String typeofProduct = textf_CreateBatchOrder_TypeofProduct.getText();
+        String typeofProduct = String.valueOf(cb_beertypeCreateBatch.getSelectionModel().getSelectedItem().getIndexNumber());
         String amounttoProduce = textf_CreateBatchOrder_AmountToProduces.getText();
         String speed = textf_CreateBatchOrder_Speed.getText();
         String deadline = dp_CreateBatchOrder.getValue().toString();
@@ -356,7 +392,7 @@ public class ManagementController implements Initializable {
         tc_CreatBatchOrder_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
         tc_CreatBatchOrder_ProductionTime.setCellValueFactory(callData -> callData.getValue().CalulateProductionTime());
     }
-    
+
     @FXML
     private void toggleSpeed(ActionEvent event) {
 
@@ -370,10 +406,10 @@ public class ManagementController implements Initializable {
             textf_CreateBatchOrder_Speed.setDisable(true);
         }
     }
-    
+
     /**
      * Pulls all the queued bathces from the productionlist in the database.
-     * Should be called everytime something is updated in the ordertable.
+     * Should be called everytime a batch is updated.
      */
     private void updateQueuedArrayList() {
         if (!queuedBathchesList.isEmpty()) {
@@ -381,10 +417,11 @@ public class ManagementController implements Initializable {
         }
         queuedBathchesList = managementDomain.getQueuedBatches();
     }
-    
+
     /**
      * Updates the observable production list based on a date, so that you only
      * see bathces for the selected date.
+     *
      * @param dateToCompare is of type localdate.
      */
     private void updateObservableProductionList(LocalDate dateToCompare) {
@@ -398,12 +435,11 @@ public class ManagementController implements Initializable {
         }
         InitializeObervableProductionList();
     }
-    
+
     /**
-     * Updates the observable queued list.
-     * Initializes the queued batch tableview
-     * Makes sure that you can live search the queued list, 
-     * by calling enableSearchQueuedList
+     * Updates the observable queued list. Initializes the queued batch
+     * tableview Makes sure that you can live search the queued list, by calling
+     * enableSearchQueuedList
      */
     private void updateObservableQueueudList() {
         if (!queuedBatcheObservableList.isEmpty()) {
@@ -420,7 +456,7 @@ public class ManagementController implements Initializable {
     private void onEditSelectedBatch(ActionEvent event) {
         setVisibleAnchorPane(ap_editBatch);
     }
-    
+
     //Action handler for when you are done editing a batch.
     //Saves the edited batch to database, pulls a new list with queued batches from the database
     //updates the tableviews throughout the system.
@@ -429,7 +465,7 @@ public class ManagementController implements Initializable {
         Batch oldBatch = selectedQueuedBatch;
         Batch newBatch = new Batch(oldBatch.getProductionListID().getValue(),
                 oldBatch.getBatchID().getValue(),
-                tf_TypeOfProductEditBatch.getText(),
+                cb_beerType.getSelectionModel().getSelectedItem().getIndexNumber(),
                 tf_AmountToProduceEditBatch.getText(), dp_EditBatch.getValue().toString(),
                 tf_SpeedEditBatch.getText(), oldBatch.getDateofCreation().getValue());
 
@@ -443,8 +479,9 @@ public class ManagementController implements Initializable {
         enableSearchQueuedList();
         setVisibleAnchorPane(ap_ProductionQueueLayout);
     }
+
     /**
-     * Adds support for live search to the queued batch list. 
+     * Adds support for live search to the queued batch list.
      */
     private void enableSearchQueuedList() {
         // 1. Wrap the ObservableList in a FilteredList (initially display all data).
@@ -502,7 +539,7 @@ public class ManagementController implements Initializable {
             ap_editBatch.setVisible(true);
         }
     }
-    
+
     //Sets the live search to search for batch ID
     @FXML
     private void onQueued_RbBatchIDActionhandler(ActionEvent event) {
@@ -523,7 +560,7 @@ public class ManagementController implements Initializable {
         sortedData.comparatorProperty().bind(tw_SearchTableProductionQueue.comparatorProperty());
         tw_SearchTableProductionQueue.setItems(sortedData);
     }
-    
+
     //Sets the live search to search for deadline
     @FXML
     private void onQueued_RbDeadlineActionhandler(ActionEvent event) {
@@ -543,5 +580,11 @@ public class ManagementController implements Initializable {
         SortedList<Batch> sortedData = new SortedList<>(filteredData);
         sortedData.comparatorProperty().bind(tw_SearchTableProductionQueue.comparatorProperty());
         tw_SearchTableProductionQueue.setItems(sortedData);
+    }
+
+    @FXML
+    private void comboboxAction(ActionEvent event) {
+        textf_CreateBatchOrder_Speed.setText(String.valueOf(cb_beertypeCreateBatch.getSelectionModel().getSelectedItem().getProductionSpeed()));
+        
     }
 }

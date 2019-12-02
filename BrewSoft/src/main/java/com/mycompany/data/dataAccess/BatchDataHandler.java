@@ -36,23 +36,23 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         );
     }
 
-   public ArrayList<Batch> getQueuedBatches(){
-       ArrayList <Batch> queuedbatches = new ArrayList<>();
-       SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status=?", QUEUED_STATUS);
-       for(int i = 0; i<set.getRows();i++){
-           queuedbatches.add(
-                   new Batch(
-                           String.valueOf(set.get(i, "productionlistid")),
-                           String.valueOf(set.get(i, "batchid")),
-                           String.valueOf(set.get(i, "productid")),
-                           String.valueOf(set.get(i, "productamount")),
-                           String.valueOf(set.get(i, "deadline")),
-                           String.valueOf(set.get(i, "speed")),
-                           String.valueOf(set.get(i, "dateofcreation"))
-           ));
-       }
-       return queuedbatches;
-   }
+    public ArrayList<Batch> getQueuedBatches() {
+        ArrayList<Batch> queuedbatches = new ArrayList<>();
+        SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status=?", QUEUED_STATUS);
+        for (int i = 0; i < set.getRows(); i++) {
+            queuedbatches.add(
+                    new Batch(
+                            String.valueOf(set.get(i, "productionlistid")),
+                            String.valueOf(set.get(i, "batchid")),
+                            String.valueOf(set.get(i, "productid")),
+                            String.valueOf(set.get(i, "productamount")),
+                            String.valueOf(set.get(i, "deadline")),
+                            String.valueOf(set.get(i, "speed")),
+                            String.valueOf(set.get(i, "dateofcreation"))
+                    ));
+        }
+        return queuedbatches;
+    }
 
     @Override
     public Integer getLatestBatchID() {
@@ -118,7 +118,11 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         SimpleSet beerTypes = dbConnection.query("SELECT * FROM producttype");
 
         for (int i = 0; i < beerTypes.getRows(); i++) {
-            beerTypeList.add(new BeerTypes("productid", "productname"));
+            beerTypeList.add(
+                    new BeerTypes(
+                            String.valueOf(beerTypes.get(i, "productid")),
+                            String.valueOf(beerTypes.get(i, "productname")),
+                            String.valueOf(beerTypes.get(i, "speed"))));
         }
 
         return beerTypeList;
