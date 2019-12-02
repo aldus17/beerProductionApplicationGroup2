@@ -22,4 +22,12 @@ public class BeerTypes {
     public String getProductionSpeed() {
         return productionSpeed.getValue();
     }
+    
+    public String getIndexNumber(){
+        return indexnumber.getValue();
+    }
+    
+    public String toString(){
+        return this.typeName.getValue();
+    }
 }

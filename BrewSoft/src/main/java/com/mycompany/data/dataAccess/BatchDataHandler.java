@@ -130,7 +130,11 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         SimpleSet beerTypes = dbConnection.query("SELECT * FROM producttype");
 
         for (int i = 0; i < beerTypes.getRows(); i++) {
-            beerTypeList.add(new BeerTypes("productid", "productname"));
+            beerTypeList.add(
+                    new BeerTypes(
+                            String.valueOf(beerTypes.get(i, "productid")),
+                            String.valueOf(beerTypes.get(i, "productname")),
+                            String.valueOf(beerTypes.get(i, "speed"))));
         }
 
         return beerTypeList;
@@ -142,7 +146,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                 + "productamount = ? ,deadline =?, speed =? WHERE productionlistid =?",
                 Integer.parseInt(batch.getBatchID().getValue()),
                 Integer.parseInt(batch.getType().getValue()),
-                Integer.parseInt(batch.getTotalAmount().getValue()),
+                Float.parseFloat(batch.getTotalAmount().getValue()),
                 Date.valueOf(batch.getDeadline().getValue()),
                 Float.parseFloat(batch.getSpeedforProduction().getValue()),
                 Integer.parseInt(batch.getProductionListID().getValue()));
