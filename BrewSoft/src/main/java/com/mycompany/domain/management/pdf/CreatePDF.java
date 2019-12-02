@@ -58,6 +58,8 @@ public class CreatePDF {
             Logger.getLogger(CreatePDF.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+    public void createPage1() {
+
     }
 
     private PDPage addPageWithBatchInfo(BatchReport batchReport) {
