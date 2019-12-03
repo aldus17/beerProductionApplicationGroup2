@@ -5,6 +5,7 @@ import com.mycompany.crossCutting.objects.BeerTypes;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface IManagementDomain {
 
@@ -14,5 +15,6 @@ public interface IManagementDomain {
     public List<Batch> batchObjects (String searchKey, String searchValue);
     public double calulateOEE(LocalDate searchDate);
     public List<BeerTypes> getBeerTypes();
+    public Map<Integer, String> getTimeInStates(int prodListID);
     
 }

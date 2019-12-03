@@ -5,12 +5,14 @@ import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.MachineTempData;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
+import com.mycompany.domain.management.ManagementDomain;
 import com.mycompany.domain.management.interfaces.IBatchReportGenerate;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -41,6 +43,8 @@ public class PDF implements IBatchReportGenerate {
         BatchReport batchRep = batchDataHandler.getBatchReportProductionData(batchID, machineID);
         MachineTempData machineTempData = batchDataHandler.getMachineTempData(prodListID, machineID);
         MachineHumiData machineHumiData = batchDataHandler.getMachineHumiData(prodListID, machineID);
+        ManagementDomain managementDomain = new ManagementDomain();
+        Map<Integer, String> machineStatesMap = managementDomain.getTimeInStates(prodListID);
 
         List<MachineTempData> mtd = new ArrayList<>();
         List<MachineHumiData> mhd = new ArrayList<>();
@@ -67,17 +71,18 @@ public class PDF implements IBatchReportGenerate {
 
         document = new PDDocument();
 
-        document.addPage(addPageWithBatchInfo(batchRep));
+        document.addPage(addPageWithBatchInfo(batchRep, machineStatesMap));
         document.addPage(addXYChartToDocument("Temprature for Batch", temperatureDataList, "Point", "Temprature"));
         document.addPage(addCategoryChartToDocument("Humidity for Batch", countDouble, humidityDataList, "Point", "Humidity"));
 
         return document;
     }
 
-    private PDPage addPageWithBatchInfo(BatchReport batchReport) {
+    private PDPage addPageWithBatchInfo(BatchReport batchReport, Map<Integer, String> timeInStatesMap) {
         //Retrieving the pages of the document 
         PDPage page = new PDPage();
 
+        // Batch info
         String header = "Batch Report";
         String batchIDText = "Batch ID: " + batchReport.getBatchID();
         String machineIDText = "Machine ID: " + batchReport.getBreweryMachineID();
@@ -88,7 +93,38 @@ public class PDF implements IBatchReportGenerate {
         String totalcountText = "Total product count: " + batchReport.getTotalCount();
         String acceptCountText = "Accepted product count: " + batchReport.getAcceptedCount();
         String defectCountText = "Defect product count: " + batchReport.getDefectCount();
+        // Time in states
+        String norecord = "No record";
+        String idle = "Idle: " + norecord;
+        String execute = "Execute: " + norecord;
+        String held = "Held: " + norecord;
+        String completed = "Completed: " + norecord;
+        String aborted = "Aborted: " + norecord;
+        String stopped = "Stopped: " + norecord;
 
+        // Machine states for batch
+        for (Map.Entry<Integer, String> en : timeInStatesMap.entrySet()) {
+            if (en.getKey() == 4) {
+                idle = "Idle: " + en.getValue();
+            }
+            if (en.getKey() == 2) {
+                stopped = "Stopped: " + en.getValue();
+            }
+            if (en.getKey() == 6) {
+                execute = "Execute: " + en.getValue();
+            }
+            if (en.getKey() == 9) {
+                aborted = "Aborted: " + en.getValue();
+            }
+            if (en.getKey() == 11) {
+                held = "Held: " + en.getValue();
+            }
+            if (en.getKey() == 17) {
+                completed = "Completed: " + en.getValue();
+            }
+        }
+        System.out.println(idle + " " + execute + " " + held + " " + completed + " " + aborted + " " + stopped);
+        
         try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
             Text text = new Text();
             text.createText(contentStream, PDType1Font.TIMES_BOLD, 24, 225, 750, header);
@@ -101,7 +137,13 @@ public class PDF implements IBatchReportGenerate {
             text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 25, 400, totalcountText);
             text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 25, 350, acceptCountText);
             text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 25, 300, defectCountText);
-
+            text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 350, 700, idle);
+            text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 350, 650, execute);
+            text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 350, 600, held);
+            text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 350, 550, completed);
+            text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 350, 500, aborted);
+            text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 350, 450, stopped);
+            
             System.out.println("BatchInfo added");
 
         } catch (IOException ex) {
@@ -177,6 +219,7 @@ public class PDF implements IBatchReportGenerate {
         PDF c = new PDF();
 
         try {
+//            c.savePDF(c.createNewPDF(100, 449, 1), "TestMain", "S:\\git\\brewSoft_Group2\\BrewSoft");
             c.savePDF(c.createNewPDF(100, 449, 1), "TestMain", "S:\\git\\brewSoft_Group2\\BrewSoft");
         } catch (IOException ex) {
             Logger.getLogger(PDF.class.getName()).log(Level.SEVERE, null, ex);
