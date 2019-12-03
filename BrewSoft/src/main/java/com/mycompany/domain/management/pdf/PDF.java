@@ -38,7 +38,7 @@ public class PDF implements IBatchReportGenerate {
 
     // https://www.tutorialspoint.com/pdfbox/pdfbox_quick_guide.htm
     @Override
-    public PDDocument createNewPDF(int batchID, int prodListID, int machineID) {
+    public PDDocument createNewPDF(int batchID, int prodListID, int machineID) throws NullPointerException {
         batchDataHandler = new BatchDataHandler();
         BatchReport batchRep = batchDataHandler.getBatchReportProductionData(batchID, machineID);
         MachineTempData machineTempData = batchDataHandler.getMachineTempData(prodListID, machineID);

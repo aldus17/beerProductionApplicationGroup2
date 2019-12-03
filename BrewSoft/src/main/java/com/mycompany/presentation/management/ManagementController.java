@@ -20,6 +20,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -29,7 +31,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
@@ -149,11 +150,13 @@ public class ManagementController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-// 	449	1	2019-12-02	2019-12-02 22:19:12.776	2019-12-02 22:19:13.836	3	12000	2000	10000
 
         batcheObservableList = FXCollections.observableArrayList();
         // Test
+        // 	449	1	2019-12-02	2019-12-02 22:19:12.776	2019-12-02 22:19:13.836	3	12000	2000	10000
+        // 	450	1	2019-12-03	2019-12-03 20:57:52.935	2019-12-03 20:57:54.303	4	12000	2000	10000
         batcheObservableList.add(new Batch("449", "100", "1", "3", "2019-12-02 22:19:12.776", "2019-12-02", "2019-12-02 22:19:13.836", "200", "12000", "10000", "2000"));
+        batcheObservableList.add(new Batch("450", "101", "1", "4", "2019-12-03 20:57:52.935", "2019-12-03", "2019-12-03 20:57:54.303", "200", "12000", "10000", "2000"));
         // Test
         queuedBatchesObservableList = FXCollections.observableArrayList();
         queuedBatcheslist = new ArrayList<>();
@@ -296,44 +299,44 @@ public class ManagementController implements Initializable {
         // generated batchreport pdf will then be created, and needs to be loaded in.
         if (e.getSource() == btn_generateBatch) {
 
-            tw_SearchTableCompletedBatches.setOnMouseClicked((MouseEvent event) -> {
-                if (e.getSource() == btn_generateBatch) {
-                    int index = tw_SearchTableCompletedBatches.getSelectionModel().getSelectedIndex();
-                    Batch batch = tw_SearchTableCompletedBatches.getItems().get(index);
+            int index = tw_SearchTableCompletedBatches.getSelectionModel().getSelectedIndex();
+            Batch batch = tw_SearchTableCompletedBatches.getItems().get(index);
 
-                    System.out.println("Test1");
-                    FileChooser fileChooser = new FileChooser();
-                    fileChooser.setTitle("Save Report");
-                    fileChooser.setInitialFileName("BatchReport"); // Ignore user filename input
-                    fileChooser.getExtensionFilters().addAll(
-                            new FileChooser.ExtensionFilter("pdf Files", "*.pdf"));
+            System.out.println("Test1");
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Save Report");
+            fileChooser.setInitialFileName("BatchReport"); // Ignore user filename input
+            fileChooser.getExtensionFilters().addAll(
+                    new FileChooser.ExtensionFilter("pdf Files", "*.pdf"));
 
-                    try {
-                        File file = fileChooser.showSaveDialog(primaryStage);
-                        if (file != null) {
-                            File dir = file.getParentFile();    //gets the selected directory
-                            //update the file chooser directory to user selected so the choice is "remembered"
-                            fileChooser.setInitialDirectory(dir);
-                            System.out.println(fileChooser.getInitialDirectory().getAbsolutePath());
-                            ibrg = new PDF();
-//                            System.out.println(Integer.valueOf(batch.getBatchID().getValue()) + " "
-//                                    + Integer.valueOf(batch.getProductionListID().getValue()) + " "
-//                                    + Integer.valueOf(batch.getMachineID().getValue()));
-                            PDDocument doc = ibrg.createNewPDF(
-                                    Integer.valueOf(batch.getBatchID().getValue()),
-                                    Integer.valueOf(batch.getProductionListID().getValue()),
-                                    Integer.valueOf(batch.getMachineID().getValue()));
+            try {
+                File file = fileChooser.showSaveDialog(primaryStage);
+                if (file != null) {
+                    File dir = file.getParentFile();    //gets the selected directory
+                    //update the file chooser directory to user selected so the choice is "remembered"
+                    fileChooser.setInitialDirectory(dir);
+                    System.out.println(fileChooser.getInitialDirectory().getAbsolutePath());
+                    ibrg = new PDF();
+                    System.out.println(Integer.valueOf(batch.getBatchID().getValue()) + " "
+                            + "Integer.valueOf(batch.getProductionListID().getValue())" + " " // This gives ERROR !!!!!!!!!!!!!!
+                            + Integer.valueOf(batch.getMachineID().getValue()));
+                    PDDocument doc = ibrg.createNewPDF(
+                            Integer.valueOf(batch.getBatchID().getValue()),
+                            450,        
+                            Integer.valueOf(batch.getMachineID().getValue()));
 
-                            ibrg.savePDF(doc, fileChooser.getInitialFileName(), fileChooser.getInitialDirectory().getAbsolutePath());
+                    ibrg.savePDF(doc, fileChooser.getInitialFileName(), fileChooser.getInitialDirectory().getAbsolutePath());
 
-                        }
-                    } catch (NumberFormatException ex) {
-                        Logger.getLogger(ManagementController.class.getName()).log(Level.SEVERE, null, ex);
-                    } catch (IOException ex) {
-                        Logger.getLogger(ManagementController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
                 }
-            });
+            } catch (IOException ex) {
+                Logger.getLogger(ManagementController.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (NullPointerException ex) {
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Batch selection error");
+                alert.setHeaderText("Specified batch does not contain machine information properties");
+                alert.setContentText("Batch does not contain temperature or humidity data");
+                alert.showAndWait();
+            }
         }
     }
 

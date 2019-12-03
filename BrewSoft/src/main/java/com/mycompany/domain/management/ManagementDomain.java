@@ -196,7 +196,7 @@ public class ManagementDomain implements IManagementDomain {
 //        System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
         Map<Integer, String> testMap2 = new TreeMap<>();
         MachineState ms = new MachineState("", "");
-        testMap2 = md.getTimeInStates(410);
+        testMap2 = md.getTimeInStates(450);
 
         System.out.println(testMap2.toString());
         System.out.println(
