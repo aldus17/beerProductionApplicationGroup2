@@ -64,15 +64,10 @@ public class CreatePDF {
 
         document = new PDDocument();
         File file = null;
-        try {
-            document.addPage(addPageWithBatchInfo(batchRep));
-            document.addPage(addXYChartToDocument("Temprature for Batch", temperatureDataList, "Point", "Temprature"));
-            document.addPage(addCategoryChartToDocument("Humidity for Batch", countDouble, humidityDataList, "Point", "Humidity"));
 
-            file = savePDObj();
-        } catch (IOException ex) {
-            Logger.getLogger(CreatePDF.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        document.addPage(addPageWithBatchInfo(batchRep));
+        document.addPage(addXYChartToDocument("Temprature for Batch", temperatureDataList, "Point", "Temprature"));
+        document.addPage(addCategoryChartToDocument("Humidity for Batch", countDouble, humidityDataList, "Point", "Humidity"));
 
         return file;
 
