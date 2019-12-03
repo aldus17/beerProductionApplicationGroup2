@@ -5,18 +5,13 @@ import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.SearchData;
 import com.mycompany.domain.management.ManagementDomain;
 import com.mycompany.domain.management.interfaces.IBatchReportGenerate;
-import com.mycompany.domain.management.interfaces.IManagementDomain;
 import com.mycompany.domain.management.pdf.PDF;
 import java.io.File;
 import java.io.IOException;
-import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.net.URL;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
@@ -27,7 +22,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -43,7 +37,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.EventHandler;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
@@ -173,6 +166,7 @@ public class ManagementController implements Initializable {
     private ObservableList<Batch> queuedBatcheObservableList;
     private ObservableList<Batch> productionListObservableList;
     private ObservableList<BeerTypes> beerTypesObservableList;
+    private ObservableList<Batch> batchObservableList;
     private ArrayList<Batch> queuedBathchesList;
     private LocalDate productionListDate;
     private Batch selectedQueuedBatch;
@@ -196,15 +190,15 @@ public class ManagementController implements Initializable {
         productionListObservableList = FXCollections.observableArrayList();
         beerTypesObservableList = FXCollections.observableArrayList();
         queuedBathchesList = new ArrayList<>();
-        batcheObservableList = FXCollections.observableArrayList();
+        batchObservableList = FXCollections.observableArrayList();
         // Test
         // 	449	1	2019-12-02	2019-12-02 22:19:12.776	2019-12-02 22:19:13.836	3	12000	2000	10000
         // 	450	1	2019-12-03	2019-12-03 20:57:52.935	2019-12-03 20:57:54.303	4	12000	2000	10000
-        batcheObservableList.add(new Batch("449", "100", "1", "3", "2019-12-02 22:19:12.776", "2019-12-02", "2019-12-02 22:19:13.836", "200", "12000", "10000", "2000"));
-        batcheObservableList.add(new Batch("450", "101", "1", "4", "2019-12-03 20:57:52.935", "2019-12-03", "2019-12-03 20:57:54.303", "200", "12000", "10000", "2000"));
+        batchObservableList.add(new Batch("449", "100", "1", "3", "2019-12-02 22:19:12.776", "2019-12-02", "2019-12-02 22:19:13.836", "200", "12000", "10000", "2000"));
+        batchObservableList.add(new Batch("450", "101", "1", "4", "2019-12-03 20:57:52.935", "2019-12-03", "2019-12-03 20:57:54.303", "200", "12000", "10000", "2000"));
         // Test
-        queuedBatchesObservableList = FXCollections.observableArrayList();
-        queuedBatcheslist = new ArrayList<>();
+        queuedBatcheObservableList = FXCollections.observableArrayList();
+        queuedBathchesList = new ArrayList<>();
 
         InitializeObservableBatchList();
         InitializeObservableQueueList();

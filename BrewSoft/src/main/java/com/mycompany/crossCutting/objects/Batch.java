@@ -31,6 +31,7 @@ public class Batch {
         this.speedforProduction = new SimpleStringProperty(speedforProduction);
     }
 
+    // Used for BatchReport purpose
     public Batch(String productionListID, String BatchID, String MachineID, String type,
             String dateofCreation, String deadline, String dateofCompletion,
             String speedforProduction, String totalAmount, String goodAmount,
@@ -56,6 +57,7 @@ public class Batch {
         this.speedforProduction = new SimpleStringProperty(speedforProduction);
         this.dateofCreation = new SimpleStringProperty(dateofCreation);
     }
+
     // this is used for editQueuedBatch
     public Batch(String productionListID, String BatchID, String type, String totalAmount, String deadline, String speedforProduction) {
         this.productionListID = new SimpleStringProperty(productionListID);
@@ -64,6 +66,16 @@ public class Batch {
         this.totalAmount = new SimpleStringProperty(totalAmount);
         this.deadline = new SimpleStringProperty(deadline);
         this.speedforProduction = new SimpleStringProperty(speedforProduction);
+    }
+    
+    // For Search
+    // TODO: make constructor
+    public Batch(String finalBatchInformationID, String productionListID,
+            String BreweryMachineID, String deadline,
+            String dateOfCreation, String dateOfCompletion,
+            String productID, String totalCount,
+            String defectCount, String acceptedCount) {
+        
     }
 
     public StringProperty getBatchID() {
