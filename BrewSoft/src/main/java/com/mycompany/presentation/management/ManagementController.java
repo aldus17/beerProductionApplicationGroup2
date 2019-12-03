@@ -303,8 +303,7 @@ public class ManagementController implements Initializable {
                     fileChooser.setTitle("Save Report");
                     fileChooser.setInitialFileName("BatchReport"); // Ignore user filename input
                     fileChooser.getExtensionFilters().addAll(
-                            new FileChooser.ExtensionFilter("pdf Files", "*.pdf"),
-                            new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+                            new FileChooser.ExtensionFilter("pdf Files", "*.pdf"));
 
                     try {
                         File file = fileChooser.showSaveDialog(primaryStage);
