@@ -149,9 +149,12 @@ public class ManagementController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+// 	449	1	2019-12-02	2019-12-02 22:19:12.776	2019-12-02 22:19:13.836	3	12000	2000	10000
 
         batcheObservableList = FXCollections.observableArrayList();
-        batcheObservableList.add(new Batch("117", "8", "1", "2", "2019-11-12 00:00:00.000", "2019-11-12", "2019-11-12 00:00:00.000", "300", "12345", "10345", "2000"));
+        // Test
+        batcheObservableList.add(new Batch("449", "100", "1", "3", "2019-12-02 22:19:12.776", "2019-12-02", "2019-12-02 22:19:13.836", "200", "12000", "10000", "2000"));
+        // Test
         queuedBatchesObservableList = FXCollections.observableArrayList();
         queuedBatcheslist = new ArrayList<>();
 
@@ -313,9 +316,9 @@ public class ManagementController implements Initializable {
                             fileChooser.setInitialDirectory(dir);
                             System.out.println(fileChooser.getInitialDirectory().getAbsolutePath());
                             ibrg = new PDF();
-                            System.out.println(Integer.valueOf(batch.getBatchID().getValue()) + " "
-                                    + Integer.valueOf(batch.getProductionListID().getValue()) + " "
-                                    + Integer.valueOf(batch.getMachineID().getValue()));
+//                            System.out.println(Integer.valueOf(batch.getBatchID().getValue()) + " "
+//                                    + Integer.valueOf(batch.getProductionListID().getValue()) + " "
+//                                    + Integer.valueOf(batch.getMachineID().getValue()));
                             PDDocument doc = ibrg.createNewPDF(
                                     Integer.valueOf(batch.getBatchID().getValue()),
                                     Integer.valueOf(batch.getProductionListID().getValue()),
