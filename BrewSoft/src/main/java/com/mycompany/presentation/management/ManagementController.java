@@ -395,7 +395,7 @@ public class ManagementController implements Initializable {
                             + Integer.valueOf(batch.getMachineID().getValue()));
                     PDDocument doc = ibrg.createNewPDF(
                             Integer.valueOf(batch.getBatchID().getValue()),
-                            450,        
+                            450,        // Needs to be Integer.valueOf(batch.getProductionListID().getValue() but this gives Error
                             Integer.valueOf(batch.getMachineID().getValue()));
 
                     ibrg.savePDF(doc, fileChooser.getInitialFileName(), fileChooser.getInitialDirectory().getAbsolutePath());
