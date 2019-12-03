@@ -1,16 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.domain.management;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineState;
+import com.mycompany.crossCutting.objects.OeeObject;
+import com.mycompany.crossCutting.objects.SearchData;
 import com.mycompany.data.dataAccess.BatchDataHandler;
+import com.mycompany.data.dataAccess.SearchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
+import com.mycompany.data.interfaces.IManagementData;
+import com.mycompany.data.interfaces.ISearchDataHandler;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
+import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -26,16 +27,22 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author jacob
- */
 public class ManagementDomain implements IManagementDomain {
 
     private final int BATCHID_MIN = 0;
     private final int BATCHID_MAX = 65535;
 
-    private IBatchDataHandler batchDataHandler = new BatchDataHandler();
+    private IBatchDataHandler batchDataHandler;
+    private ISearchDataHandler searchDataHandler;
+    private IManagementData managementData;
+
+    public ManagementDomain() {
+        this.batchDataHandler = new BatchDataHandler();
+        this.searchDataHandler = new SearchDataHandler();
+        this.managementData = new BatchDataHandler(); // missing suitable class
+        
+        
+    }
 
     /**
      * Method that creates takes a batch with no batch ID and generates a new
@@ -51,25 +58,25 @@ public class ManagementDomain implements IManagementDomain {
         Batch batchWithID = new Batch(
                 createBatchID(batchDataHandler.getLatestBatchID()),
                 idLessBatch.getType().getValue(),
-                idLessBatch.getDeadline().getValue(),
                 idLessBatch.getSpeedforProduction().getValue(),
+                idLessBatch.getDeadline().getValue(),
                 idLessBatch.getTotalAmount().getValue());
         batchDataHandler.insertBatchToQueue(batchWithID);
     }
 
-    @Override
-    public List<Batch> batchObjects(String searchKey, String searchValue) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void editQueuedBatch(Batch batch) {
+        batchDataHandler.editQueuedBatch(batch);
     }
 
     @Override
-    public double calulateOEE(LocalDate searchDate) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Batch> batchObjects(String searchKey, SearchData searchDataObj) {
+
+        return searchDataHandler.getBatchList(searchDataObj);
     }
 
     @Override
     public List<BeerTypes> getBeerTypes() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return managementData.getBeerTypes();
     }
 
     @Override
@@ -180,6 +187,23 @@ public class ManagementDomain implements IManagementDomain {
         } else {
             return String.valueOf(BATCHID_MIN);
         }
+    }
+
+    public String calculateOEE(LocalDate dateofcompletion, int plannedproductiontime) {
+        List<OeeObject> list = new ArrayList<>();
+
+        float OEE = 0.0f;
+
+        list = batchDataHandler.getAcceptedCount(dateofcompletion);
+
+        for (OeeObject oeeObject : list) {
+
+            OEE += (oeeObject.getAcceptedCount() * oeeObject.getIdealcycletime());
+
+        }
+
+        float calculatedOEE = (OEE / plannedproductiontime) / 100;
+        return String.format("%.2f", calculatedOEE);
     }
 
     @Override

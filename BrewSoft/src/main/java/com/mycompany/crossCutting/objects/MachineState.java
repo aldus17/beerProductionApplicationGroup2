@@ -44,6 +44,10 @@ public class MachineState implements Comparator<MachineState> {
         return machinestateID + " " + timeInState;
     }
 
+
+
+
+
     @Override
     public int compare(MachineState o1, MachineState o2) {
         return o1.getMachinestateID().compareTo(o2.getMachinestateID());

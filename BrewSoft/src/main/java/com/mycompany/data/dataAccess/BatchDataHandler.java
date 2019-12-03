@@ -2,19 +2,24 @@ package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BatchReport;
+import com.mycompany.crossCutting.objects.BeerTypes;
+import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.MachineState;
+import com.mycompany.crossCutting.objects.OeeObject;
 import com.mycompany.crossCutting.objects.MachineTempData;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.interfaces.IBatchDataHandler;
+import com.mycompany.data.interfaces.IManagementData;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BatchDataHandler implements IBatchDataHandler {
+public class BatchDataHandler implements IBatchDataHandler, IManagementData {
 
-    private final String QUEUED_STATUS = "Queued";
+    private final String QUEUED_STATUS = "queued";
     private DatabaseConnection dbConnection;
 
     public BatchDataHandler() {
@@ -29,10 +34,10 @@ public class BatchDataHandler implements IBatchDataHandler {
                 + "VALUES(?,?,?,?,?,?)",
                 Integer.parseInt(batchObject.getBatchID().getValue()),
                 Float.parseFloat(batchObject.getType().getValue()),
-                Float.parseFloat(batchObject.getTotalAmount().getValue()),
+                Float.valueOf(batchObject.getTotalAmount().getValue()),
                 Date.valueOf(batchObject.getDeadline().getValue()),
                 Float.parseFloat(batchObject.getSpeedforProduction().getValue()),
-                QUEUED_STATUS
+                QUEUED_STATUS.toLowerCase()
         );
     }
 
@@ -42,11 +47,13 @@ public class BatchDataHandler implements IBatchDataHandler {
         for (int i = 0; i < set.getRows(); i++) {
             queuedbatches.add(
                     new Batch(
+                            String.valueOf(set.get(i, "productionlistid")),
                             String.valueOf(set.get(i, "batchid")),
                             String.valueOf(set.get(i, "productid")),
+                            String.valueOf(set.get(i, "productamount")),
                             String.valueOf(set.get(i, "deadline")),
                             String.valueOf(set.get(i, "speed")),
-                            String.valueOf(set.get(i, "productamount"))
+                            String.valueOf(set.get(i, "dateofcreation"))
                     ));
         }
         return queuedbatches;
@@ -58,7 +65,17 @@ public class BatchDataHandler implements IBatchDataHandler {
         if (batchSet.isEmpty()) {
             return null;
         } else {
-            return new Integer(String.valueOf(batchSet.get(0, "batchid")));
+            Batch batch = null;
+            for (int i = 0; i < batchSet.getRows(); i++) {
+                batch = new Batch(
+                        String.valueOf(batchSet.get(i, "batchid")),
+                        String.valueOf(batchSet.get(i, "productid")),
+                        String.valueOf(batchSet.get(i, "productamount")),
+                        String.valueOf(batchSet.get(i, "deadline")),
+                        String.valueOf(batchSet.get(i, "speed"))
+                );
+            }
+            return new Integer(batch.getBatchID().getValue());
         }
     }
 
@@ -226,31 +243,48 @@ public class BatchDataHandler implements IBatchDataHandler {
         return list;
     }
 
-    public static void main(String[] args) {
-        BatchDataHandler b = new BatchDataHandler();
-//        MachineState ms = b.getMachineState("410");
-//        ManagementDomain md = new ManagementDomain();
-//
-//        for (Object o : ms.getStateObjList()) {
-//            String s = o.toString();
-//            System.out.println(s);
-//        }
-//
-//        System.out.println("Test " + md.getDifferenceTimeInState("12:31:22", "13:40:49"));
-//
-//        BatchReport batchReport = b.getBatchReportProductionData(8, 1);
-//        System.out.println("Test\n" + batchReport.toString());
+    @Override
+    public List<BeerTypes> getBeerTypes() {
+        List<BeerTypes> beerTypeList = new ArrayList<>();
+        SimpleSet beerTypes = dbConnection.query("SELECT * FROM producttype");
 
-        MachineTempData machineTempData = b.getMachineTempData(117, 1);
-        for (Object o : machineTempData.getMachineTempDataObjList()) {
-            String s = o.toString();
-            System.out.println(s);
-        }
-        MachineHumiData machineHumiData = b.getMachineHumiData(117, 1);
-        for (Object o : machineHumiData.getMachineHumiDataObjList()) {
-            String s = o.toString();
-            System.out.println(s);
+        for (int i = 0; i < beerTypes.getRows(); i++) {
+            beerTypeList.add(
+                    new BeerTypes(
+                            String.valueOf(beerTypes.get(i, "productid")),
+                            String.valueOf(beerTypes.get(i, "productname")),
+                            String.valueOf(beerTypes.get(i, "speed"))));
         }
 
+        return beerTypeList;
     }
+
+    @Override
+    public void editQueuedBatch(Batch batch) {
+        dbConnection.queryUpdate("UPDATE productionlist SET batchid = ?, productid = ?, "
+                + "productamount = ? ,deadline =?, speed =? WHERE productionlistid =?",
+                Integer.parseInt(batch.getBatchID().getValue()),
+                Integer.parseInt(batch.getType().getValue()),
+                Float.parseFloat(batch.getTotalAmount().getValue()),
+                Date.valueOf(batch.getDeadline().getValue()),
+                Float.parseFloat(batch.getSpeedforProduction().getValue()),
+                Integer.parseInt(batch.getProductionListID().getValue()));
+    }
+
+    @Override
+    public List getAcceptedCount(LocalDate dateofcompleation) {
+     List list = new ArrayList<>();
+        SimpleSet set;
+        set = dbConnection.query("SELECT fbi.productid, fbi.acceptedcount, pt.idealcycletime FROM finalbatchinformation AS fbi, producttype AS pt WHERE fbi.dateofcompletion = ? AND fbi.productid = pt.productid", dateofcompleation);
+
+         for (int i = 0; i < set.getRows(); i++) {
+             list.add(new OeeObject(
+                     (int)set.get(i, "productid"),
+                     (int)set.get(i, "acceptedcount"),
+                     (double)set.get(i, "idealcycletime")));
+         }
+        return list;
+    }
+
+
 }

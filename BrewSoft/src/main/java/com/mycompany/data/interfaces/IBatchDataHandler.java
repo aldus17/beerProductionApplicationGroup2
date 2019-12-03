@@ -4,8 +4,9 @@ import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.MachineState;
-import com.mycompany.crossCutting.objects.MachineTempData;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public interface IBatchDataHandler {
 
@@ -22,5 +23,7 @@ public interface IBatchDataHandler {
     // public MachineData getMachineTempData(int prodID, int machineID);
      public BatchReport getBatchReportProductionData(int batchID, int machineID);
     
-};
+     public void editQueuedBatch (Batch batch);
+     public List getAcceptedCount (LocalDate dateofcompleation);  
+}
 
