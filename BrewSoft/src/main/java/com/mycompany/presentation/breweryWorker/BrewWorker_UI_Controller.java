@@ -42,11 +42,23 @@ public class BrewWorker_UI_Controller implements Initializable {
     @FXML
     private AnchorPane AP_overlay;
 
-    private final IMachineSubscribe subscriber = new MachineSubscriber("127.0.0.1", 4840);
-    private final IMachineControl controls = new MachineController("127.0.0.1", 4840, subscriber);
+    //private String hostname;
+    //private int port;
+
+    private IMachineSubscribe subscriber;// = new MachineSubscriber("192.168.0.122", 4840);
+    private IMachineControl controls;// = new MachineController("192.168.0.122", 4840, subscriber);
+
+    public void setServer(String hostname, int port) {
+        subscriber = new MachineSubscriber(hostname, port);
+        controls = new MachineController(hostname, port, subscriber);
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+    }
+
+    public void setConsumers() {
         controls.resetMachine();
 
         Consumer<String> barleyUpdater = text -> Platform.runLater(() -> lbl_Barley.setText(text));
@@ -109,7 +121,6 @@ public class BrewWorker_UI_Controller implements Initializable {
         subscriber.setConsumer(maintenanceCounterUpdater, subscriber.MAINTENANCE_COUNTER_NODENAME);
 
         subscriber.subscribe();
-
     }
 
     @FXML
