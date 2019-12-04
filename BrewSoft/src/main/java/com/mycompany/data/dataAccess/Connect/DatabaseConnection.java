@@ -16,9 +16,9 @@ public class DatabaseConnection {
     private Connection con;
 
     public DatabaseConnection() {
-        this.url = "jdbc:postgresql://tek-mmmi-db0a.tek.c.sdu.dk:5432/si3_2019_group_2_db";
-        this.user = "si3_2019_group_2";
-        this.password = "did3+excises";
+        this.url = "jdbc:postgresql://localhost:5432/course";
+        this.user = "admin";
+        this.password = "root";
     }
 
     private Connection connect() throws SQLException, ClassNotFoundException {
