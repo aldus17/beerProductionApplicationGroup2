@@ -4,8 +4,8 @@ import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.MachineState;
-import java.time.LocalDate;
 import com.mycompany.crossCutting.objects.MachineTempData;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,3 +23,4 @@ public interface IBatchDataHandler {
      public BatchReport getBatchReportProductionData(int batchID, int machineID);
      public MachineState getMachineState(int prodListID);
 
+}
