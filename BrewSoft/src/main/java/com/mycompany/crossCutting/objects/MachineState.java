@@ -1,33 +1,22 @@
 package com.mycompany.crossCutting.objects;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 
 public class MachineState implements Comparator<MachineState> {
 
-    private String machinestateID;
+    private int machinestateID;
     private String timeInState;
-    private List<Object> stateObjList;
 
-    public MachineState(String machinestateID, String timeInState) {
+    public MachineState() {
+    }
+
+    public MachineState(int machinestateID, String timeInState) {
         this.machinestateID = machinestateID;
         this.timeInState = timeInState;
-        this.stateObjList = new ArrayList<>();
 
     }
 
-    public MachineState(String machinestateID, String timeInState, List<Object> stateObj) {
-        this.machinestateID = machinestateID;
-        this.timeInState = timeInState;
-        this.stateObjList = new ArrayList<>();
-    }
-
-    public void setStateObjList(List<Object> stateObjList) {
-        this.stateObjList = stateObjList;
-    }
-
-    public String getMachinestateID() {
+    public int getMachinestateID() {
         return machinestateID;
     }
 
@@ -35,18 +24,13 @@ public class MachineState implements Comparator<MachineState> {
         return timeInState;
     }
 
-    public List<Object> getStateObjList() {
-        return stateObjList;
+    @Override
+    public int compare(MachineState o1, MachineState o2) {
+        return o1.getMachinestateID() - o2.getMachinestateID();
     }
 
     @Override
     public String toString() {
-        return machinestateID + " " + timeInState;
+        return "MachineState{" + "machinestateID=" + machinestateID + ", timeInState=" + timeInState + '}';
     }
-
-    @Override
-    public int compare(MachineState o1, MachineState o2) {
-        return o1.getMachinestateID().compareTo(o2.getMachinestateID());
-    }
-
 }
