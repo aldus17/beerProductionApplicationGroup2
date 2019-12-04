@@ -40,7 +40,6 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     @Override
     public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID, String deadline, String dateOfCreation, int productID, float totalCount, int defectCount, int acceptedCount) {
-        System.out.println("datahandler");
         connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?)",
                 ProductionListID,
                 BreweryMachineID,
@@ -61,29 +60,28 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
             return null;
         } else if ("stopped".equals(String.valueOf(batchSet.get(0, "status")))) {
             TemporaryProductionBatch tpb = getTemporaryProductionBatch((int) batchSet.get(0, "productionlistid"));
-            System.out.println("new count:" + tpb.getAcceptedCount());
             for (int i = 0; i < batchSet.getRows(); i++) {
                 batch = new Batch(
-                        String.valueOf(batchSet.get(i, "productionListID")),
-                        String.valueOf(batchSet.get(i, "batchid")),
-                        String.valueOf(batchSet.get(i, "productid")),
-                        String.valueOf((Float.parseFloat(String.valueOf(batchSet.get(i, "productamount")))) - tpb.getAcceptedCount()),
+                        (int) batchSet.get(i, "productionListID"),
+                        (int) batchSet.get(i, "batchid"),
+                        (int) batchSet.get(i, "productid"),
+                        (int) batchSet.get(i, "productamount") - (int) tpb.getAcceptedCount(),
                         String.valueOf(batchSet.get(i, "deadline")),
-                        String.valueOf(batchSet.get(i, "speed")),
-                        String.valueOf(batchSet.get(i, "dateofcreation"))
-                );
+                        (float) batchSet.get(i, "speed"),
+                        String.valueOf(batchSet.get(i, "dateofcreation")
+                ));
             }
         } else {
             for (int i = 0; i < batchSet.getRows(); i++) {
                 batch = new Batch(
-                        String.valueOf(batchSet.get(i, "productionListID")),
-                        String.valueOf(batchSet.get(i, "batchid")),
-                        String.valueOf(batchSet.get(i, "productid")),
-                        String.valueOf(batchSet.get(i, "productamount")),
+                        (int) batchSet.get(i, "productionListID"),
+                        (int) batchSet.get(i, "batchid"),
+                        (int) batchSet.get(i, "productid"),
+                        (int) batchSet.get(i, "productamount"),
                         String.valueOf(batchSet.get(i, "deadline")),
-                        String.valueOf(batchSet.get(i, "speed")),
-                        String.valueOf(batchSet.get(i, "dateofcreation"))
-                );
+                        Float.parseFloat(String.valueOf(batchSet.get(i, "speed"))),
+                        String.valueOf(batchSet.get(i, "dateofcreation")
+                ));
             }
         }
         return batch;

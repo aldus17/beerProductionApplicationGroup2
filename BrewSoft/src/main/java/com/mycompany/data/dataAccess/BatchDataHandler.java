@@ -29,11 +29,11 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         dbConnection.queryUpdate("INSERT INTO ProductionList "
                 + "(batchid, productid, productamount, deadline, speed, status)"
                 + "VALUES(?,?,?,?,?,?)",
-                Integer.parseInt(batchObject.getBatchID().getValue()),
-                Float.parseFloat(batchObject.getType().getValue()),
-                Float.valueOf(batchObject.getTotalAmount().getValue()),
-                Date.valueOf(batchObject.getDeadline().getValue()),
-                Float.parseFloat(batchObject.getSpeedforProduction().getValue()),
+                batchObject.getBatchID(),
+                batchObject.getType(),
+                batchObject.getTotalAmount(),
+                Date.valueOf(batchObject.getDeadline()),
+                batchObject.getSpeedforProduction(),
                 QUEUED_STATUS.toLowerCase()
         );
     }
@@ -44,12 +44,12 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         for (int i = 0; i < set.getRows(); i++) {
             queuedbatches.add(
                     new Batch(
-                            String.valueOf(set.get(i, "productionlistid")),
-                            String.valueOf(set.get(i, "batchid")),
-                            String.valueOf(set.get(i, "productid")),
-                            String.valueOf(set.get(i, "productamount")),
+                            (int) set.get(i, "productionlistid"),
+                            (int) set.get(i, "batchid"),
+                            (int) set.get(i, "productid"),
+                            (int) set.get(i, "productamount"),
                             String.valueOf(set.get(i, "deadline")),
-                            String.valueOf(set.get(i, "speed")),
+                            Float.parseFloat(String.valueOf(set.get(i, "speed"))),
                             String.valueOf(set.get(i, "dateofcreation"))
                     ));
         }
@@ -65,14 +65,14 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             Batch batch = null;
             for (int i = 0; i < batchSet.getRows(); i++) {
                 batch = new Batch(
-                        String.valueOf(batchSet.get(i, "batchid")),
-                        String.valueOf(batchSet.get(i, "productid")),
-                        String.valueOf(batchSet.get(i, "productamount")),
+                        (int) batchSet.get(i, "batchid"),
+                        (int) batchSet.get(i, "productid"),
+                        (int) batchSet.get(i, "productamount"),
                         String.valueOf(batchSet.get(i, "deadline")),
-                        String.valueOf(batchSet.get(i, "speed"))
+                        Float.parseFloat(String.valueOf(batchSet.get(i, "speed")))
                 );
             }
-            return new Integer(batch.getBatchID().getValue());
+            return batch.getBatchID();
         }
     }
 
@@ -132,9 +132,11 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         for (int i = 0; i < beerTypes.getRows(); i++) {
             beerTypeList.add(
                     new BeerTypes(
-                            String.valueOf(beerTypes.get(i, "productid")),
+                            (int) beerTypes.get(i, "productid"),
                             String.valueOf(beerTypes.get(i, "productname")),
-                            String.valueOf(beerTypes.get(i, "speed"))));
+                            Float.parseFloat(String.valueOf(beerTypes.get(i, "speed")))
+                    )
+            );
         }
 
         return beerTypeList;
@@ -144,12 +146,12 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     public void editQueuedBatch(Batch batch) {
         dbConnection.queryUpdate("UPDATE productionlist SET batchid = ?, productid = ?, "
                 + "productamount = ? ,deadline =?, speed =? WHERE productionlistid =?",
-                Integer.parseInt(batch.getBatchID().getValue()),
-                Integer.parseInt(batch.getType().getValue()),
-                Float.parseFloat(batch.getTotalAmount().getValue()),
-                Date.valueOf(batch.getDeadline().getValue()),
-                Float.parseFloat(batch.getSpeedforProduction().getValue()),
-                Integer.parseInt(batch.getProductionListID().getValue()));
+                (int) batch.getBatchID(),
+                (int) batch.getType(),
+                (float) batch.getTotalAmount(),
+                Date.valueOf(batch.getDeadline()),
+                (float) batch.getSpeedforProduction(),
+                (int) batch.getProductionListID());
     }
 
     @Override

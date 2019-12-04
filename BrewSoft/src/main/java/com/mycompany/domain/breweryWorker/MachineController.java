@@ -44,25 +44,25 @@ public class MachineController implements IMachineControl {
     public void startProduction() {
         newBatch = msdh.getNextBatch();
         subscriber.setCurrentBatch(newBatch);
-              msdh.changeProductionListStatus(Integer.parseInt(newBatch.getProductionListID().getValue()), "In Production");
+        msdh.changeProductionListStatus(newBatch.getProductionListID(), "In Production");
         try {
             // Set parameter[0], batchid > 65536
             NodeId batchIDNode = new NodeId(6, "::Program:Cube.Command.Parameter[0].Value");
-            DataValue dv = new DataValue(new Variant(Float.parseFloat(newBatch.getBatchID().getValue())), null, null, null);
+            DataValue dv = new DataValue(new Variant(newBatch.getBatchID()), null, null, null);
             mconn.getClient().writeValue(batchIDNode, dv).get();
 
             // Set parameter[1], Product id [0..5]
             NodeId productIdNode = new NodeId(6, "::Program:Cube.Command.Parameter[1].Value");
-            mconn.getClient().writeValue(productIdNode, DataValue.valueOnly(new Variant(Float.parseFloat(newBatch.getType().getValue())))).get();
+            mconn.getClient().writeValue(productIdNode, DataValue.valueOnly(new Variant(newBatch.getType()))).get();
 
             // Set parameter[2], Amount >65536
             NodeId quantityNode = new NodeId(6, "::Program:Cube.Command.Parameter[2].Value");
-            mconn.getClient().writeValue(quantityNode, DataValue.valueOnly(new Variant(Float.parseFloat(newBatch.getTotalAmount().getValue())))).get();
+            mconn.getClient().writeValue(quantityNode, DataValue.valueOnly(new Variant(newBatch.getTotalAmount()))).get();
 
             // Set the speed of production, table for speeds in projektoplæg.pdf
             // Need to calculate the "right" speeds, maybe in mathlab
             NodeId speedNode = new NodeId(6, "::Program:Cube.Command.MachSpeed");
-            mconn.getClient().writeValue(speedNode, DataValue.valueOnly(new Variant(Float.parseFloat(newBatch.getSpeedforProduction().getValue()))));
+            mconn.getClient().writeValue(speedNode, DataValue.valueOnly(new Variant(newBatch.getSpeedforProduction())));
         } catch (InterruptedException ex) {
             Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ExecutionException ex) {
@@ -87,8 +87,8 @@ public class MachineController implements IMachineControl {
 
     @Override
     public void stopProduction() {
-        msdh.changeProductionListStatus(Integer.parseInt(newBatch.getProductionListID().getValue()), "stopped");
-        subscriber.stoppedproduction(Integer.parseInt(newBatch.getProductionListID().getValue()));
+        msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped");
+        subscriber.stoppedproduction(newBatch.getProductionListID());
         sendCntrlCmd(new Variant(3));
         sendCmdRequest();
     }
@@ -96,9 +96,9 @@ public class MachineController implements IMachineControl {
     @Override
     public void abortProduction() {
         sendCntrlCmd(new Variant(4));
-        msdh.changeProductionListStatus(Integer.parseInt(newBatch.getProductionListID().getValue()), "stopped");
+        msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped");
         sendCmdRequest();
-        subscriber.stoppedproduction(Integer.parseInt(newBatch.getProductionListID().getValue()));
+        subscriber.stoppedproduction(newBatch.getProductionListID());
 
     }
 

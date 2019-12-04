@@ -1,33 +1,30 @@
 package com.mycompany.crossCutting.objects;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 public class BeerTypes {
     
-    private StringProperty indexnumber;
-    private StringProperty typeName;
-    private StringProperty productionSpeed;
+    private int indexnumber;
+    private String typeName;
+    private float productionSpeed;
     
-    public BeerTypes(String indexnumber, String typeName) {
-        this(indexnumber, typeName, null);
+    public BeerTypes(int indexnumber, String typeName) {
+        this(indexnumber, typeName, 0.0f);
     }
 
-    public BeerTypes(String indexnumber, String typeName, String productionSpeed) {
-        this.indexnumber = new SimpleStringProperty(indexnumber);
-        this.typeName = new SimpleStringProperty(typeName);
-        this.productionSpeed = new SimpleStringProperty(productionSpeed);
+    public BeerTypes(int indexnumber, String typeName, float productionSpeed) {
+        this.indexnumber = indexnumber;
+        this.typeName = typeName;
+        this.productionSpeed = productionSpeed;
     }
     
-    public String getProductionSpeed() {
-        return productionSpeed.getValue();
+    public float getProductionSpeed() {
+        return productionSpeed;
     }
     
-    public String getIndexNumber(){
-        return indexnumber.getValue();
+    public int getIndexNumber(){
+        return indexnumber;
     }
     
     public String toString(){
-        return this.typeName.getValue();
+        return this.typeName;
     }
 }

@@ -51,7 +51,7 @@ public class DatabaseConnection {
             return affectedRows;
         }
     }
-    
+
     public SimpleSet query(String query, Object... values) {
 
         SimpleSet set = new SimpleSet();
@@ -62,11 +62,11 @@ public class DatabaseConnection {
                     int count = rs.getMetaData().getColumnCount();
                     String[] labels = new String[count];
                     Object[] objcts = new Object[count];
-                    
+
                     for (int i = 0; i < count; i++) {
                         labels[i] = rs.getMetaData().getColumnName(i + 1);
                         objcts[i] = rs.getObject(i + 1);
-                        
+
                         if (rs.wasNull()) {
                             objcts[i] = null;
                         }
@@ -79,15 +79,13 @@ public class DatabaseConnection {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally{
+        } finally {
             disconnect();
             return set;
         }
-        
     }
-    
-    private void disconnect(){
+
+    private void disconnect() {
         try {
             con.close();
         } catch (SQLException ex) {

@@ -41,10 +41,9 @@ public class BrewWorker_UI_Controller implements Initializable {
 
     @FXML
     private AnchorPane AP_overlay;
-    
-    private final IMachineSubscribe subscriber = new MachineSubscriber("192.168.0.122", 4840);
-    private final IMachineControl controls = new MachineController("192.168.0.122", 4840, subscriber);
-    
+
+    private final IMachineSubscribe subscriber = new MachineSubscriber("127.0.0.1", 4840);
+    private final IMachineControl controls = new MachineController("127.0.0.1", 4840, subscriber);
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -57,7 +56,13 @@ public class BrewWorker_UI_Controller implements Initializable {
         Consumer<String> yeastUpdater = text -> Platform.runLater(() -> lbl_Yeast.setText(text));
 
         Consumer<String> temperatureUpdater = text -> Platform.runLater(() -> lbl_Temprature.setText(text));
-        Consumer<String> batchIdUpdater = text -> Platform.runLater(() -> lbl_BatchID.setText(text));
+        Consumer<String> batchIdUpdater = text -> Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Batch ID: " + text);
+                lbl_BatchID.setText(text);
+            }
+        });
         Consumer<String> producedUpdater = text -> Platform.runLater(() -> lbl_Produced.setText(text));
         Consumer<String> humidityUpdater = text -> Platform.runLater(() -> lbl_Humidity.setText(text));
         Consumer<String> totalProductsUpdater = text -> Platform.runLater(() -> lbl_TotalProducts.setText(text));
@@ -66,9 +71,9 @@ public class BrewWorker_UI_Controller implements Initializable {
         Consumer<String> productsPrMinuteUpdater = text -> Platform.runLater(() -> lbl_ProductsPrMinute.setText(text));
         Consumer<String> stopReasonUpdater = text -> Platform.runLater(() -> lbl_StopReason.setText(subscriber.stopReasonTranslator(text)));
         Consumer<String> stateUpdater = text -> Platform.runLater(() -> {
-            if(text.equalsIgnoreCase(subscriber.HELD)) {
+            if (text.equalsIgnoreCase(subscriber.HELD)) {
                 AP_overlay.setVisible(true);
-            }else {
+            } else {
                 AP_overlay.setVisible(false);
             }
             lbl_State.setText(subscriber.stateTranslator(text));
@@ -112,8 +117,6 @@ public class BrewWorker_UI_Controller implements Initializable {
             controls.startProduction();
         } else if (event.getSource() == btn_Reset) {
             controls.resetMachine();
-            // TODO remove hard code
-            //lbl_Produced.setText("0");
         } else if (event.getSource() == btn_Clear) {
             controls.clearState();
         } else if (event.getSource() == btn_Stop) {

@@ -1,6 +1,7 @@
 package com.mycompany.domain.management;
 
 import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.crossCutting.objects.OeeObject;
@@ -39,8 +40,6 @@ public class ManagementDomain implements IManagementDomain {
         this.batchDataHandler = new BatchDataHandler();
         this.searchDataHandler = new SearchDataHandler();
         this.managementData = new BatchDataHandler(); // missing suitable class
-        
-        
     }
 
     /**
@@ -56,10 +55,10 @@ public class ManagementDomain implements IManagementDomain {
         Batch idLessBatch = batch;
         Batch batchWithID = new Batch(
                 createBatchID(batchDataHandler.getLatestBatchID()),
-                idLessBatch.getType().getValue(),
-                idLessBatch.getSpeedforProduction().getValue(),
-                idLessBatch.getDeadline().getValue(),
-                idLessBatch.getTotalAmount().getValue());
+                idLessBatch.getType(),
+                idLessBatch.getTotalAmount(),
+                idLessBatch.getDeadline(),
+                idLessBatch.getSpeedforProduction());
         batchDataHandler.insertBatchToQueue(batchWithID);
     }
 
@@ -68,8 +67,7 @@ public class ManagementDomain implements IManagementDomain {
     }
 
     @Override
-    public List<Batch> batchObjects(String searchKey, SearchData searchDataObj) {
-
+    public List<BatchReport> batchObjects(String searchKey, SearchData searchDataObj) {
         return searchDataHandler.getBatchList(searchDataObj);
     }
 
@@ -83,17 +81,14 @@ public class ManagementDomain implements IManagementDomain {
         MachineState ms = batchDataHandler.getMachineState(prodListID);
         Map<Integer, String> finalTimeInStatesList = new TreeMap<>();
 
-        System.out.println(Arrays.toString(ms.getStateObjList().toArray()));
 
         List<MachineState> msl = new ArrayList<>();
 
         for (Object object : ms.getStateObjList()) {
             msl.add((MachineState) object);
         }
-        System.out.println(Arrays.toString(msl.toArray()));
         Collections.sort(msl, Comparator.comparing(MachineState::getTimeInState));
 
-        System.out.println(Arrays.toString(msl.toArray()));
         for (int i = 1; i < msl.size(); i++) {
             // tag første object, gemmer det object i variable, checke den variable mod det næste object, hvis det samme continue
             MachineState firstObj = msl.get(i - 1);
@@ -105,7 +100,6 @@ public class ManagementDomain implements IManagementDomain {
 
             }
         }
-        System.out.println(finalTimeInStatesList.toString());
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
     }
@@ -113,29 +107,20 @@ public class ManagementDomain implements IManagementDomain {
     public String getDifferenceTimeInState(String stateValue1, String stateValue2) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         long difference = 0;
-//        String formatted = "";
         try {
 
             Date date1 = format.parse(stateValue1);
             Date date2 = format.parse(stateValue2);
             difference = date2.getTime() - date1.getTime();
 
-//            Date differenceInTime = new Date(difference);
-//            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-//            formatted = formatter.format(differenceInTime);
         } catch (ParseException ex) {
-            System.out.println("The beginning of the specified string cannot be parsed");
             Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
         }
         long seconds = (difference / 1000) % 60;
         long minutes = (difference / (1000 * 60)) % 60;
         long hours = difference / (1000 * 60 * 60);
-//        long s = difference % 60;
-//        long m = (difference / 60) % 60;
-//        long h = (difference / (60 * 60)) % 24;
-//        return String.format("%d:%02d:%02d", h, m, s);
+        
         return String.format("%02d:%02d:%02d", hours, minutes, seconds);
-//        return formatted;
     }
 
     public String getAdditionTimeInState(String stateValue1, String stateValue2) {
@@ -148,7 +133,6 @@ public class ManagementDomain implements IManagementDomain {
             difference = date2.getTime() + date1.getTime();
 
         } catch (ParseException ex) {
-            System.out.println("The beginning of the specified string cannot be parsed");
             Logger.getLogger(MachineSubscriber.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -159,31 +143,29 @@ public class ManagementDomain implements IManagementDomain {
         return String.format("%02d:%02d:%02d", hours, minutes, seconds); //02d e.g. 01 or 00 or 22
     }
 
-    private String createBatchID(Integer batchIDRetrieve) {
+    private int createBatchID(Integer batchIDRetrieve) {
         Integer batchid = batchIDRetrieve;
         if (batchid == null) {
-            return String.valueOf(BATCHID_MIN);
+            return BATCHID_MIN;
         } else if (batchIDRetrieve >= BATCHID_MIN && batchIDRetrieve < BATCHID_MAX) {
-            return String.valueOf(batchIDRetrieve + 1);
+            return batchIDRetrieve + 1;
         } else {
-            return String.valueOf(BATCHID_MIN);
+            return BATCHID_MIN;
         }
     }
 
+    @Override
     public String calculateOEE(LocalDate dateofcompletion, int plannedproductiontime) {
         List<OeeObject> list = new ArrayList<>();
-
         float OEE = 0.0f;
-
         list = batchDataHandler.getAcceptedCount(dateofcompletion);
 
         for (OeeObject oeeObject : list) {
-
             OEE += (oeeObject.getAcceptedCount() * oeeObject.getIdealcycletime());
-
         }
 
         float calculatedOEE = (OEE / plannedproductiontime) / 100;
+        
         return String.format("%.2f", calculatedOEE);
     }
 
@@ -191,5 +173,4 @@ public class ManagementDomain implements IManagementDomain {
     public ArrayList<Batch> getQueuedBatches() {
         return batchDataHandler.getQueuedBatches();
     }
-
 }

@@ -14,7 +14,6 @@ public class TemporaryProductionBatch {
         this.productionListId = productionListId;
         this.acceptedCount = acceptedCount;
         this.defectCount = defectCount;
-
     }
 
     public TemporaryProductionBatch(int productionListId, float acceptedCount, float defectCount, float totalAmount) {
@@ -23,7 +22,6 @@ public class TemporaryProductionBatch {
         this.defectCount = defectCount;
         this.totalAmount = totalAmount;
     }
-    
 
     public int getProductionListId() {
         return productionListId;

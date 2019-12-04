@@ -12,7 +12,10 @@ public class BatchReport {
     private int defectCount;
     private int AcceptedCount;
 
-    public BatchReport(int finalBatchInformationID, int productionListID, int BreweryMachineID, String deadline, String dateOfCreation, String dateOfCompletion, int productID, int totalCount, int defectCount, int AcceptedCount) {
+    public BatchReport(int finalBatchInformationID, int productionListID,
+            int BreweryMachineID, String deadline, String dateOfCreation,
+            String dateOfCompletion, int productID, int totalCount,
+            int defectCount, int AcceptedCount) {
         this.finalBatchInformationID = finalBatchInformationID;
         this.productionListID = productionListID;
         this.BreweryMachineID = BreweryMachineID;

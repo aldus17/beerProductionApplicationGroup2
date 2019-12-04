@@ -20,5 +20,4 @@ public interface IMachineSubscriberDataHandler {
 
     public Batch getNextBatch();
 
-
 }

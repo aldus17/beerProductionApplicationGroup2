@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class MachineState implements Comparator<MachineState>{
+public class MachineState implements Comparator<MachineState> {
 
     private String machinestateID;
     private String timeInState;
@@ -43,13 +43,9 @@ public class MachineState implements Comparator<MachineState>{
         return machinestateID + " " + timeInState;
     }
 
-
-
-
-
     @Override
     public int compare(MachineState o1, MachineState o2) {
-      return o1.getMachinestateID().compareTo(o2.getMachinestateID());
+        return o1.getMachinestateID().compareTo(o2.getMachinestateID());
     }
 
 }

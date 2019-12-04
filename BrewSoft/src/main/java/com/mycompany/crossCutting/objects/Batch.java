@@ -1,120 +1,112 @@
 package com.mycompany.crossCutting.objects;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 public class Batch {
 
-    //StringProperty representations
-    private StringProperty productionListID; // int 
-    private StringProperty BatchID; //int
-    private StringProperty MachineID; //int 
-    private StringProperty type; //int 
-    private StringProperty dateofCreation; //string
-    private StringProperty deadline; //string
-    private StringProperty dateofCompletion; //string
-    private StringProperty speedforProduction; //float
-    private StringProperty totalAmount; //int
-    private StringProperty goodAmount; //float lav navn om til acceptedcount
-    private StringProperty defectAmount; //float
+    private int productionListID; 
+    private final int BatchID;
+    private int MachineID; 
+    private final int type; 
+    private String dateofCreation;
+    private final String deadline;
+    private String dateofCompletion;
+    private final float speedforProduction;
+    private final int totalAmount;
+    private float acceptedcount;
+    private float defectAmount;
 
     //Queue batch object
-    public Batch(String batchID, String type, String totalAmount,
-            String deadline, String speedforProduction) {
-        this.BatchID = new SimpleStringProperty(batchID);
-        this.type = new SimpleStringProperty(type);
-        this.totalAmount = new SimpleStringProperty(totalAmount);
-        this.deadline = new SimpleStringProperty(deadline);
-        this.speedforProduction = new SimpleStringProperty(speedforProduction);
+    public Batch(int batchID, int type, int totalAmount,
+            String deadline, float speedforProduction) {
+        this.BatchID = batchID;
+        this.type = type;
+        this.totalAmount = totalAmount;
+        this.deadline = deadline;
+        this.speedforProduction = speedforProduction;
     }
 
-    public Batch(String BatchID, String MachineID, String type,
+    public Batch(int BatchID, int MachineID, int type,
             String dateofCreation, String deadline, String dateofCompletion,
-            String speedforProduction, String totalAmount, String goodAmount,
-            String defectAmount) {
-        this.BatchID = new SimpleStringProperty(BatchID);
-        this.MachineID = new SimpleStringProperty(MachineID);
-        this.type = new SimpleStringProperty(type);
-        this.dateofCreation = new SimpleStringProperty(dateofCreation);
-        this.deadline = new SimpleStringProperty(deadline);
-        this.dateofCompletion = new SimpleStringProperty(dateofCompletion);
-        this.speedforProduction = new SimpleStringProperty(speedforProduction);
-        this.totalAmount = new SimpleStringProperty(totalAmount);
-        this.goodAmount = new SimpleStringProperty(goodAmount);
-        this.defectAmount = new SimpleStringProperty(defectAmount);
+            float speedforProduction, int totalAmount, float acceptedcount,
+            float defectAmount) {
+        this.BatchID = BatchID;
+        this.MachineID = MachineID;
+        this.type = type;
+        this.dateofCreation = dateofCreation;
+        this.deadline = deadline;
+        this.dateofCompletion = dateofCompletion;
+        this.speedforProduction = speedforProduction;
+        this.totalAmount = totalAmount;
+        this.acceptedcount = acceptedcount;
+        this.defectAmount = defectAmount;
     }
 
-    public Batch(String productionListID, String BatchID, String type, String totalAmount, String deadline, String speedforProduction, String dateofCreation) {
-        this.productionListID = new SimpleStringProperty(productionListID);
-        this.BatchID = new SimpleStringProperty(BatchID);
-        this.type = new SimpleStringProperty(type);
-        this.totalAmount = new SimpleStringProperty(totalAmount);
-        this.deadline = new SimpleStringProperty(deadline);
-        this.speedforProduction = new SimpleStringProperty(speedforProduction);
-        this.dateofCreation = new SimpleStringProperty(dateofCreation);
+    public Batch(int productionListID, int BatchID, int type, int totalAmount, String deadline, float speedforProduction, String dateofCreation) {
+        this.productionListID = productionListID;
+        this.BatchID = BatchID;
+        this.type = type;
+        this.totalAmount = totalAmount;
+        this.deadline = deadline;
+        this.speedforProduction = speedforProduction;
+        this.dateofCreation = dateofCreation;
     }
     // this is used for editQueuedBatch
-    public Batch(String productionListID, String BatchID, String type, String totalAmount, String deadline, String speedforProduction) {
-        this.productionListID = new SimpleStringProperty(productionListID);
-        this.BatchID = new SimpleStringProperty(BatchID);
-        this.type = new SimpleStringProperty(type);
-        this.totalAmount = new SimpleStringProperty(totalAmount);
-        this.deadline = new SimpleStringProperty(deadline);
-        this.speedforProduction = new SimpleStringProperty(speedforProduction);
+    public Batch(int productionListID, int BatchID, int type, int totalAmount, String deadline, float speedforProduction) {
+        this.productionListID = productionListID;
+        this.BatchID = BatchID;
+        this.type = type;
+        this.totalAmount = totalAmount;
+        this.deadline = deadline;
+        this.speedforProduction = speedforProduction;
     }
 
-    public StringProperty getBatchID() {
+    public int getBatchID() {
         return BatchID;
     }
 
-    public StringProperty getMachineID() {
+    public int getMachineID() {
         return MachineID;
     }
 
-    public StringProperty getType() {
+    public int getType() {
         return type;
     }
 
-    public StringProperty getDateofCreation() {
+    public String getDateofCreation() {
         return dateofCreation;
     }
 
-    public StringProperty getDeadline() {
+    public String getDeadline() {
         return deadline;
     }
 
-    public StringProperty getDateofCompletion() {
+    public String getDateofCompletion() {
         return dateofCompletion;
     }
 
-    public StringProperty getSpeedforProduction() {
+    public float getSpeedforProduction() {
         return speedforProduction;
     }
 
-    public StringProperty getTotalAmount() {
+    public int getTotalAmount() {
         return totalAmount;
     }
 
-    public StringProperty getGoodAmount() {
-        return goodAmount;
+    public float getGoodAmount() {
+        return acceptedcount;
     }
 
-    public StringProperty getDefectAmount() {
+    public float getDefectAmount() {
         return defectAmount;
     }
 
-    public StringProperty getProductionListID() {
+    public int getProductionListID() {
         return productionListID;
     }
 
-    public StringProperty CalulateProductionTime() {
+    public int CalulateProductionTime() {
 
-        int productionTime = (int) (Double.parseDouble(totalAmount.getValue()) / Double.parseDouble(speedforProduction.getValue()));
+        int productionTime = (int) (totalAmount / speedforProduction);
 
-        return new SimpleStringProperty(String.valueOf(productionTime));
-    }
-
-    public String toString() {
-        return this.BatchID.getValue() + this.MachineID.getValue() + this.dateofCompletion.getValue() + this.dateofCreation.getValue() + this.deadline.getValue() + this.defectAmount.getValue() + this.goodAmount.getValue() + this.productionListID.getValue() + this.speedforProduction.getValue() + this.totalAmount.getValue() + this.type.getValue();
+        return productionTime;
     }
 }
