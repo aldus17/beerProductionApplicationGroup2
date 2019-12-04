@@ -17,6 +17,7 @@ public class Batch {
     private StringProperty totalAmount; //int
     private StringProperty goodAmount; //float lav navn om til acceptedcount
     private StringProperty defectAmount; //float
+    private StringProperty finalBatchInformationID;
 
     public Batch() {
     }
@@ -66,16 +67,6 @@ public class Batch {
         this.totalAmount = new SimpleStringProperty(totalAmount);
         this.deadline = new SimpleStringProperty(deadline);
         this.speedforProduction = new SimpleStringProperty(speedforProduction);
-    }
-    
-    // For Search
-    // TODO: make constructor
-    public Batch(String finalBatchInformationID, String productionListID,
-            String BreweryMachineID, String deadline,
-            String dateOfCreation, String dateOfCompletion,
-            String productID, String totalCount,
-            String defectCount, String acceptedCount) {
-        
     }
 
     public StringProperty getBatchID() {

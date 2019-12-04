@@ -39,6 +39,7 @@ public class SearchDataHandler implements ISearchDataHandler {
         
         for (int i = 0; i < set.getRows(); i++) {
             Batch b = new Batch(
+                    String.valueOf(set.get(i, "batchid")),
                     String.valueOf(set.get(i, "finalBatchInformationID")),
                     String.valueOf(set.get(i, "productionListID")),
                     String.valueOf(set.get(i, "BreweryMachineID")),
