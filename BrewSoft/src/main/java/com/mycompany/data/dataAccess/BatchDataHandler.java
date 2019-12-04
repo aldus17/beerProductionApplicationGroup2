@@ -302,18 +302,42 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
 
     @Override
     public List getAcceptedCount(LocalDate dateofcompleation) {
-     List list = new ArrayList<>();
+        List list = new ArrayList<>();
         SimpleSet set;
         set = dbConnection.query("SELECT fbi.productid, fbi.acceptedcount, pt.idealcycletime FROM finalbatchinformation AS fbi, producttype AS pt WHERE fbi.dateofcompletion = ? AND fbi.productid = pt.productid", dateofcompleation);
 
-         for (int i = 0; i < set.getRows(); i++) {
-             list.add(new OeeObject(
-                     (int)set.get(i, "productid"),
-                     (int)set.get(i, "acceptedcount"),
-                     (double)set.get(i, "idealcycletime")));
-         }
+        for (int i = 0; i < set.getRows(); i++) {
+            list.add(new OeeObject(
+                    (int) set.get(i, "productid"),
+                    (int) set.get(i, "acceptedcount"),
+                    (double) set.get(i, "idealcycletime")));
+        }
         return list;
     }
 
+    @Override
+    public ArrayList<BatchFinal> getCompletedBatches() {
+        ArrayList<BatchFinal> completedbatches = new ArrayList<>();
+        SimpleSet set = dbConnection.query("SELECT pl.batchid, fb.* "
+                + "FROM productionlist AS pl, finalbatchinformation as fb "
+                + "WHERE pl.productionlistid = fb.productionlistid;");
+        for (int i = 0; i < set.getRows(); i++) {
+            completedbatches.add(
+                    new BatchFinal(
+                            String.valueOf(set.get(i, "batchid")),
+                            String.valueOf(set.get(i, "finalbatchinformationid")),
+                            String.valueOf(set.get(i, "productionlistid")),
+                            String.valueOf(set.get(i, "brewerymachineid")),
+                            String.valueOf(set.get(i, "deadline")),
+                            String.valueOf(set.get(i, "dateofcreation")),
+                            String.valueOf(set.get(i, "dateofcompletion")),
+                            String.valueOf(set.get(i, "productid")),
+                            String.valueOf(set.get(i, "totalcount")),
+                            String.valueOf(set.get(i, "defectcount")),
+                            String.valueOf(set.get(i, "acceptedcount"))
+                    ));
+        }
+        return completedbatches;
+    }
 
 }
