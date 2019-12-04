@@ -12,7 +12,6 @@ import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.data.interfaces.IManagementData;
 import com.mycompany.data.interfaces.ISearchDataHandler;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
-import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -80,42 +79,34 @@ public class ManagementDomain implements IManagementDomain {
     }
 
     @Override
-    public Map<Integer, String> getTimeInStates(int prodListID) {
+    public Map<Integer, String> getTimeInStates(int prodListID, int machineID) {
 
-        MachineState ms = batchDataHandler.getMachineState(prodListID);
+        List<MachineState> ms = batchDataHandler.getMachineState(prodListID, machineID);
         Map<Integer, String> finalTimeInStatesList = new TreeMap<>();
 
-        System.out.println(Arrays.toString(ms.getStateObjList().toArray()));
+        System.out.println(Arrays.toString(ms.toArray()));
+        Collections.sort(ms, Comparator.comparing(MachineState::getTimeInState));
 
-        List<MachineState> msl = new ArrayList<>();
+        MachineState firstObj = ms.get(0);
 
-        for (Object object : ms.getStateObjList()) {
-            msl.add((MachineState) object);
-
-        }
-        System.out.println(Arrays.toString(msl.toArray()));
-        Collections.sort(msl, Comparator.comparing(MachineState::getTimeInState));
-
-        MachineState firstObj = msl.get(0);
-
-        System.out.println(Arrays.toString(msl.toArray()));
-        for (int i = 1; i < msl.size(); i++) {
+        System.out.println(Arrays.toString(ms.toArray()));
+        for (int i = 1; i < ms.size(); i++) {
             // tag første object, gemmer det object i variable, checke den variable mod det næste object, hvis det samme continue
 
-            MachineState secondObj = msl.get(i);
+            MachineState secondObj = ms.get(i);
 //            System.out.println("firstObj: " + firstObj.toString());
 //            System.out.println("secondObj: " + secondObj.toString());
-            String diff = getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState());
-            if (finalTimeInStatesList.containsKey(Integer.valueOf(firstObj.getMachinestateID()))) {
-                String t = finalTimeInStatesList.get(Integer.valueOf(firstObj.getMachinestateID()));
+            String diff = getDifferenceTimeInState(String.valueOf(firstObj.getTimeInState()), String.valueOf(secondObj.getTimeInState()));
+            if (finalTimeInStatesList.containsKey(firstObj.getMachinestateID())) {
+                String t = finalTimeInStatesList.get(firstObj.getMachinestateID());
                 diff = getAdditionTimeInState(diff, t);
 
             }
-            finalTimeInStatesList.put(Integer.valueOf(firstObj.getMachinestateID()), diff);
+            finalTimeInStatesList.put(firstObj.getMachinestateID(), diff);
 //            System.out.println(getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState()));
-            if (!firstObj.getMachinestateID().equals(secondObj.getMachinestateID())) {
+            if (!(firstObj.getMachinestateID() == secondObj.getMachinestateID())) {
 
-                firstObj = msl.get(i);
+                firstObj = ms.get(i);
             }
         }
 
@@ -223,15 +214,14 @@ public class ManagementDomain implements IManagementDomain {
 //        testMap = md.getTimeInStates(410);
 //
 //        System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
-        Map<Integer, String> testMap2 = new TreeMap<>();
-        MachineState ms = new MachineState("", "");
-        testMap2 = md.getTimeInStates(450);
+//
+        Map<Integer, String> testMap = new TreeMap<>();
+        testMap = md.getTimeInStates(450, 1);
 
-        System.out.println(testMap2.toString());
+        System.out.println(testMap.toString());
         System.out.println(
                 "Test Addition: " + md.getAdditionTimeInState("13:10:10", "12:10:10"));
         System.out.println(
                 "Test Get difference " + md.getDifferenceTimeInState("12:03:05", "13:05:10"));
     }
-
 }
