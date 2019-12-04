@@ -15,6 +15,8 @@ public interface IMachineSubscribe {
 
     public String stopReasonTranslator(String stopReason);
 
+    public void stoppedproduction(int productionlistid);
+
     // Node names production materials.
     public final static String BARLEY_NODENAME = "Barley";
     public final static String HOPS_NODENAME = "Hops";
@@ -65,5 +67,4 @@ public interface IMachineSubscribe {
     public final static String MANUAL_STOP = "12";
     public final static String MOTOR_POWER_LOSS = "13";
     public final static String MANUAL_ABORT = "14";
-
 }

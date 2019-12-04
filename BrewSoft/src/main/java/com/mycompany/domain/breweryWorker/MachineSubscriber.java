@@ -1,6 +1,7 @@
 package com.mycompany.domain.breweryWorker;
 
 import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.TemporaryProductionBatch;
 import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
@@ -87,7 +88,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     // TODO pull ip and port from DB
     public MachineSubscriber() {
-        this("127.0.0.1", 4840);
+        this("192.168.0.122", 4840);
     }
 
     public MachineSubscriber(String hostname, int port) {
@@ -183,9 +184,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void sendProductionData() {
         float checkHumidity = 0;
         float checkTemperatur = 0;
-        System.out.println("Production Data");
         if (checkHumidity != Float.parseFloat(humidityValue) || checkTemperatur != Float.parseFloat(temperaturValue)) {
-            System.out.println("TESTER " + humidityValue);
             checkHumidity = Float.parseFloat(humidityValue);
             checkTemperatur = Float.parseFloat(temperaturValue);
             msdh.insertProductionInfo(Integer.parseInt(batch.getProductionListID().getValue()), 1, Float.parseFloat(humidityValue), Float.parseFloat(temperaturValue));
@@ -196,8 +195,6 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void sendTimeInState() {
         int checkCurrentState = -1;
 
-        //String timeObject = LocalTime.now().getHour() + ":" + LocalTime.now().getMinute() + ":" + LocalTime.now().getSecond();
-        System.out.println("Current State: " + currentStateValue);
         if (checkCurrentState != Integer.parseInt(currentStateValue)) {
             checkCurrentState = Integer.parseInt(currentStateValue);
             msdh.insertTimesInStates(Integer.parseInt(batch.getProductionListID().getValue()), 1, Integer.parseInt(currentStateValue));
@@ -205,101 +202,19 @@ public class MachineSubscriber implements IMachineSubscribe {
     }
 
     public void sendStopDuingProduction() {
-        msdh.insertStopsDuringProduction(Integer.parseInt(batch.getProductionListID().getValue()), 1, Integer.parseInt(StopReasonID));
-    }
-
-    public void completedBatch() {
-        System.out.println(batch.getDateofCreation());
-        System.out.println(batch.getBatchID());
-        System.out.println(batch.getDateofCompletion());
-        System.out.println(batch.getDeadline());
-        System.out.println(batch.getDefectAmount());
-        System.out.println(batch.getGoodAmount());
-        System.out.println(batch.getMachineID());
-        System.out.println(batch.getProductionListID());
-        System.out.println(batch.getSpeedforProduction());
-        System.out.println(batch.getTotalAmount());
-        System.out.println(batch.getType());
-        System.out.println("Completed: "+Float.parseFloat(batch.getTotalAmount().getValue()) +" <= " +Float.parseFloat(this.productionCountValue));
-        if (Float.parseFloat(batch.getTotalAmount().getValue()) <= Float.parseFloat(this.productionCountValue)) {
-            msdh.changeProductionListStatus(Integer.parseInt(batch.getProductionListID().getValue()), "Completed");
-            System.out.println("completed test");
-            System.out.println(Integer.parseInt(batch.getProductionListID().getValue())+ 1+ batch.getDeadline().getValue());
-                    System.out.println(batch.getDateofCreation().getValue()+ Integer.parseInt(batch.getType().getValue()));
-                    System.out.println(Float.parseFloat(batch.getTotalAmount().getValue())+ Integer.parseInt(defectCountValue)+ Integer.parseInt(acceptableCountValue));
-            msdh.insertFinalBatchInformation(Integer.parseInt(batch.getProductionListID().getValue()), 1, batch.getDeadline().getValue(),
-                    batch.getDateofCreation().getValue(), Integer.parseInt(batch.getType().getValue()),
-                    Float.parseFloat(totalProductValue), Integer.parseInt(defectCountValue), Integer.parseInt(acceptableCountValue));
-            System.out.println("completed test 2");
+        if (Integer.parseInt(StopReasonID) != 0) {
+            msdh.insertStopsDuringProduction(Integer.parseInt(batch.getProductionListID().getValue()), 1, Integer.parseInt(StopReasonID));
         }
     }
 
-    public String getBatchIDValue() {
-        return batchIDValue;
-    }
+    public void completedBatch() {
+        if (Float.parseFloat(batch.getTotalAmount().getValue()) <= Float.parseFloat(this.productionCountValue)) {
+            msdh.changeProductionListStatus(Integer.parseInt(batch.getProductionListID().getValue()), "Completed");
+            msdh.insertFinalBatchInformation(Integer.parseInt(batch.getProductionListID().getValue()), 1, batch.getDeadline().getValue(),
+                    batch.getDateofCreation().getValue(), Integer.parseInt(batch.getType().getValue()),
+                    Float.parseFloat(totalProductValue), Integer.parseInt(defectCountValue), Integer.parseInt(acceptableCountValue));
 
-    public String getTotalProductValue() {
-        return totalProductValue;
-    }
-
-    public String getTemperaturValue() {
-        return temperaturValue;
-    }
-
-    public String getHumidityValue() {
-        return humidityValue;
-    }
-
-    public String getVibrationValue() {
-        return vibrationValue;
-    }
-
-    public String getProductionCountValue() {
-        return productionCountValue;
-    }
-
-    public String getDefectCountValue() {
-        return defectCountValue;
-    }
-
-    public String getAcceptableCountValue() {
-        return acceptableCountValue;
-    }
-
-    public String getProductionPrMinValue() {
-        return productionPrMinValue;
-    }
-
-    public String getStopReasonID() {
-        return StopReasonID;
-    }
-
-    public String getCurrentStateValue() {
-        return currentStateValue;
-    }
-
-    public String getMaintenanceValue() {
-        return maintenanceValue;
-    }
-
-    public String getBarleyValue() {
-        return barleyValue;
-    }
-
-    public String getHopsValue() {
-        return hopsValue;
-    }
-
-    public String getMaltValue() {
-        return maltValue;
-    }
-
-    public String getWheatValue() {
-        return wheatValue;
-    }
-
-    public String getYeastValue() {
-        return yeastValue;
+        }
     }
 
     private MonitoringParameters monitoringParameters() {
@@ -349,11 +264,10 @@ public class MachineSubscriber implements IMachineSubscribe {
                 break;
             case STOP_REASON_NODENAME:
                 this.StopReasonID = dataValue.getValue().getValue().toString();
-                //sendStopDuingProduction();
+                sendStopDuingProduction();
                 break;
             case STATE_CURRENT_NODENAME:
                 this.currentStateValue = dataValue.getValue().getValue().toString();
-                System.out.println("state " + this.currentStateValue);
                 sendTimeInState();
                 break;
             case MAINTENANCE_COUNTER_NODENAME:
@@ -443,4 +357,10 @@ public class MachineSubscriber implements IMachineSubscribe {
         }
         return "Unknown State code: " + state;
     }
+
+    public void stoppedproduction(int productionlistid) {
+        TemporaryProductionBatch tpb = new TemporaryProductionBatch(productionlistid, Float.parseFloat(acceptableCountValue), Float.parseFloat(defectCountValue), Float.parseFloat(totalProductValue));
+        msdh.insertStoppedProductionToTempTable(tpb);
+    }
+
 }

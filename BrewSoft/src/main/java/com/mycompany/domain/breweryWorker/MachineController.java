@@ -18,36 +18,36 @@ public class MachineController implements IMachineControl {
 
     private final NodeId cntrlCmdNodeId = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
     private final NodeId cmdChangeRequestNodeId = new NodeId(6, "::Program:Cube.Command.CmdChangeRequest");
-    
+
+    private Batch newBatch;
+
     private IMachineSubscriberDataHandler msdh = new MachineSubscribeDataHandler();
-    
+
     private IMachineSubscribe subscriber;
 
     public MachineController() {
+        //this("127.0.0.1", 4840, null);
         this("192.168.0.122", 4840, null);
     }
 
     public MachineController(String hostname, int port) {
         this(hostname, port, null);
     }
-    
+
     public MachineController(String hostname, int port, IMachineSubscribe subscriber) {
         mconn = new MachineConnection(hostname, port);
         mconn.connect();
         this.subscriber = subscriber;
     }
-    
+
     @Override
     public void startProduction() {
-        Batch newBatch = msdh.getNextBatch();
+        newBatch = msdh.getNextBatch();
         subscriber.setCurrentBatch(newBatch);
-        // TODO Changes value of production List ID
-        msdh.changeProductionListStatus(Integer.parseInt(newBatch.getProductionListID().getValue()), "In Production");
-        
+              msdh.changeProductionListStatus(Integer.parseInt(newBatch.getProductionListID().getValue()), "In Production");
         try {
             // Set parameter[0], batchid > 65536
             NodeId batchIDNode = new NodeId(6, "::Program:Cube.Command.Parameter[0].Value");
-            System.out.println(Float.parseFloat(newBatch.getBatchID().getValue()));
             DataValue dv = new DataValue(new Variant(Float.parseFloat(newBatch.getBatchID().getValue())), null, null, null);
             mconn.getClient().writeValue(batchIDNode, dv).get();
 
@@ -87,6 +87,8 @@ public class MachineController implements IMachineControl {
 
     @Override
     public void stopProduction() {
+        msdh.changeProductionListStatus(Integer.parseInt(newBatch.getProductionListID().getValue()), "stopped");
+        subscriber.stoppedproduction(Integer.parseInt(newBatch.getProductionListID().getValue()));
         sendCntrlCmd(new Variant(3));
         sendCmdRequest();
     }
@@ -94,7 +96,10 @@ public class MachineController implements IMachineControl {
     @Override
     public void abortProduction() {
         sendCntrlCmd(new Variant(4));
+        msdh.changeProductionListStatus(Integer.parseInt(newBatch.getProductionListID().getValue()), "stopped");
         sendCmdRequest();
+        subscriber.stoppedproduction(Integer.parseInt(newBatch.getProductionListID().getValue()));
+
     }
 
     @Override
