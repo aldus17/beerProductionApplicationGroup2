@@ -22,7 +22,6 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
-<?import com.mycompany.presentation.validateText.NumberTextField?>
 
 <AnchorPane id="AnchorPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mycompany.presentation.management.ManagementController">
    <children>
@@ -169,12 +168,12 @@
                               <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <NumberTextField fx:id="textf_CreateBatchOrder_TypeofProduct" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                              <NumberTextField fx:id="textf_CreateBatchOrder_AmountToProduces" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                              <NumberTextField fx:id="textf_CreateBatchOrder_Speed" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="6">
+                              <TextField fx:id="textf_CreateBatchOrder_TypeofProduct" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <TextField fx:id="textf_CreateBatchOrder_AmountToProduces" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <TextField fx:id="textf_CreateBatchOrder_Speed" disable="true" editable="false" GridPane.columnIndex="2" GridPane.rowIndex="6">
                                  <GridPane.margin>
                                     <Insets right="90.0" />
-                                 </GridPane.margin></NumberTextField>
+                                 </GridPane.margin></TextField>
                               <DatePicker fx:id="dp_CreateBatchOrder" onAction="#GetOrdersForSpecificDay" GridPane.columnIndex="2" GridPane.rowIndex="8" />
                               <Button mnemonicParsing="false" onAction="#CreateBatchAction" text="Create" GridPane.columnIndex="2" GridPane.rowIndex="10" />
                               <TableView fx:id="tw_CreateBatchOrder_BatchesOnSpecificDay" prefHeight="777.0" prefWidth="743.0" GridPane.columnIndex="4" GridPane.rowIndex="2" GridPane.rowSpan="12">

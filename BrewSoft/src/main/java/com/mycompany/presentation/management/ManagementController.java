@@ -255,6 +255,22 @@ public class ManagementController implements Initializable {
         String amounttoProduce = textf_CreateBatchOrder_AmountToProduces.getText();
         String speed = textf_CreateBatchOrder_Speed.getText();
         String deadline = dp_CreateBatchOrder.getValue().toString();
+        
+        try {
+            int i = Integer.parseInt(typeofProduct);
+        } catch (NumberFormatException e1) {
+            textf_CreateBatchOrder_TypeofProduct.setText("Invalid number");
+        }
+        try {
+            int j = Integer.parseInt(amounttoProduce);
+        } catch (NumberFormatException e2) {
+            textf_CreateBatchOrder_AmountToProduces.setText("Invalid number");
+        }
+        try {
+            double k = Double.parseDouble(speed);
+        } catch (NumberFormatException e3) {
+            textf_CreateBatchOrder_Speed.setText("Invalid number");
+        }
 
         if (!amounttoProduce.isEmpty() && !typeofProduct.isEmpty() && !speed.isEmpty() && !deadline.isEmpty()) {
             lbl_CreateBatchOrder_error.setText("");
