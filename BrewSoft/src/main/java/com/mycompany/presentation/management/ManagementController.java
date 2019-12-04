@@ -95,7 +95,6 @@ public class ManagementController implements Initializable {
     private TableColumn<BatchFinal, String> tc_CompletedBatches_Deadline;
     @FXML
     private TableColumn<BatchFinal, String> tc_CompletedBatches_DateOfCompletion;
-    private TableColumn<BatchFinal, String> tc_CompletedBatches_SpeedForProduction;
     @FXML
     private TableColumn<BatchFinal, String> tc_CompletedBatches_TotalAmount;
     @FXML
@@ -105,7 +104,6 @@ public class ManagementController implements Initializable {
     @FXML
     private TextField text_SearchCompletedBarches;
     private Button btn_SearchCompletedBatches;
-    @FXML
     private Button btn_generateBatch;
     @FXML
     private TextField textf_CreateBatchOrder_AmountToProduces;
@@ -114,6 +112,7 @@ public class ManagementController implements Initializable {
     private TextField textf_CreateBatchOrder_Speed;
     @FXML
     private DatePicker dp_CreateBatchOrder;
+    @FXML
     private ListView<BeerTypes> lv_CreateBatchOrder_TypeofBeer;
     @FXML
     private TableView<Batch> tw_CreateBatchOrder_BatchesOnSpecificDay;
@@ -168,11 +167,7 @@ public class ManagementController implements Initializable {
     private ArrayList<BatchFinal> completedBatchList;
     private LocalDate productionListDate;
     private Batch selectedQueuedBatch;
-    @FXML
-    private ToggleGroup tg_queuedbatches;
-    @FXML
     private RadioButton rb_QueuedBatchID;
-    @FXML
     private RadioButton rb_QueuedDeadline;
     @FXML
     private ComboBox<BeerTypes> cb_beerType;
@@ -201,6 +196,8 @@ public class ManagementController implements Initializable {
         initializeObservableCompletedBatchList();
         initializeObservableQueueList();
         initializeObervableProductionList();
+        
+        enableSearchQueuedList();
 
         setVisibleAnchorPane(ap_ProductionQueueLayout);
 
@@ -344,7 +341,6 @@ public class ManagementController implements Initializable {
         }
     }
 
-    @FXML
     private void generatingBatchreportAction(ActionEvent e) {
         Stage primaryStage = new Stage();
         // TODO: Use createPDF from Domain
@@ -637,51 +633,13 @@ public class ManagementController implements Initializable {
         }
     }
 
-    //Sets the live search to search for batch ID
-    @FXML
-    private void onQueued_RbBatchIDActionhandler(ActionEvent event) {
-        FilteredList<Batch> filteredData = new FilteredList<>(queuedBatcheObservableList, p -> true);
-        text_SearchProductionQueue.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(batch -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-                String lowerCaseFilter = newValue.toLowerCase();
-                if (batch.getBatchID().getValue().toLowerCase().contentEquals(lowerCaseFilter)) {
-                    return true;
-                }
-                return false;
-            });
-        });
-        SortedList<Batch> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(tw_SearchTableProductionQueue.comparatorProperty());
-        tw_SearchTableProductionQueue.setItems(sortedData);
-    }
-
-    //Sets the live search to search for deadline
-    @FXML
-    private void onQueued_RbDeadlineActionhandler(ActionEvent event) {
-        FilteredList<Batch> filteredData = new FilteredList<>(queuedBatcheObservableList, p -> true);
-        text_SearchProductionQueue.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(batch -> {
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-                String lowerCaseFilter = newValue.toLowerCase();
-                if (batch.getDeadline().getValue().toLowerCase().contains(lowerCaseFilter)) {
-                    return true;
-                }
-                return false;
-            });
-        });
-        SortedList<Batch> sortedData = new SortedList<>(filteredData);
-        sortedData.comparatorProperty().bind(tw_SearchTableProductionQueue.comparatorProperty());
-        tw_SearchTableProductionQueue.setItems(sortedData);
-    }
-
     @FXML
     private void comboboxAction(ActionEvent event) {
         textf_CreateBatchOrder_Speed.setText(String.valueOf(cb_beertypeCreateBatch.getSelectionModel().getSelectedItem().getProductionSpeed()));
 
+    }
+
+    @FXML
+    private void GeneratingBatchreportAction(ActionEvent event) {
     }
 }
