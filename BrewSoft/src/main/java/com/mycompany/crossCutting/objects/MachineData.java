@@ -47,8 +47,8 @@ public class MachineData {
 
     @Override
     public String toString() {
-        return "MachineData{" + "machineID=" + machineID 
-                + ", humidity=" + humidity 
+        return "MachineData{" + "machineID=" + machineID
+                + ", humidity=" + humidity
                 + ", temperature=" + temperature;
     }
 

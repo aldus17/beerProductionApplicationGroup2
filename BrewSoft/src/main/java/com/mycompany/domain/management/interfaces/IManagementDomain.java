@@ -1,7 +1,6 @@
 package com.mycompany.domain.management.interfaces;
 
 import com.mycompany.crossCutting.objects.Batch;
-import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.SearchData;
 import java.time.LocalDate;
@@ -18,7 +17,7 @@ public interface IManagementDomain {
 
     public void editQueuedBatch(Batch batch);
 
-    public List<BatchReport> batchObjects(String searchKey, SearchData searchDataObj);
+    public List<Batch> batchObjects(String searchKey, SearchData searchDataObj);
 
     public List<BeerTypes> getBeerTypes();
     public Map<Integer, String> getTimeInStates(int prodListID);

@@ -1,14 +1,10 @@
 package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
-import com.mycompany.crossCutting.objects.BatchReport;
-import com.mycompany.crossCutting.objects.BeerTypes;
-import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineState;
-import com.mycompany.crossCutting.objects.OeeObject;
 import com.mycompany.crossCutting.objects.MachineTempData;
 import com.mycompany.crossCutting.objects.OeeObject;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;

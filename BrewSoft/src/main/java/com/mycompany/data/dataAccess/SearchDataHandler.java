@@ -1,6 +1,6 @@
 package com.mycompany.data.dataAccess;
 
-import com.mycompany.crossCutting.objects.BatchReport;
+import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.SearchData;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
@@ -22,8 +22,8 @@ public class SearchDataHandler implements ISearchDataHandler {
     }
 
     @Override
-    public List<BatchReport> getBatchList(SearchData searchDataObj) {
-        List<BatchReport> batchList = new ArrayList();
+    public List<Batch> getBatchList(SearchData searchDataObj) {
+        List<Batch> batchList = new ArrayList();
 
         String whereClause = "";
         float batchID;
@@ -38,7 +38,7 @@ public class SearchDataHandler implements ISearchDataHandler {
         SimpleSet set = dbConnection.query("SELECT * FROM finalbatchinformation WHERE" + whereClause, Date.valueOf(doc), batchID);
 
         for (int i = 0; i < set.getRows(); i++) {
-            BatchReport b = new BatchReport(
+            Batch b = new Batch(
                     (int) set.get(i, "finalBatchInformationID"),
                     (int) set.get(i, "productionListID"),
                     (int) set.get(i, "BreweryMachineID"),
@@ -47,12 +47,11 @@ public class SearchDataHandler implements ISearchDataHandler {
                     String.valueOf(set.get(i, "dateOfCompletion")),
                     (int) set.get(i, "productID"),
                     (int) set.get(i, "totalCount"),
-                    (int) set.get(i, "defectCount"),
-                    (int) set.get(i, "acceptedCount"));
-
+                    (float) set.get(i, "defectCount"),
+                    (float) set.get(i, "acceptedCount")
+            );
             batchList.add(b);
         }
-
         return batchList;
     }
 

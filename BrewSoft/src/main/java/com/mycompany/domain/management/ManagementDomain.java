@@ -41,7 +41,6 @@ public class ManagementDomain implements IManagementDomain {
         this.searchDataHandler = new SearchDataHandler();
         this.managementData = new BatchDataHandler(); // missing suitable class
 
-
     }
 
     /**
@@ -57,10 +56,10 @@ public class ManagementDomain implements IManagementDomain {
         Batch idLessBatch = batch;
         Batch batchWithID = new Batch(
                 createBatchID(batchDataHandler.getLatestBatchID()),
-                idLessBatch.getType().getValue(),
-                idLessBatch.getSpeedforProduction().getValue(),
-                idLessBatch.getDeadline().getValue(),
-                idLessBatch.getTotalAmount().getValue());
+                idLessBatch.getType(),
+                idLessBatch.getTotalAmount(),
+                idLessBatch.getDeadline(),
+                idLessBatch.getSpeedforProduction());
         batchDataHandler.insertBatchToQueue(batchWithID);
     }
 
@@ -178,14 +177,14 @@ public class ManagementDomain implements IManagementDomain {
         return String.format("%02d:%02d:%02d", hours, minutes, seconds); //02d e.g. 01 or 00 or 22
     }
 
-    private String createBatchID(Integer batchIDRetrieve) {
+    private int createBatchID(Integer batchIDRetrieve) {
         Integer batchid = batchIDRetrieve;
         if (batchid == null) {
-            return String.valueOf(BATCHID_MIN);
+            return BATCHID_MIN;
         } else if (batchIDRetrieve >= BATCHID_MIN && batchIDRetrieve < BATCHID_MAX) {
-            return String.valueOf(batchIDRetrieve + 1);
+            return batchIDRetrieve + 1;
         } else {
-            return String.valueOf(BATCHID_MIN);
+            return BATCHID_MIN;
         }
     }
 

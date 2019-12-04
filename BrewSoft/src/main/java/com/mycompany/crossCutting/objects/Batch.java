@@ -60,16 +60,6 @@ public class Batch {
         this.speedforProduction = speedforProduction;
     }
 
-    // For Search
-    // TODO: make constructor
-    public Batch(String finalBatchInformationID, String productionListID,
-            String BreweryMachineID, String deadline,
-            String dateOfCreation, String dateOfCompletion,
-            String productID, String totalCount,
-            String defectCount, String acceptedCount) {
-
-    }
-
     public int getBatchID() {
         return BatchID;
     }

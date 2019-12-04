@@ -6,28 +6,18 @@ import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.SearchData;
 import com.mycompany.domain.management.ManagementDomain;
 import com.mycompany.domain.management.interfaces.IBatchReportGenerate;
-import com.mycompany.domain.management.interfaces.IManagementDomain;
 import com.mycompany.domain.management.pdf.PDF;
+import com.mycompany.presentation.objects.UIBatch;
 import java.io.File;
 import java.io.IOException;
-import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -45,8 +35,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.util.ArrayList;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.CheckBox;
@@ -56,7 +44,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javax.swing.JOptionPane;
@@ -172,21 +159,6 @@ public class ManagementController implements Initializable {
     private TextField tf_AmountToProduceEditBatch;
     @FXML
     private TextField tf_TypeOfProductEditBatch;
-
-    // Class calls
-    private IManagementDomain managementDomain;
-    private IBatchReportGenerate ibrg; // TODO Get class ..
-
-    // Variables
-    private List<Batch> batches;
-    private List<BeerTypes> beerTypes;
-    private ObservableList<Batch> queuedBatcheObservableList;
-    private ObservableList<Batch> productionListObservableList;
-    private ObservableList<BeerTypes> beerTypesObservableList;
-    private ObservableList<Batch> batchObservableList;
-    private ArrayList<Batch> queuedBathchesList;
-    private LocalDate productionListDate;
-    private Batch selectedQueuedBatch;
     @FXML
     private ToggleGroup tg_queuedbatches;
     @FXML
@@ -204,7 +176,7 @@ public class ManagementController implements Initializable {
 
     // Variables
     private List<Batch> batches;
-    private List<BatchReport> completedBatches;
+    private List<Batch> completedBatches;
     private List<BeerTypes> beerTypes;
     private ObservableList<UIBatch> queuedBatcheObservableList;
     private ObservableList<UIBatch> productionListObservableList;
@@ -220,15 +192,6 @@ public class ManagementController implements Initializable {
         queuedBatcheObservableList = FXCollections.observableArrayList();
         productionListObservableList = FXCollections.observableArrayList();
         beerTypesObservableList = FXCollections.observableArrayList();
-        queuedBathchesList = new ArrayList<>();
-        batchObservableList = FXCollections.observableArrayList();
-        // Test
-        // 	449	1	2019-12-02	2019-12-02 22:19:12.776	2019-12-02 22:19:13.836	3	12000	2000	10000
-        // 	450	1	2019-12-03	2019-12-03 20:57:52.935	2019-12-03 20:57:54.303	4	12000	2000	10000
-        batchObservableList.add(new Batch("449", "100", "1", "3", "2019-12-02 22:19:12.776", "2019-12-02", "2019-12-02 22:19:13.836", "200", "12000", "10000", "2000"));
-        batchObservableList.add(new Batch("450", "101", "1", "4", "2019-12-03 20:57:52.935", "2019-12-03", "2019-12-03 20:57:54.303", "200", "12000", "10000", "2000"));
-        // Test
-        queuedBatcheObservableList = FXCollections.observableArrayList();
         queuedBathchesList = new ArrayList<>();
 
         InitializeObservableBatchList();
@@ -404,7 +367,7 @@ public class ManagementController implements Initializable {
         if (e.getSource() == btn_generateBatch) {
 
             int index = tw_SearchTableCompletedBatches.getSelectionModel().getSelectedIndex();
-            Batch batch = tw_SearchTableCompletedBatches.getItems().get(index);
+            UIBatch batch = tw_SearchTableCompletedBatches.getItems().get(index);
 
             System.out.println("Test1");
             FileChooser fileChooser = new FileChooser();

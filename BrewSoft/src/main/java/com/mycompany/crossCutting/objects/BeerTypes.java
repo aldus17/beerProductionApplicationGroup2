@@ -1,11 +1,11 @@
 package com.mycompany.crossCutting.objects;
 
 public class BeerTypes {
-    
+
     private int indexnumber;
     private String typeName;
     private float productionSpeed;
-    
+
     public BeerTypes(int indexnumber, String typeName) {
         this(indexnumber, typeName, 0.0f);
     }
@@ -15,16 +15,16 @@ public class BeerTypes {
         this.typeName = typeName;
         this.productionSpeed = productionSpeed;
     }
-    
+
     public float getProductionSpeed() {
         return productionSpeed;
     }
-    
-    public int getIndexNumber(){
+
+    public int getIndexNumber() {
         return indexnumber;
     }
-    
-    public String toString(){
+
+    public String toString() {
         return this.typeName;
     }
 }
