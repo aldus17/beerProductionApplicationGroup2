@@ -7,9 +7,15 @@ import com.mycompany.crossCutting.objects.SearchData;
 import com.mycompany.domain.management.ManagementDomain;
 import com.mycompany.domain.management.interfaces.IBatchReportGenerate;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
-import com.mycompany.presentation.objects.UIBatch;
+import java.io.File;
+import java.io.IOException;
+import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.ArrayList;
@@ -37,7 +43,10 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
 import javax.swing.JOptionPane;
+import org.apache.pdfbox.pdmodel.PDDocument;
 
 public class ManagementController implements Initializable {
 
@@ -99,6 +108,8 @@ public class ManagementController implements Initializable {
     private TextField text_SearchCompletedBarches;
     @FXML
     private Button btn_SearchCompletedBatches;
+    @FXML
+    private Button btn_generateBatch;
     @FXML
     private TextField textf_CreateBatchOrder_AmountToProduces;
     @FXML
@@ -304,12 +315,6 @@ public class ManagementController implements Initializable {
     }
 
     @FXML
-    private void GeneratingBatchreportAction(ActionEvent event) {
-        tw_SearchTableCompletedBatches.getSelectionModel().getSelectedItem();
-        ibrg.GeneratePDFDocument(); // TODO Find out witch part the batch should be found on.
-    }
-
-    @FXML
     private void GetOrdersForSpecificDay(ActionEvent event) {
         productionListObservableList.clear();
         productionListDate = dp_CreateBatchOrder.getValue();
@@ -350,6 +355,49 @@ public class ManagementController implements Initializable {
             Texta_ShowOEE_Text.appendText(" | ");
             Texta_ShowOEE_Text.appendText(oee + " %" + "\n");
         }
+    }
+
+    @FXML
+    private void GeneratingBatchreportAction(ActionEvent e) {
+        Stage primaryStage = new Stage();
+        // TODO: Use createPDF from Domain
+        // Extract batch id, machine id, production list ID, from the the list to use in the createPDF method
+        // generated batchreport pdf will then be created, and needs to be loaded in.
+
+        tw_SearchTableCompletedBatches.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
+            @Override
+            public void changed(ObservableValue observable, Object oldValue, Object newValue) {
+                if (tw_SearchTableProductionQueue.getSelectionModel().getSelectedItem() != null) {
+
+                    int batchID = Integer.valueOf(tw_SearchTableCompletedBatches.getSelectionModel().getSelectedItem().getBatchID().getValue());
+                    int machineID = Integer.valueOf(tw_SearchTableCompletedBatches.getSelectionModel().getSelectedItem().getMachineID().getValue());
+                    int prodListID = Integer.valueOf(tw_SearchTableCompletedBatches.getSelectionModel().getSelectedItem().getProductionListID().getValue());
+                    if (e.getSource() == btn_generateBatch) {
+                        File file = ibrg.createNewPDF(batchID, prodListID, machineID);
+                        DirectoryChooser directoryChooser = new DirectoryChooser();
+                        File selectedDirectory = directoryChooser.showDialog(primaryStage);
+
+                        if (selectedDirectory == null) {
+                            //No Directory selected
+                        } else {
+                            System.out.println(selectedDirectory.getAbsolutePath());
+                        }
+
+                    }
+                }
+            }
+        }
+        );
+    }
+
+    public void savePDF(PDDocument document) throws IOException {
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        String formattedDate = myDateObj.format(myFormatObj);
+
+        document.save("Batch_Report_" + formattedDate + ".pdf"); // TODO: Changes Path or it will save it in project folder.
+        document.close();
+
     }
 
     private void InitializeObservableBatchList() {
@@ -454,7 +502,7 @@ public class ManagementController implements Initializable {
                         String.valueOf(batch.getSpeedforProduction()),
                         String.valueOf(batch.CalulateProductionTime())
                 ));
-                
+
             }
         }
         System.out.println(productionListObservableList);
@@ -540,7 +588,7 @@ public class ManagementController implements Initializable {
             });
         });
 
-        // 3. Wrap the FilteredList in a SortedList. 
+        // 3. Wrap the FilteredList in a SortedList.
         SortedList<UIBatch> sortedData = new SortedList<>(filteredData);
 
         // 4. Bind the SortedList comparator to the TableView comparator.
