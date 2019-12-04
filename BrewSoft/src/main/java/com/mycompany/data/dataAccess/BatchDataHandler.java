@@ -2,11 +2,13 @@ package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BatchReport;
+import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineState;
+import com.mycompany.crossCutting.objects.OeeObject;
 import com.mycompany.crossCutting.objects.MachineTempData;
 import com.mycompany.crossCutting.objects.OeeObject;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
@@ -16,7 +18,6 @@ import com.mycompany.data.interfaces.IManagementData;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class BatchDataHandler implements IBatchDataHandler, IManagementData {
@@ -80,8 +81,6 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             return batch.getBatchID();
         }
     }
-    
-    
 
     @Override
     public MachineState getMachineState(int prodListID) {
@@ -91,7 +90,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         FROM timeinstate AS tis, productionlist AS pl
         WHERE pl.productionlistid = 110
         ORDER BY starttimeinstate ASC;
-        
+
         SELECT *
         FROM timeinstate AS tis
         WHERE tis.productionlistid = 109
@@ -102,7 +101,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                 + "WHERE productionlistid =? "
                 + "AND starttimeinstate IS NOT NULL "
                 + "ORDER BY starttimeinstate ASC; ", prodListID);
-        
+
         /*
         SELECT fbi.dateofcompletion, tis.machinestateid
         FROM finalbatchinformation AS fbi, timeinstate AS tis
@@ -111,7 +110,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             FROM timeinstate AS tis2, finalbatchinformation AS fbi2
             WHERE tis2.productionlistid = fbi2.productionlistid)
         AND tis.brewerymachineid = fbi.brewerymachineid
-        */
+         */
         if (stateSet1.isEmpty()) {
             System.out.println("stateSet is empty");
             return null;
@@ -129,7 +128,6 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             return machineState;
         }
     }
-
 
     /*
     After a finished batch production the MES must be able to produce a batch report of the produced batch.
@@ -178,12 +176,14 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     SELECT DISTINCT pl.brewerymachineid, pl.temperature, pl.humidity
     FROM productioninfo AS pl
     WHERE pl.productionlistid = 195 AND pl.brewerymachineid = 1
-    GROUP BY pl.temperature, pl.humidity    
+    GROUP BY pl.temperature, pl.humidity
      */
     public MachineTempData getMachineTempData(int prodID, int machineID) {
         SimpleSet prodInfoDataSet = dbConnection.query("SELECT DISTINCT pl.brewerymachineid, pl.temperature "
-                + "FROM productioninfo AS pl "
-                + "WHERE pl.productionlistid = ? AND pl.brewerymachineid = ?; ",
+                + "FROM productioninfo AS pl, finalbatchinformation AS fbi "
+                + "WHERE pl.productionlistid =? AND "
+                + "pl.brewerymachineid =? AND "
+                + "fbi.productionlistid = pl.productionlistid; ",
                 prodID, machineID);
         if (prodInfoDataSet.isEmpty()) {
             return null;
@@ -203,8 +203,10 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
 
     public MachineHumiData getMachineHumiData(int prodID, int machineID) {
         SimpleSet prodInfoDataSet = dbConnection.query("SELECT DISTINCT pl.brewerymachineid, pl.humidity "
-                + "FROM productioninfo AS pl "
-                + "WHERE pl.productionlistid = ? AND pl.brewerymachineid = ?; ",
+                + "FROM productioninfo AS pl, finalbatchinformation AS fbi "
+                + "WHERE pl.productionlistid =? AND "
+                + "pl.brewerymachineid =? AND "
+                + "fbi.productionlistid = pl.productionlistid; ",
                 prodID, machineID);
         if (prodInfoDataSet.isEmpty()) {
             return null;
@@ -263,7 +265,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         for (Object o : machineTempData.getMachineTempDataObjList()) {
             String s = o.toString();
             System.out.println(s);
-  
+
         }
         MachineHumiData machineHumiData = b.getMachineHumiData(195, 1);
         for (Object o : machineHumiData.getMachineHumiDataObjList()) {
@@ -289,7 +291,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         }
         return beerTypeList;
         }
-    
+
     @Override
     public void editQueuedBatch(Batch batch) {
         dbConnection.queryUpdate("UPDATE productionlist SET batchid = ?, productid = ?, "

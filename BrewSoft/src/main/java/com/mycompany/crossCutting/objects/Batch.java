@@ -2,10 +2,10 @@ package com.mycompany.crossCutting.objects;
 
 public class Batch {
 
-    private int productionListID; 
+    private int productionListID;
     private final int BatchID;
-    private int MachineID; 
-    private final int type; 
+    private int MachineID;
+    private final int type;
     private String dateofCreation;
     private final String deadline;
     private String dateofCompletion;
@@ -49,6 +49,7 @@ public class Batch {
         this.speedforProduction = speedforProduction;
         this.dateofCreation = dateofCreation;
     }
+
     // this is used for editQueuedBatch
     public Batch(int productionListID, int BatchID, int type, int totalAmount, String deadline, float speedforProduction) {
         this.productionListID = productionListID;
@@ -57,6 +58,16 @@ public class Batch {
         this.totalAmount = totalAmount;
         this.deadline = deadline;
         this.speedforProduction = speedforProduction;
+    }
+
+    // For Search
+    // TODO: make constructor
+    public Batch(String finalBatchInformationID, String productionListID,
+            String BreweryMachineID, String deadline,
+            String dateOfCreation, String dateOfCompletion,
+            String productID, String totalCount,
+            String defectCount, String acceptedCount) {
+
     }
 
     public int getBatchID() {

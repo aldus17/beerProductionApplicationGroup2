@@ -154,7 +154,7 @@
                               </TableView>
                               <TextField fx:id="text_SearchCompletedBarches" prefHeight="25.0" prefWidth="947.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                               <Button fx:id="btn_SearchCompletedBatches" mnemonicParsing="false" onAction="#OnSearchAction" prefHeight="25.0" prefWidth="71.0" text="Search" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Button fx:id="btn_generateBatch" mnemonicParsing="false" onAction="#GeneratingBatchreportAction" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Button fx:id="btn_generateBatch" mnemonicParsing="false" onAction="#generatingBatchreportAction" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <Label text="Completed Batches" GridPane.columnIndex="1" GridPane.columnSpan="2">
                                  <font>
                                     <Font size="18.0" />
