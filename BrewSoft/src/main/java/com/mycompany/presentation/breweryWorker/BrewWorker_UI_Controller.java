@@ -55,7 +55,6 @@ public class BrewWorker_UI_Controller implements Initializable {
         Consumer<String> wheatUpdater = text -> Platform.runLater(() -> lbl_Wheat.setText(text));
         Consumer<String> yeastUpdater = text -> Platform.runLater(() -> lbl_Yeast.setText(text));
 
-        Consumer<String> temperatureUpdater = text -> Platform.runLater(() -> lbl_Temprature.setText(text));
         Consumer<String> batchIdUpdater = text -> Platform.runLater(new Runnable() {
             @Override
             public void run() {
@@ -64,10 +63,7 @@ public class BrewWorker_UI_Controller implements Initializable {
             }
         });
         Consumer<String> producedUpdater = text -> Platform.runLater(() -> lbl_Produced.setText(text));
-        Consumer<String> humidityUpdater = text -> Platform.runLater(() -> lbl_Humidity.setText(text));
         Consumer<String> totalProductsUpdater = text -> Platform.runLater(() -> lbl_TotalProducts.setText(text));
-        Consumer<String> acceptableUpdater = text -> Platform.runLater(() -> lbl_Acceptable.setText(text));
-        Consumer<String> vibrationUpdater = text -> Platform.runLater(() -> lbl_Vibration.setText(text));
         Consumer<String> productsPrMinuteUpdater = text -> Platform.runLater(() -> lbl_ProductsPrMinute.setText(text));
         Consumer<String> stopReasonUpdater = text -> Platform.runLater(() -> lbl_StopReason.setText(subscriber.stopReasonTranslator(text)));
         Consumer<String> stateUpdater = text -> Platform.runLater(() -> {
@@ -78,12 +74,18 @@ public class BrewWorker_UI_Controller implements Initializable {
             }
             lbl_State.setText(subscriber.stateTranslator(text));
         });
-        Consumer<String> defectUpdater = text -> Platform.runLater(() -> lbl_Defect.setText(text));
 
         Consumer<String> maintenanceCounterUpdater = text -> Platform.runLater(() -> {
             pb_Maintenance.setProgress(Double.valueOf(text) / 30000);
             lbl_MaintenancePercent.setText(String.valueOf((Double.valueOf(text) / 30000) * 100) + "%");
         });
+
+        Consumer<String> acceptableUpdater = text -> Platform.runLater(() -> lbl_Acceptable.setText(text));
+        Consumer<String> defectUpdater = text -> Platform.runLater(() -> lbl_Defect.setText(text));
+
+        Consumer<String> temperatureUpdater = text -> Platform.runLater(() -> lbl_Temprature.setText(text));
+        Consumer<String> humidityUpdater = text -> Platform.runLater(() -> lbl_Humidity.setText(text));
+        Consumer<String> vibrationUpdater = text -> Platform.runLater(() -> lbl_Vibration.setText(text));
 
         subscriber.setConsumer(batchIdUpdater, subscriber.BATCHID_NODENAME);
         subscriber.setConsumer(temperatureUpdater, subscriber.TEMPERATURE_NODENAME);
