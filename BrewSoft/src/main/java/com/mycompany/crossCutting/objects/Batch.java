@@ -17,6 +17,10 @@ public class Batch {
     private StringProperty totalAmount; //int
     private StringProperty goodAmount; //float lav navn om til acceptedcount
     private StringProperty defectAmount; //float
+    private StringProperty finalBatchInformationID;
+
+    public Batch() {
+    }
 
     //Queue batch object
     public Batch(String batchID, String type, String totalAmount,
@@ -28,7 +32,8 @@ public class Batch {
         this.speedforProduction = new SimpleStringProperty(speedforProduction);
     }
 
-    public Batch(String BatchID, String MachineID, String type,
+    // Used for BatchReport purpose
+    public Batch(String productionListID, String BatchID, String MachineID, String type,
             String dateofCreation, String deadline, String dateofCompletion,
             String speedforProduction, String totalAmount, String goodAmount,
             String defectAmount) {
@@ -53,6 +58,7 @@ public class Batch {
         this.speedforProduction = new SimpleStringProperty(speedforProduction);
         this.dateofCreation = new SimpleStringProperty(dateofCreation);
     }
+
     // this is used for editQueuedBatch
     public Batch(String productionListID, String BatchID, String type, String totalAmount, String deadline, String speedforProduction) {
         this.productionListID = new SimpleStringProperty(productionListID);

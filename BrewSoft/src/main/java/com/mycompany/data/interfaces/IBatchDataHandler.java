@@ -16,11 +16,15 @@ public interface IBatchDataHandler {
      public ArrayList<Batch> getQueuedBatches();
 
      public Integer getLatestBatchID();
-     public List getAcceptedCount (LocalDate dateofcompleation);  
-     public void editQueuedBatch (Batch batch);
+     public MachineState getMachineState(int prodListID);
+     
      public MachineTempData getMachineTempData(int prodID, int machineID);
      public MachineHumiData getMachineHumiData(int prodID, int machineID);
+     
+    // public MachineData getMachineTempData(int prodID, int machineID);
      public BatchReport getBatchReportProductionData(int batchID, int machineID);
-     public MachineState getMachineState(int prodListID);
-
+    
+     public void editQueuedBatch (Batch batch);
+     public List getAcceptedCount (LocalDate dateofcompleation);  
 }
+

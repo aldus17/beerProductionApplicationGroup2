@@ -6,7 +6,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
@@ -55,7 +54,7 @@
             </MenuBar>
             <AnchorPane GridPane.rowIndex="1">
                <children>
-                  <AnchorPane fx:id="ap_ProductionQueueLayout" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="ap_ProductionQueueLayout" prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <GridPane alignment="TOP_CENTER" prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
@@ -88,11 +87,10 @@
                                     <Insets top="10.0" />
                                  </GridPane.margin>
                               </TableView>
-                              <TextField fx:id="text_SearchProductionQueue" prefHeight="25.0" prefWidth="947.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                              <TextField fx:id="text_SearchProductionQueue" prefHeight="25.0" prefWidth="947.0" promptText="Search Batch ID / Deadline" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin></TextField>
-                              <Button fx:id="btn_SearchProductionQueue" disable="true" mnemonicParsing="false" onAction="#OnSearchAction" prefHeight="25.0" prefWidth="71.0" text="Search" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label text="Production Queue" GridPane.columnIndex="1" GridPane.columnSpan="2">
                                  <font>
                                     <Font size="18.0" />
@@ -138,23 +136,21 @@
                               <TableView fx:id="tw_SearchTableCompletedBatches" prefHeight="795.0" prefWidth="1150.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="2">
                                  <columns>
                                     <TableColumn fx:id="tc_CompletedBatches_batchID" prefWidth="75.0" text="Batch ID" />
-                                    <TableColumn fx:id="tc_CompletedBatches_MacineID" prefWidth="75.0" text="Machine ID" />
-                                    <TableColumn fx:id="tc_CompletedBatches_Type" prefWidth="53.0" text="Type" />
-                                    <TableColumn fx:id="tc_CompletedBatches_DateOfCreation" prefWidth="110.99996948242188" text="Date of creation" />
-                                    <TableColumn fx:id="tc_CompletedBatches_Deadline" prefWidth="75.0" text="Deadline" />
-                                    <TableColumn fx:id="tc_CompletedBatches_DateOfCompletion" prefWidth="123.0" text="Date of completion" />
-                                    <TableColumn fx:id="tc_CompletedBatches_SpeedForProduction" prefWidth="135.0" text="Speed for Production" />
-                                    <TableColumn fx:id="tc_CompletedBatches_TotalAmount" prefWidth="86.0" text="Total Amount" />
-                                    <TableColumn fx:id="tc_CompletedBatches_GoodAmount" prefWidth="92.0" text="Good Amount" />
-                                    <TableColumn fx:id="tc_CompletedBatches_DefectAmount" prefWidth="108.0" text="Defect Amount" />
+                                    <TableColumn fx:id="tc_CompletedBatches_MacineID" prefWidth="90.00003051757812" text="Machine ID" />
+                                    <TableColumn fx:id="tc_CompletedBatches_Type" prefWidth="74.0" text="Type" />
+                                    <TableColumn fx:id="tc_CompletedBatches_DateOfCreation" prefWidth="134.0" text="Date of creation" />
+                                    <TableColumn fx:id="tc_CompletedBatches_Deadline" minWidth="0.0" prefWidth="128.0" text="Deadline" />
+                                    <TableColumn fx:id="tc_CompletedBatches_DateOfCompletion" prefWidth="175.0" text="Date of completion" />
+                                    <TableColumn fx:id="tc_CompletedBatches_TotalAmount" prefWidth="161.0" text="Total Amount" />
+                                    <TableColumn fx:id="tc_CompletedBatches_GoodAmount" prefWidth="154.0" text="Good Amount" />
+                                    <TableColumn fx:id="tc_CompletedBatches_DefectAmount" prefWidth="167.0" text="Defect Amount" />
                                  </columns>
                                  <GridPane.margin>
                                     <Insets top="10.0" />
                                  </GridPane.margin>
                               </TableView>
-                              <TextField fx:id="text_SearchCompletedBarches" prefHeight="25.0" prefWidth="947.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                              <Button fx:id="btn_SearchCompletedBatches" mnemonicParsing="false" onAction="#OnSearchAction" prefHeight="25.0" prefWidth="71.0" text="Search" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Button fx:id="btn_generateBatch" mnemonicParsing="false" onAction="#GeneratingBatchreportAction" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <TextField fx:id="text_SearchCompletedBarches" prefHeight="31.0" prefWidth="276.0" promptText="Search Batch ID / Deadline" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                              <Button fx:id="btn_generateBatch" mnemonicParsing="false" onAction="#generatingBatchreportAction" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <Label text="Completed Batches" GridPane.columnIndex="1" GridPane.columnSpan="2">
                                  <font>
                                     <Font size="18.0" />
@@ -164,7 +160,7 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="ap_CreateBatchOrder" layoutY="5.0" prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="ap_CreateBatchOrder" layoutY="5.0" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <GridPane prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
@@ -178,14 +174,14 @@
                           <rowConstraints>
                               <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="10.0" minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="30.0" minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="5.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="30.0" minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="5.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="30.0" minHeight="25.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="5.0" minHeight="0.0" prefHeight="0.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="5.0" minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="230.0" minHeight="230.0" prefHeight="230.0" vgrow="SOMETIMES" />
@@ -194,11 +190,11 @@
                           </rowConstraints>
                            <children>
                               <TextField fx:id="textf_CreateBatchOrder_AmountToProduces" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                              <TextField fx:id="textf_CreateBatchOrder_Speed" disable="true" editable="false" prefHeight="31.0" prefWidth="119.0" GridPane.columnIndex="2" GridPane.rowIndex="6">
+                              <TextField fx:id="textf_CreateBatchOrder_Speed" disable="true" editable="false" prefHeight="31.0" prefWidth="99.0" GridPane.columnIndex="2" GridPane.rowIndex="6">
                                  <GridPane.margin>
-                                    <Insets right="90.0" />
+                                    <Insets right="110.0" />
                                  </GridPane.margin></TextField>
-                              <DatePicker fx:id="dp_CreateBatchOrder" onAction="#GetOrdersForSpecificDay" GridPane.columnIndex="2" GridPane.rowIndex="8" />
+                              <DatePicker fx:id="dp_CreateBatchOrder" onAction="#GetOrdersForSpecificDay" prefHeight="31.0" prefWidth="331.0" GridPane.columnIndex="2" GridPane.rowIndex="8" />
                               <Button mnemonicParsing="false" onAction="#CreateBatchAction" text="Create" GridPane.columnIndex="2" GridPane.rowIndex="10" />
                               <TableView fx:id="tw_CreateBatchOrder_BatchesOnSpecificDay" prefHeight="777.0" prefWidth="743.0" GridPane.columnIndex="4" GridPane.rowIndex="2" GridPane.rowSpan="12">
                                 <columns>
@@ -220,7 +216,6 @@
                               <Label text="Amount to Produce" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Label text="Deadline" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                               <Label text="Type of product" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <ListView fx:id="lv_CreateBatchOrder_TypeofBeer" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="12" />
                               <Label fx:id="lbl_CreateBatchOrder_error" GridPane.columnIndex="2" GridPane.rowIndex="10">
                                  <GridPane.margin>
                                     <Insets left="60.0" />
@@ -228,10 +223,10 @@
                               </Label>
                               <CheckBox fx:id="toggleSpeedBtn" mnemonicParsing="false" onAction="#toggleSpeed" text="Set speed" GridPane.columnIndex="2" GridPane.rowIndex="6">
                                  <GridPane.margin>
-                                    <Insets left="155.0" />
+                                    <Insets left="165.0" />
                                  </GridPane.margin>
                               </CheckBox>
-                              <ComboBox fx:id="cb_beertypeCreateBatch" onAction="#comboboxAction" prefHeight="31.0" prefWidth="260.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <ComboBox fx:id="cb_beertypeCreateBatch" onAction="#comboboxAction" prefHeight="31.0" prefWidth="300.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
                      </children>

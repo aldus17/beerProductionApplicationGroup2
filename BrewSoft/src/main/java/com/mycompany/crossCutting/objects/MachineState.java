@@ -14,6 +14,7 @@ public class MachineState implements Comparator<MachineState> {
         this.machinestateID = machinestateID;
         this.timeInState = timeInState;
         this.stateObjList = new ArrayList<>();
+
     }
 
     public MachineState(String machinestateID, String timeInState, List<Object> stateObj) {

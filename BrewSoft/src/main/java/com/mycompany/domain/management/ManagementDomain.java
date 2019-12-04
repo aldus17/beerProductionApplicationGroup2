@@ -1,6 +1,7 @@
 package com.mycompany.domain.management;
 
 import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.BatchFinal;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.crossCutting.objects.OeeObject;
@@ -40,8 +41,7 @@ public class ManagementDomain implements IManagementDomain {
         this.batchDataHandler = new BatchDataHandler();
         this.searchDataHandler = new SearchDataHandler();
         this.managementData = new BatchDataHandler(); // missing suitable class
-        
-        
+
     }
 
     /**
@@ -79,6 +79,7 @@ public class ManagementDomain implements IManagementDomain {
         return managementData.getBeerTypes();
     }
 
+    @Override
     public Map<Integer, String> getTimeInStates(int prodListID) {
 
         MachineState ms = batchDataHandler.getMachineState(prodListID);
