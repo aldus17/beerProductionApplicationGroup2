@@ -9,7 +9,7 @@ public class Batch {
     private String dateofCreation;
     private final String deadline;
     private String dateofCompletion;
-    private final float speedforProduction;
+    private float speedforProduction;
     private final int totalAmount;
     private float acceptedcount;
     private float defectAmount;
@@ -59,6 +59,23 @@ public class Batch {
         this.deadline = deadline;
         this.speedforProduction = speedforProduction;
     }
+
+    public Batch(int productionListID, int BatchID, int MachineID, int type,
+            String dateofCreation, String deadline, String dateofCompletion,
+            int totalAmount, float acceptedcount, float defectAmount) {
+        this.productionListID = productionListID;
+        this.BatchID = BatchID;
+        this.MachineID = MachineID;
+        this.type = type;
+        this.dateofCreation = dateofCreation;
+        this.deadline = deadline;
+        this.dateofCompletion = dateofCompletion;
+        this.totalAmount = totalAmount;
+        this.acceptedcount = acceptedcount;
+        this.defectAmount = defectAmount;
+    }
+    
+    
 
     public int getBatchID() {
         return BatchID;

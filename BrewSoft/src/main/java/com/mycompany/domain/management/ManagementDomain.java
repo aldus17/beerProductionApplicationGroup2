@@ -11,7 +11,6 @@ import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.data.interfaces.IManagementData;
 import com.mycompany.data.interfaces.ISearchDataHandler;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
-import java.util.List;
 import com.mycompany.domain.management.interfaces.IManagementDomain;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -210,21 +209,8 @@ public class ManagementDomain implements IManagementDomain {
         return batchDataHandler.getQueuedBatches();
     }
 
-    public static void main(String[] args) {
-        ManagementDomain md = new ManagementDomain();
-
-//        Map<Integer, String> testMap = new TreeMap<>();
-//        testMap = md.getTimeInStates(410);
-//
-//        System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
-        Map<Integer, String> testMap2 = new TreeMap<>();
-        MachineState ms = new MachineState("", "");
-        testMap2 = md.getTimeInStates(450);
-
-        System.out.println(testMap2.toString());
-        System.out.println(
-                "Test Addition: " + md.getAdditionTimeInState("13:10:10", "12:10:10"));
-        System.out.println(
-                "Test Get difference " + md.getDifferenceTimeInState("12:03:05", "13:05:10"));
+    @Override
+    public ArrayList<Batch> getCompletedBatches() {
+        return managementData.getCompletedBatches();
     }
 }

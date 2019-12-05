@@ -242,36 +242,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         return list;
     }
 
-    public static void main(String[] args) {
-        BatchDataHandler b = new BatchDataHandler();
-//        MachineState ms = b.getMachineState("410");
-//        ManagementDomain md = new ManagementDomain();
-//
-//        for (Object o : ms.getStateObjList()) {
-//            String s = o.toString();
-//            System.out.println(s);
-//        }
-//
-//        System.out.println("Test " + md.getDifferenceTimeInState("12:31:22", "13:40:49"));
-//
-//        BatchReport batchReport = b.getBatchReportProductionData(8, 1);
-//        System.out.println("Test\n" + batchReport.toString());
-
-        MachineTempData machineTempData = b.getMachineTempData(195, 1);
-        for (Object o : machineTempData.getMachineTempDataObjList()) {
-            String s = o.toString();
-            System.out.println(s);
-
-        }
-        MachineHumiData machineHumiData = b.getMachineHumiData(195, 1);
-        for (Object o : machineHumiData.getMachineHumiDataObjList()) {
-            String s = o.toString();
-            System.out.println(s);
-        }
-
-
-    }
-      @Override
+    @Override
     public List<BeerTypes> getBeerTypes() {
         List<BeerTypes> beerTypeList = new ArrayList<>();
         SimpleSet beerTypes = dbConnection.query("SELECT * FROM producttype");
@@ -286,7 +257,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             );
         }
         return beerTypeList;
-        }
+    }
 
     @Override
     public void editQueuedBatch(Batch batch) {
@@ -316,26 +287,26 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     }
 
     @Override
-    public ArrayList<BatchFinal> getCompletedBatches() {
-        ArrayList<BatchFinal> completedbatches = new ArrayList<>();
+    public ArrayList<Batch> getCompletedBatches() {
+        ArrayList<Batch> completedbatches = new ArrayList<>();
         SimpleSet set = dbConnection.query("SELECT pl.batchid, fb.* "
                 + "FROM productionlist AS pl, finalbatchinformation as fb "
                 + "WHERE pl.productionlistid = fb.productionlistid;");
         for (int i = 0; i < set.getRows(); i++) {
             completedbatches.add(
-                    new BatchFinal(
-                            String.valueOf(set.get(i, "batchid")),
-                            String.valueOf(set.get(i, "finalbatchinformationid")),
-                            String.valueOf(set.get(i, "productionlistid")),
-                            String.valueOf(set.get(i, "brewerymachineid")),
-                            String.valueOf(set.get(i, "deadline")),
+                    new Batch(
+                            (int) set.get(i, "productionlistid"),
+                            (int) set.get(i, "batchid"),
+                            (int) set.get(i, "brewerymachineid"),
+                            (int) set.get(i, "productid"),
                             String.valueOf(set.get(i, "dateofcreation")),
+                            String.valueOf(set.get(i, "deadline")),
                             String.valueOf(set.get(i, "dateofcompletion")),
-                            String.valueOf(set.get(i, "productid")),
-                            String.valueOf(set.get(i, "totalcount")),
-                            String.valueOf(set.get(i, "defectcount")),
-                            String.valueOf(set.get(i, "acceptedcount"))
-                    ));
+                            (int) set.get(i, "totalcount"),
+                            (float) set.get(i, "acceptedcount"),
+                            (float) set.get(i, "defectcount")
+                    )
+            );
         }
         return completedbatches;
     }

@@ -67,7 +67,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                         (int) batchSet.get(i, "productid"),
                         (int) batchSet.get(i, "productamount") - (int) tpb.getAcceptedCount(),
                         String.valueOf(batchSet.get(i, "deadline")),
-                        (float) batchSet.get(i, "speed"),
+                        Float.parseFloat(String.valueOf(batchSet.get(i, "speed"))),
                         String.valueOf(batchSet.get(i, "dateofcreation")
                 ));
             }

@@ -30,7 +30,7 @@ public class UIBatch {
 
     public UIBatch(String BatchID, String MachineID, String type,
             String dateofCreation, String deadline, String dateofCompletion,
-            String speedforProduction, String totalAmount, String goodAmount,
+            String totalAmount, String goodAmount,
             String defectAmount) {
         this.BatchID = new SimpleStringProperty(BatchID);
         this.MachineID = new SimpleStringProperty(MachineID);
@@ -38,7 +38,6 @@ public class UIBatch {
         this.dateofCreation = new SimpleStringProperty(dateofCreation);
         this.deadline = new SimpleStringProperty(deadline);
         this.dateofCompletion = new SimpleStringProperty(dateofCompletion);
-        this.speedforProduction = new SimpleStringProperty(speedforProduction);
         this.totalAmount = new SimpleStringProperty(totalAmount);
         this.goodAmount = new SimpleStringProperty(goodAmount);
         this.defectAmount = new SimpleStringProperty(defectAmount);
