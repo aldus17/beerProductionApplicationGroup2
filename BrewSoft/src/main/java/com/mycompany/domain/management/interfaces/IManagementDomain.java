@@ -22,9 +22,8 @@ public interface IManagementDomain {
     public List<Batch> batchObjects(String searchKey, SearchData searchDataObj);
 
     public List<BeerTypes> getBeerTypes();
+    public Map<Integer, String> getTimeInStates(int prodListID, int machineID);
 
-    public Map<Integer, String> getTimeInStates(int prodListID);
-
-    public String calculateOEE(LocalDate dateofcompletion, int plannedproductiontime);
+    public String calculateOEE (LocalDate dateofcompletion, int plannedproductiontime);
 
 }

@@ -79,7 +79,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     }
 
     @Override
-    public MachineState getMachineState(int prodListID) {
+    public List<MachineState> getMachineState(int prodListID, int machineID) {
 
         /* TEST QUERY IN DATABASE
         SELECT tis.machinestateid, tis.starttimeinstate, pl.productionlistid
@@ -97,31 +97,35 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                 + "WHERE productionlistid =? "
                 + "AND starttimeinstate IS NOT NULL "
                 + "ORDER BY starttimeinstate ASC; ", prodListID);
-
-        /*
-        SELECT fbi.dateofcompletion, tis.machinestateid
-        FROM finalbatchinformation AS fbi, timeinstate AS tis
-        WHERE tis.productionlistid = (
-            SELECT machinestateid
-            FROM timeinstate AS tis2, finalbatchinformation AS fbi2
-            WHERE tis2.productionlistid = fbi2.productionlistid)
-        AND tis.brewerymachineid = fbi.brewerymachineid
-         */
-        if (stateSet1.isEmpty()) {
-            System.out.println("stateSet is empty");
-            return null;
+        SimpleSet stateSet2 = dbConnection.query("SELECT * FROM timeinstate WHERE productionlistid = ( "
+                + "SELECT productionlistid "
+                + "FROM finalbatchinformation "
+                + "WHERE finalbatchinformationid < (SELECT finalbatchinformationid FROM finalbatchinformation WHERE productionlistid =? AND brewerymachineid =?) "
+                + "AND brewerymachineid =? "
+                + "ORDER BY finalbatchinformationid DESC LIMIT 1) "
+                + "AND starttimeinstate IS NOT NULL "
+                + "ORDER BY starttimeinstate DESC LIMIT 1;", prodListID, machineID, machineID);
+        if (stateSet.isEmpty()) {
+            throw new NullPointerException("StateSet is empty, check productionInfo table if productionListID + " + prodListID + " contains machine data");
         } else {
-            MachineState machineState = new MachineState("", "");
-            List<Object> list = new ArrayList<>();
-            for (int i = 0; i < stateSet1.getRows(); i++) {
-                list.add(
+            MachineState machineState = new MachineState();
+            List<MachineState> listOfStateObjects = new ArrayList<>();
+            for (int i = 0; i < stateSet.getRows(); i++) {
+                listOfStateObjects.add(
                         machineState = new MachineState(
-                                String.valueOf(stateSet1.get(i, "machinestateid")),
-                                String.valueOf(stateSet1.get(i, "starttimeinstate"))
+                                (int) stateSet.get(i, "machinestateid"),
+                                String.valueOf(stateSet.get(i, "starttimeinstate"))
                         ));
             }
-            machineState.setStateObjList(list);
-            return machineState;
+            for (int i = 0; i < stateSet2.getRows(); i++) {
+                listOfStateObjects.add(
+                        machineState = new MachineState(
+                                (int) stateSet2.get(i, "machinestateid"),
+                                String.valueOf(stateSet2.get(i, "starttimeinstate"))
+                        ));
+            }
+            // machineState.setStateObjList(list);
+            return listOfStateObjects;
         }
     }
 
@@ -142,12 +146,12 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         SimpleSet reportSet = dbConnection.query("SELECT pl.batchid, fbi.brewerymachineid, fbi.deadline, fbi.dateofcreation, fbi.dateofcompletion, pt.productname, fbi.totalcount, fbi.defectcount, fbi.acceptedcount "
                 + "FROM finalbatchinformation AS fbi, productionlist AS pl, producttype AS pt "
                 + "WHERE fbi.productionlistid = pl.productionlistid "
-                + "AND pl.batchid = ? "
-                + "AND fbi.brewerymachineid = ? "
+                + "AND pl.batchid =? "
+                + "AND fbi.brewerymachineid =? "
                 + "AND pt.productid = fbi.productid; ",
                 batchID, machineID);
         if (reportSet.isEmpty()) {
-            return null;
+            throw new NullPointerException("StateSet is empty, error at BatchDataHandler:getBatchReportProductionData");
         } else {
             BatchReport batchReport = new BatchReport();
             List<Object> list = new ArrayList<>();
@@ -168,13 +172,8 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         }
     }
 
-    /*
-    SELECT DISTINCT pl.brewerymachineid, pl.temperature, pl.humidity
-    FROM productioninfo AS pl
-    WHERE pl.productionlistid = 195 AND pl.brewerymachineid = 1
-    GROUP BY pl.temperature, pl.humidity
-     */
-    public MachineTempData getMachineTempData(int prodID, int machineID) {
+    @Override
+    public List<MachineTempData> getMachineTempData(int prodID, int machineID) {
         SimpleSet prodInfoDataSet = dbConnection.query("SELECT DISTINCT pl.brewerymachineid, pl.temperature "
                 + "FROM productioninfo AS pl, finalbatchinformation AS fbi "
                 + "WHERE pl.productionlistid =? AND "
@@ -182,22 +181,23 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                 + "fbi.productionlistid = pl.productionlistid; ",
                 prodID, machineID);
         if (prodInfoDataSet.isEmpty()) {
-            return null;
+            throw new NullPointerException("StateSet is empty, error at BatchDataHandler:getMachineTempData");
         } else {
             MachineTempData machineTempData = new MachineTempData();
-            List<Object> list = new ArrayList<>();
+            List<MachineTempData> machineTempDataList = new ArrayList<>();
             for (int i = 0; i < prodInfoDataSet.getRows(); i++) {
-                list.add(machineTempData = new MachineTempData(
-                        Integer.valueOf(String.valueOf(prodInfoDataSet.get(i, "brewerymachineid"))),
-                        Double.valueOf(String.valueOf(prodInfoDataSet.get(i, "temperature"))))
+                machineTempDataList.add(machineTempData = new MachineTempData(
+                        (int) prodInfoDataSet.get(i, "brewerymachineid"),
+                        (double) prodInfoDataSet.get(i, "temperature"))
                 );
             }
-            machineTempData.setMachineTempDataObjList(list);
-            return machineTempData;
+
+            return machineTempDataList;
         }
     }
 
-    public MachineHumiData getMachineHumiData(int prodID, int machineID) {
+    @Override
+    public List<MachineHumiData> getMachineHumiData(int prodID, int machineID) {
         SimpleSet prodInfoDataSet = dbConnection.query("SELECT DISTINCT pl.brewerymachineid, pl.humidity "
                 + "FROM productioninfo AS pl, finalbatchinformation AS fbi "
                 + "WHERE pl.productionlistid =? AND "
@@ -205,18 +205,18 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                 + "fbi.productionlistid = pl.productionlistid; ",
                 prodID, machineID);
         if (prodInfoDataSet.isEmpty()) {
-            return null;
+            throw new NullPointerException("StateSet is empty, error at BatchDataHandler:getMachineHumiData");
         } else {
             MachineHumiData machineHumiData = new MachineHumiData();
-            List<Object> list = new ArrayList<>();
+            List<MachineHumiData> machineHumiDataList = new ArrayList<>();
             for (int i = 0; i < prodInfoDataSet.getRows(); i++) {
-                list.add(machineHumiData = new MachineHumiData(
-                        Integer.valueOf(String.valueOf(prodInfoDataSet.get(i, "brewerymachineid"))),
-                        Double.valueOf(String.valueOf(prodInfoDataSet.get(i, "humidity"))))
+                machineHumiDataList.add(machineHumiData = new MachineHumiData(
+                        (int) prodInfoDataSet.get(i, "brewerymachineid"),
+                        (double) prodInfoDataSet.get(i, "humidity"))
                 );
             }
-            machineHumiData.setMachineHumiDataObjList(list);
-            return machineHumiData;
+
+            return machineHumiDataList;
         }
     }
 
@@ -309,6 +309,29 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             );
         }
         return completedbatches;
+    }
+
+    public static void main(String[] args) {
+        BatchDataHandler b = new BatchDataHandler();
+
+        List<MachineState> ms = new ArrayList<>();
+        ms = b.getMachineState(450, 1);
+        System.out.println("Test " + ms.toString());
+
+        BatchReport batchReport = b.getBatchReportProductionData(8, 1);
+        System.out.println("Test\n" + batchReport.toString());
+
+        for (MachineTempData o : b.getMachineTempData(450, 1)) {
+            String s = o.toString();
+            System.out.println(s);
+
+        }
+        //MachineHumiData machineHumiData = b.getMachineHumiData(195, 1);
+        for (MachineHumiData o : b.getMachineHumiData(450, 1)) {
+            String s = o.toString();
+            System.out.println(s);
+        }
+
     }
 
 }

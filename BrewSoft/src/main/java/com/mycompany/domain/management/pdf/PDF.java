@@ -41,29 +41,19 @@ public class PDF implements IBatchReportGenerate {
     public PDDocument createNewPDF(int batchID, int prodListID, int machineID) throws NullPointerException {
         batchDataHandler = new BatchDataHandler();
         BatchReport batchRep = batchDataHandler.getBatchReportProductionData(batchID, machineID);
-        MachineTempData machineTempData = batchDataHandler.getMachineTempData(prodListID, machineID);
-        MachineHumiData machineHumiData = batchDataHandler.getMachineHumiData(prodListID, machineID);
-        ManagementDomain managementDomain = new ManagementDomain();
-        Map<Integer, String> machineStatesMap = managementDomain.getTimeInStates(prodListID);
-
         List<MachineTempData> mtd = new ArrayList<>();
         List<MachineHumiData> mhd = new ArrayList<>();
-
-        machineTempData.getMachineTempDataObjList().forEach((object) -> {
-            mtd.add((MachineTempData) object);
-        });
-        machineHumiData.getMachineHumiDataObjList().forEach((object) -> {
-            mhd.add((MachineHumiData) object);
-        });
+        mtd = batchDataHandler.getMachineTempData(prodListID, machineID);
+        mhd = batchDataHandler.getMachineHumiData(prodListID, machineID);
+        ManagementDomain managementDomain = new ManagementDomain();
+        Map<Integer, String> machineStatesMap = managementDomain.getTimeInStates(prodListID, machineID);
 
         for (MachineTempData md : mtd) {
             temperatureDataList.add(md.getTemperature());
-
         }
         double count = 0.0;
         List<Double> countDouble = new ArrayList<>();
         for (MachineHumiData md : mhd) {
-
             humidityDataList.add(md.getHumidity());
             count++;
             countDouble.add(count);
@@ -79,7 +69,7 @@ public class PDF implements IBatchReportGenerate {
     }
 
     private PDPage addPageWithBatchInfo(BatchReport batchReport, Map<Integer, String> timeInStatesMap) {
-        //Retrieving the pages of the document 
+        //Retrieving the pages of the document
         PDPage page = new PDPage();
 
         // Batch info
@@ -124,7 +114,7 @@ public class PDF implements IBatchReportGenerate {
             }
         }
         System.out.println(idle + " " + execute + " " + held + " " + completed + " " + aborted + " " + stopped);
-        
+
         try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
             Text text = new Text();
             text.createText(contentStream, PDType1Font.TIMES_BOLD, 24, 225, 750, header);
@@ -143,7 +133,7 @@ public class PDF implements IBatchReportGenerate {
             text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 350, 550, completed);
             text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 350, 500, aborted);
             text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 350, 450, stopped);
-            
+
             System.out.println("BatchInfo added");
 
         } catch (IOException ex) {
