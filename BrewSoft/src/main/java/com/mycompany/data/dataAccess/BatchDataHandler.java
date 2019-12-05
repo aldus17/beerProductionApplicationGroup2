@@ -44,16 +44,15 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         ArrayList<Batch> queuedbatches = new ArrayList<>();
         SimpleSet set = dbConnection.query("SELECT * FROM Productionlist WHERE status=?", QUEUED_STATUS);
         for (int i = 0; i < set.getRows(); i++) {
-            queuedbatches.add(
-                    new Batch(
-                            (int) set.get(i, "productionlistid"),
-                            (int) set.get(i, "batchid"),
-                            (int) set.get(i, "productid"),
-                            (int) set.get(i, "productamount"),
-                            String.valueOf(set.get(i, "deadline")),
-                            Float.parseFloat(String.valueOf(set.get(i, "speed"))),
-                            String.valueOf(set.get(i, "dateofcreation"))
-                    ));
+            queuedbatches.add(new Batch(
+                    (int) set.get(i, "productionlistid"),
+                    (int) set.get(i, "batchid"),
+                    (int) set.get(i, "productid"),
+                    (int) set.get(i, "productamount"),
+                    String.valueOf(set.get(i, "deadline")),
+                    Float.parseFloat(String.valueOf(set.get(i, "speed"))),
+                    String.valueOf(set.get(i, "dateofcreation"))
+            ));
         }
         return queuedbatches;
     }
@@ -81,18 +80,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     @Override
     public List<MachineState> getMachineState(int prodListID, int machineID) {
 
-        /* TEST QUERY IN DATABASE
-        SELECT tis.machinestateid, tis.starttimeinstate, pl.productionlistid
-        FROM timeinstate AS tis, productionlist AS pl
-        WHERE pl.productionlistid = 110
-        ORDER BY starttimeinstate ASC;
-
-        SELECT *
-        FROM timeinstate AS tis
-        WHERE tis.productionlistid = 109
-        ORDER BY starttimeinstate ASC;
-         */
-        SimpleSet stateSet1 = dbConnection.query("SELECT * "
+        SimpleSet stateSet = dbConnection.query("SELECT * "
                 + "FROM timeinstate "
                 + "WHERE productionlistid =? "
                 + "AND starttimeinstate IS NOT NULL "
@@ -111,20 +99,17 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             MachineState machineState = new MachineState();
             List<MachineState> listOfStateObjects = new ArrayList<>();
             for (int i = 0; i < stateSet.getRows(); i++) {
-                listOfStateObjects.add(
-                        machineState = new MachineState(
-                                (int) stateSet.get(i, "machinestateid"),
-                                String.valueOf(stateSet.get(i, "starttimeinstate"))
-                        ));
+                listOfStateObjects.add(machineState = new MachineState(
+                        (int) stateSet.get(i, "machinestateid"),
+                        String.valueOf(stateSet.get(i, "starttimeinstate"))
+                ));
             }
             for (int i = 0; i < stateSet2.getRows(); i++) {
-                listOfStateObjects.add(
-                        machineState = new MachineState(
-                                (int) stateSet2.get(i, "machinestateid"),
-                                String.valueOf(stateSet2.get(i, "starttimeinstate"))
-                        ));
+                listOfStateObjects.add(machineState = new MachineState(
+                        (int) stateSet2.get(i, "machinestateid"),
+                        String.valueOf(stateSet2.get(i, "starttimeinstate"))
+                ));
             }
-            // machineState.setStateObjList(list);
             return listOfStateObjects;
         }
     }
@@ -143,7 +128,10 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
      */
     @Override
     public BatchReport getBatchReportProductionData(int batchID, int machineID) {
-        SimpleSet reportSet = dbConnection.query("SELECT pl.batchid, fbi.brewerymachineid, fbi.deadline, fbi.dateofcreation, fbi.dateofcompletion, pt.productname, fbi.totalcount, fbi.defectcount, fbi.acceptedcount "
+        SimpleSet reportSet = dbConnection.query("SELECT pl.batchid,"
+                + "fbi.brewerymachineid, fbi.deadline, fbi.dateofcreation,"
+                + "fbi.dateofcompletion, pt.productname, fbi.totalcount,"
+                + "fbi.defectcount, fbi.acceptedcount "
                 + "FROM finalbatchinformation AS fbi, productionlist AS pl, producttype AS pt "
                 + "WHERE fbi.productionlistid = pl.productionlistid "
                 + "AND pl.batchid =? "
@@ -191,7 +179,6 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                         (double) prodInfoDataSet.get(i, "temperature"))
                 );
             }
-
             return machineTempDataList;
         }
     }
@@ -215,7 +202,6 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                         (double) prodInfoDataSet.get(i, "humidity"))
                 );
             }
-
             return machineHumiDataList;
         }
     }
@@ -234,11 +220,10 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                     set.get(i, "productType").toString(),
                     (int) set.get(i, "totalCount"),
                     (int) set.get(i, "defectCount"),
-                    (int) set.get(i, "acceptedCount"));
-
+                    (int) set.get(i, "acceptedCount")
+            );
             list.add(br);
         }
-
         return list;
     }
 
@@ -248,13 +233,11 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         SimpleSet beerTypes = dbConnection.query("SELECT * FROM producttype");
 
         for (int i = 0; i < beerTypes.getRows(); i++) {
-            beerTypeList.add(
-                    new BeerTypes(
-                            (int) beerTypes.get(i, "productid"),
-                            String.valueOf(beerTypes.get(i, "productname")),
-                            Float.parseFloat(String.valueOf(beerTypes.get(i, "speed")))
-                    )
-            );
+            beerTypeList.add(new BeerTypes(
+                    (int) beerTypes.get(i, "productid"),
+                    String.valueOf(beerTypes.get(i, "productname")),
+                    Float.parseFloat(String.valueOf(beerTypes.get(i, "speed")))
+            ));
         }
         return beerTypeList;
     }
@@ -275,7 +258,10 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     public List getAcceptedCount(LocalDate dateofcompleation) {
         List list = new ArrayList<>();
         SimpleSet set;
-        set = dbConnection.query("SELECT fbi.productid, fbi.acceptedcount, pt.idealcycletime FROM finalbatchinformation AS fbi, producttype AS pt WHERE fbi.dateofcompletion = ? AND fbi.productid = pt.productid", dateofcompleation);
+        set = dbConnection.query("SELECT fbi.productid, fbi.acceptedcount,"
+                + "pt.idealcycletime FROM finalbatchinformation AS fbi,"
+                + "producttype AS pt WHERE fbi.dateofcompletion = ? AND"
+                + "fbi.productid = pt.productid", dateofcompleation);
 
         for (int i = 0; i < set.getRows(); i++) {
             list.add(new OeeObject(
@@ -293,45 +279,19 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                 + "FROM productionlist AS pl, finalbatchinformation as fb "
                 + "WHERE pl.productionlistid = fb.productionlistid;");
         for (int i = 0; i < set.getRows(); i++) {
-            completedbatches.add(
-                    new Batch(
-                            (int) set.get(i, "productionlistid"),
-                            (int) set.get(i, "batchid"),
-                            (int) set.get(i, "brewerymachineid"),
-                            (int) set.get(i, "productid"),
-                            String.valueOf(set.get(i, "dateofcreation")),
-                            String.valueOf(set.get(i, "deadline")),
-                            String.valueOf(set.get(i, "dateofcompletion")),
-                            (int) set.get(i, "totalcount"),
-                            Float.parseFloat(String.valueOf(set.get(i, "acceptedcount"))),
-                            Float.parseFloat(String.valueOf(set.get(i, "defectcount")))
-                    )
-            );
+            completedbatches.add(new Batch(
+                    (int) set.get(i, "productionlistid"),
+                    (int) set.get(i, "batchid"),
+                    (int) set.get(i, "brewerymachineid"),
+                    (int) set.get(i, "productid"),
+                    String.valueOf(set.get(i, "dateofcreation")),
+                    String.valueOf(set.get(i, "deadline")),
+                    String.valueOf(set.get(i, "dateofcompletion")),
+                    (int) set.get(i, "totalcount"),
+                    Float.parseFloat(String.valueOf(set.get(i, "acceptedcount"))),
+                    Float.parseFloat(String.valueOf(set.get(i, "defectcount")))
+            ));
         }
         return completedbatches;
     }
-
-    public static void main(String[] args) {
-        BatchDataHandler b = new BatchDataHandler();
-
-        List<MachineState> ms = new ArrayList<>();
-        ms = b.getMachineState(450, 1);
-        System.out.println("Test " + ms.toString());
-
-        BatchReport batchReport = b.getBatchReportProductionData(8, 1);
-        System.out.println("Test\n" + batchReport.toString());
-
-        for (MachineTempData o : b.getMachineTempData(450, 1)) {
-            String s = o.toString();
-            System.out.println(s);
-
-        }
-        //MachineHumiData machineHumiData = b.getMachineHumiData(195, 1);
-        for (MachineHumiData o : b.getMachineHumiData(450, 1)) {
-            String s = o.toString();
-            System.out.println(s);
-        }
-
-    }
-
 }

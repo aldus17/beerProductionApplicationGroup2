@@ -35,7 +35,8 @@ public class SearchDataHandler implements ISearchDataHandler {
         if (batchID != 0.0f) {
             whereClause += " batchid = ?";
         }
-        SimpleSet set = dbConnection.query("SELECT * FROM finalbatchinformation WHERE" + whereClause, Date.valueOf(doc), batchID);
+        SimpleSet set = dbConnection.query("SELECT * FROM finalbatchinformation WHERE " 
+                + whereClause, Date.valueOf(doc), batchID);
 
         for (int i = 0; i < set.getRows(); i++) {
             Batch b = new Batch(

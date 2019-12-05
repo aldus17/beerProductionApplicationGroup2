@@ -36,7 +36,6 @@ public class PDF implements IBatchReportGenerate {
 
     }
 
-    // https://www.tutorialspoint.com/pdfbox/pdfbox_quick_guide.htm
     @Override
     public PDDocument createNewPDF(int batchID, int prodListID, int machineID) throws NullPointerException {
         batchDataHandler = new BatchDataHandler();
@@ -113,7 +112,6 @@ public class PDF implements IBatchReportGenerate {
                 completed = "Completed: " + en.getValue();
             }
         }
-        System.out.println(idle + " " + execute + " " + held + " " + completed + " " + aborted + " " + stopped);
 
         try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
             Text text = new Text();
@@ -133,16 +131,12 @@ public class PDF implements IBatchReportGenerate {
             text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 350, 550, completed);
             text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 350, 500, aborted);
             text.createText(contentStream, PDType1Font.TIMES_ROMAN, 14, 350, 450, stopped);
-
-            System.out.println("BatchInfo added");
-
         } catch (IOException ex) {
             Logger.getLogger(PDF.class.getName()).log(Level.SEVERE, null, ex);
         }
         return page;
     }
 
-    // https://github.com/knowm/XChart
     private PDPage addXYChartToDocument(String chartName, List<Double> data,
             String nameOfXAxis, String nameOfYAxis) {
 
@@ -152,7 +146,6 @@ public class PDF implements IBatchReportGenerate {
         pdfChart.setRotation(90);
 
         float pageWidth = pdfChart.getMediaBox().getWidth();
-        // float pageHeight = pdfChart.getMediaBox().getHeight();
 
         try (PDPageContentStream contentStream = new PDPageContentStream(document, pdfChart)) {
             PDImageXObject chartImage = JPEGFactory.createFromImage(document,
@@ -161,11 +154,9 @@ public class PDF implements IBatchReportGenerate {
             contentStream.transform(new Matrix(0, 1, -1, 0, pageWidth, 100));
 
             contentStream.drawImage(chartImage, -100, 0);
-            System.out.println("XYChart added");
         } catch (IOException ex) {
             Logger.getLogger(PDF.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return pdfChart;
     }
 
@@ -178,7 +169,6 @@ public class PDF implements IBatchReportGenerate {
         pdfChart.setRotation(90);
 
         float pageWidth = pdfChart.getMediaBox().getWidth();
-        // float pageHeight = pdfChart.getMediaBox().getHeight();
 
         try (PDPageContentStream contentStream = new PDPageContentStream(document, pdfChart)) {
             PDImageXObject chartImage = JPEGFactory.createFromImage(document,
@@ -186,11 +176,9 @@ public class PDF implements IBatchReportGenerate {
                             (int) PDRectangle.A4.getHeight(), (int) PDRectangle.A4.getWidth()));
             contentStream.transform(new Matrix(0, 1, -1, 0, pageWidth, 0));
             contentStream.drawImage(chartImage, 0, 0);
-            System.out.println("CategoryChart added");
         } catch (IOException ex) {
             Logger.getLogger(PDF.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return pdfChart;
     }
 

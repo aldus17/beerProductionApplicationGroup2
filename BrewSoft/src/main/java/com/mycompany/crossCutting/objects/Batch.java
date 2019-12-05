@@ -14,7 +14,6 @@ public class Batch {
     private float acceptedcount;
     private float defectAmount;
 
-    //Queue batch object
     public Batch(int batchID, int type, int totalAmount,
             String deadline, float speedforProduction) {
         this.BatchID = batchID;
@@ -40,7 +39,8 @@ public class Batch {
         this.defectAmount = defectAmount;
     }
 
-    public Batch(int productionListID, int BatchID, int type, int totalAmount, String deadline, float speedforProduction, String dateofCreation) {
+    public Batch(int productionListID, int BatchID, int type, int totalAmount,
+            String deadline, float speedforProduction, String dateofCreation) {
         this.productionListID = productionListID;
         this.BatchID = BatchID;
         this.type = type;
@@ -50,8 +50,8 @@ public class Batch {
         this.dateofCreation = dateofCreation;
     }
 
-    // this is used for editQueuedBatch
-    public Batch(int productionListID, int BatchID, int type, int totalAmount, String deadline, float speedforProduction) {
+    public Batch(int productionListID, int BatchID, int type, int totalAmount,
+            String deadline, float speedforProduction) {
         this.productionListID = productionListID;
         this.BatchID = BatchID;
         this.type = type;
@@ -74,8 +74,6 @@ public class Batch {
         this.acceptedcount = acceptedcount;
         this.defectAmount = defectAmount;
     }
-    
-    
 
     public int getBatchID() {
         return BatchID;

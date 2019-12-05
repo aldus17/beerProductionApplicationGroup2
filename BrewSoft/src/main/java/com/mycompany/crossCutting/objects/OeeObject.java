@@ -1,9 +1,10 @@
 package com.mycompany.crossCutting.objects;
 
 public class OeeObject {
-    private int productid;
-    private float acceptedCount;
-    private double idealcycletime;
+
+    private final int productid;
+    private final float acceptedCount;
+    private final double idealcycletime;
 
     public OeeObject(int productid, float acceptedCount, double idealcycletime) {
         this.productid = productid;
@@ -22,5 +23,4 @@ public class OeeObject {
     public double getIdealcycletime() {
         return idealcycletime;
     }
-    
 }

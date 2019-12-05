@@ -5,5 +5,6 @@ import com.mycompany.crossCutting.objects.SearchData;
 import java.util.List;
 
 public interface ISearchDataHandler {
+
     public List<Batch> getBatchList(SearchData searchDataObj);
 }

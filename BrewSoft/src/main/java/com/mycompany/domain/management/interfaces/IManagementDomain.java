@@ -10,7 +10,6 @@ import java.util.Map;
 
 public interface IManagementDomain {
 
-    //public void CreateBatch(int typeofProduct, int amountToProduce, double speed, LocalDate deadline);
     public void createBatch(Batch batch);
 
     public ArrayList<Batch> getQueuedBatches();
@@ -22,8 +21,9 @@ public interface IManagementDomain {
     public List<Batch> batchObjects(String searchKey, SearchData searchDataObj);
 
     public List<BeerTypes> getBeerTypes();
+
     public Map<Integer, String> getTimeInStates(int prodListID, int machineID);
 
-    public String calculateOEE (LocalDate dateofcompletion, int plannedproductiontime);
+    public String calculateOEE(LocalDate dateofcompletion, int plannedproductiontime);
 
 }

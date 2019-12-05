@@ -4,7 +4,7 @@ public class Machine {
 
     private String hostname;
     private int port;
-    private int machineID;
+    private final int machineID;
 
     public Machine(int machineID, String hostname, int port) {
         this.machineID = machineID;

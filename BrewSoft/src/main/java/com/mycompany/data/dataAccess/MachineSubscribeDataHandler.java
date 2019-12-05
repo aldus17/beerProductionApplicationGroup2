@@ -16,7 +16,8 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     }
 
     @Override
-    public void insertProductionInfo(int productionListID, int BreweryMachineID, float humidity, float temperature) {
+    public void insertProductionInfo(int productionListID, int BreweryMachineID,
+            float humidity, float temperature) {
         connection.queryUpdate("INSERT INTO ProductionInfo(productionListID, breweryMachineID, humidity, temperature) VALUES (?,?,?,?)",
                 productionListID, BreweryMachineID, humidity, temperature);
     }
@@ -33,14 +34,27 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 ProductionListID, BreweryMachineID, stopReasonID);
     }
 
-    public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID, String deadline, String dateOfCreation, String dateOfCompleation, int productID, float totalCount, int defectCount, int acceptedCount) {
-        connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, dateOfCompletion, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?,?)",
-                ProductionListID, BreweryMachineID, Date.valueOf(deadline), Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation), productID, totalCount, defectCount, acceptedCount);
+    public void insertFinalBatchInformation(int ProductionListID,
+            int BreweryMachineID, String deadline, String dateOfCreation,
+            String dateOfCompleation, int productID, float totalCount, int defectCount, int acceptedCount) {
+        connection.queryUpdate("INSERT INTO finalBatchInformation "
+                + "(ProductionListID, BreweryMachineID, deadline, "
+                + "dateOfCreation, dateOfCompletion, productID, totalCount, "
+                + "defectCount, acceptedCount) "
+                + "values(?,?,?,?,?,?,?,?,?)",
+                ProductionListID, BreweryMachineID, Date.valueOf(deadline),
+                Date.valueOf(dateOfCreation), Date.valueOf(dateOfCompleation),
+                productID, totalCount, defectCount, acceptedCount);
     }
 
     @Override
-    public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID, String deadline, String dateOfCreation, int productID, float totalCount, int defectCount, int acceptedCount) {
-        connection.queryUpdate("INSERT INTO finalBatchInformation (ProductionListID, BreweryMachineID, deadline, dateOfCreation, productID, totalCount, defectCount, acceptedCount) values(?,?,?,?,?,?,?,?)",
+    public void insertFinalBatchInformation(int ProductionListID, int BreweryMachineID,
+            String deadline, String dateOfCreation, int productID, float totalCount,
+            int defectCount, int acceptedCount) {
+        connection.queryUpdate("INSERT INTO finalBatchInformation "
+                + "(ProductionListID, BreweryMachineID, deadline, dateOfCreation, "
+                + "productID, totalCount, defectCount, acceptedCount) "
+                + "values(?,?,?,?,?,?,?,?)",
                 ProductionListID,
                 BreweryMachineID,
                 Date.valueOf(deadline),
@@ -54,7 +68,7 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
     @Override
     public Batch getNextBatch() {
         Batch batch = null;
-        SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'queued' OR status = 'stopped' ORDER BY deadline ASC limit 1"); // hent queue
+        SimpleSet batchSet = connection.query("SELECT * FROM productionlist WHERE status = 'queued' OR status = 'stopped' ORDER BY deadline ASC limit 1");
 
         if (batchSet.isEmpty()) {
             return null;
@@ -68,8 +82,8 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                         (int) batchSet.get(i, "productamount") - (int) tpb.getAcceptedCount(),
                         String.valueOf(batchSet.get(i, "deadline")),
                         Float.parseFloat(String.valueOf(batchSet.get(i, "speed"))),
-                        String.valueOf(batchSet.get(i, "dateofcreation")
-                ));
+                        String.valueOf(batchSet.get(i, "dateofcreation"))
+                );
             }
         } else {
             for (int i = 0; i < batchSet.getRows(); i++) {
@@ -80,8 +94,8 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                         (int) batchSet.get(i, "productamount"),
                         String.valueOf(batchSet.get(i, "deadline")),
                         Float.parseFloat(String.valueOf(batchSet.get(i, "speed"))),
-                        String.valueOf(batchSet.get(i, "dateofcreation")
-                ));
+                        String.valueOf(batchSet.get(i, "dateofcreation"))
+                );
             }
         }
         return batch;
@@ -104,7 +118,9 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     private TemporaryProductionBatch getTemporaryProductionBatch(int productionlistid) {
         TemporaryProductionBatch tpb = null;
-        SimpleSet set = connection.query("SELECT tp.*, pl.productamount FROM temporaryproduction AS tp, productionlist AS pl WHERE tp.productionlistid = ?", productionlistid); // hent queue
+        SimpleSet set = connection.query("SELECT tp.*, pl.productamount "
+                + "FROM temporaryproduction AS tp, productionlist AS pl "
+                + "WHERE tp.productionlistid = ?", productionlistid);
         if (set.isEmpty()) {
             return null;
         } else {
@@ -112,7 +128,8 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
                 tpb = new TemporaryProductionBatch(
                         productionlistid,
                         Float.parseFloat(String.valueOf(set.get(i, "acceptedcount"))),
-                        Float.parseFloat(String.valueOf(set.get(i, "defectcount"))));
+                        Float.parseFloat(String.valueOf(set.get(i, "defectcount")))
+                );
             }
             return tpb;
         }

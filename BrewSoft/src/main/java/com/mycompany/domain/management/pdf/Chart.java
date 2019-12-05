@@ -53,7 +53,6 @@ public class Chart {
         categoryChart.getStyler().setLegendPosition(LegendPosition.InsideNW);
         categoryChart.getStyler().setHasAnnotations(true);
 
-        // categoryChart.getStyler().setDefaultSeriesRenderStyle(CategorySeriesRenderStyle.Stick);
         categoryChart.addSeries(chartName, xData, yData);
         BufferedImage bi = BitmapEncoder.getBufferedImage(categoryChart);
         try {

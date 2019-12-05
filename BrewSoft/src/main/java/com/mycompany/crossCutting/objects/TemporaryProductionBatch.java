@@ -4,9 +4,9 @@ import java.time.LocalDate;
 
 public class TemporaryProductionBatch {
 
-    private int productionListId;
-    private float acceptedCount;
-    private float defectCount;
+    private final int productionListId;
+    private final float acceptedCount;
+    private final float defectCount;
     private float totalAmount;
     private LocalDate DateForStop;
 
@@ -42,5 +42,4 @@ public class TemporaryProductionBatch {
     public float getTotalAmount() {
         return totalAmount;
     }
-
 }

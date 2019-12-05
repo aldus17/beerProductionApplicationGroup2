@@ -23,8 +23,4 @@ public class BeerTypes {
     public int getIndexNumber() {
         return indexnumber;
     }
-
-    public String toString() {
-        return this.typeName;
-    }
 }

@@ -31,9 +31,9 @@ public class ManagementDomain implements IManagementDomain {
     private final int BATCHID_MIN = 0;
     private final int BATCHID_MAX = 65535;
 
-    private IBatchDataHandler batchDataHandler;
-    private ISearchDataHandler searchDataHandler;
-    private IManagementData managementData;
+    private final IBatchDataHandler batchDataHandler;
+    private final ISearchDataHandler searchDataHandler;
+    private final IManagementData managementData;
 
     public ManagementDomain() {
         this.batchDataHandler = new BatchDataHandler();
@@ -68,7 +68,6 @@ public class ManagementDomain implements IManagementDomain {
 
     @Override
     public List<Batch> batchObjects(String searchKey, SearchData searchDataObj) {
-
         return searchDataHandler.getBatchList(searchDataObj);
     }
 
@@ -78,53 +77,36 @@ public class ManagementDomain implements IManagementDomain {
     }
 
     @Override
-    public Map<Integer, String> getTimeInStates(int prodListID) {
+    public Map<Integer, String> getTimeInStates(int prodListID, int machineID) {
 
-        MachineState ms = batchDataHandler.getMachineState(prodListID);
+        List<MachineState> ms = batchDataHandler.getMachineState(prodListID, machineID);
         Map<Integer, String> finalTimeInStatesList = new TreeMap<>();
 
-        System.out.println(Arrays.toString(ms.getStateObjList().toArray()));
+        Collections.sort(ms, Comparator.comparing(MachineState::getTimeInState));
 
-        List<MachineState> msl = new ArrayList<>();
+        MachineState firstObj = ms.get(0);
 
-        for (Object object : ms.getStateObjList()) {
-            msl.add((MachineState) object);
+        for (int i = 1; i < ms.size(); i++) {
+            MachineState secondObj = ms.get(i);
+            String diff = getDifferenceTimeInState(String.valueOf(firstObj.getTimeInState()), String.valueOf(secondObj.getTimeInState()));
 
-        }
-        System.out.println(Arrays.toString(msl.toArray()));
-        Collections.sort(msl, Comparator.comparing(MachineState::getTimeInState));
-
-        MachineState firstObj = msl.get(0);
-
-        System.out.println(Arrays.toString(msl.toArray()));
-        for (int i = 1; i < msl.size(); i++) {
-            // tag første object, gemmer det object i variable, checke den variable mod det næste object, hvis det samme continue
-
-            MachineState secondObj = msl.get(i);
-//            System.out.println("firstObj: " + firstObj.toString());
-//            System.out.println("secondObj: " + secondObj.toString());
-            String diff = getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState());
-            if (finalTimeInStatesList.containsKey(Integer.valueOf(firstObj.getMachinestateID()))) {
-                String t = finalTimeInStatesList.get(Integer.valueOf(firstObj.getMachinestateID()));
+            if (finalTimeInStatesList.containsKey(firstObj.getMachinestateID())) {
+                String t = finalTimeInStatesList.get(firstObj.getMachinestateID());
                 diff = getAdditionTimeInState(diff, t);
 
             }
-            finalTimeInStatesList.put(Integer.valueOf(firstObj.getMachinestateID()), diff);
-//            System.out.println(getDifferenceTimeInState(firstObj.getTimeInState(), secondObj.getTimeInState()));
-            if (!firstObj.getMachinestateID().equals(secondObj.getMachinestateID())) {
 
-                firstObj = msl.get(i);
+            finalTimeInStatesList.put(firstObj.getMachinestateID(), diff);
+            if (!(firstObj.getMachinestateID() == secondObj.getMachinestateID())) {
+                firstObj = ms.get(i);
             }
         }
-
         return finalTimeInStatesList;
-
     }
 
     public String getDifferenceTimeInState(String stateValue1, String stateValue2) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         long difference = 0;
-//        String formatted = "";
         try {
 
             Date date1 = format.parse(stateValue1);
@@ -140,7 +122,6 @@ public class ManagementDomain implements IManagementDomain {
         long hours = difference / (1000 * 60 * 60);
 
         return String.format("%02d:%02d:%02d", hours, minutes, seconds); //02d e.g. 01 or 00 or 22
-//        return formatted;
     }
 
     public String getAdditionTimeInState(String stateValue1, String stateValue2) {
@@ -189,15 +170,11 @@ public class ManagementDomain implements IManagementDomain {
 
     public String calculateOEE(LocalDate dateofcompletion, int plannedproductiontime) {
         List<OeeObject> list = new ArrayList<>();
-
         float OEE = 0.0f;
-
         list = batchDataHandler.getAcceptedCount(dateofcompletion);
 
         for (OeeObject oeeObject : list) {
-
             OEE += (oeeObject.getAcceptedCount() * oeeObject.getIdealcycletime());
-
         }
 
         float calculatedOEE = (OEE / plannedproductiontime) / 100;

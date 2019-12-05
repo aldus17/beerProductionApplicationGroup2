@@ -70,7 +70,6 @@ public class MachineConnection {
         }
     }
 
-    // TODO Make connect return this ?
     public OpcUaClient getClient() {
         return this.client;
     }

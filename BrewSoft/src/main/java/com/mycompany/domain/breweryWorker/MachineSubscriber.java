@@ -32,7 +32,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     private MachineConnection mconn;
     private Map<String, Consumer<String>> consumerMap;
 
-    private IMachineSubscriberDataHandler msdh = new MachineSubscribeDataHandler();
+    private final IMachineSubscriberDataHandler msdh = new MachineSubscribeDataHandler();
 
     // Production detail nodes
     private final NodeId batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
@@ -88,7 +88,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     // TODO pull ip and port from DB
     public MachineSubscriber() {
-        this("192.168.0.122", 4840);
+
     }
 
     public MachineSubscriber(String hostname, int port) {
@@ -200,13 +200,15 @@ public class MachineSubscriber implements IMachineSubscribe {
             msdh.insertTimesInStates(batch.getProductionListID(), 1, currentStateValue);
         }
     }
-
+    
+    // TODO Insert machine ID and Production List ID
     public void sendStopDuingProduction() {
         if (StopReasonID != 0) {
             msdh.insertStopsDuringProduction(batch.getProductionListID(), 1, StopReasonID);
         }
     }
 
+    // TODO Insert machine ID and Production List ID
     public void completedBatch() {
         if (batch.getTotalAmount() <= this.productionCountValue) {
             msdh.changeProductionListStatus(batch.getProductionListID(), "Completed");
@@ -237,7 +239,6 @@ public class MachineSubscriber implements IMachineSubscribe {
         switch (nodename) {
             case BATCHID_NODENAME:
                 this.batchIDValue = Float.parseFloat(dataValue.getValue().getValue().toString());
-                System.out.println("Batch ID Sub: " + batchIDValue);
                 break;
             case TOTAL_PRODUCTS_NODENAME:
                 this.totalProductValue = Float.parseFloat(dataValue.getValue().getValue().toString());

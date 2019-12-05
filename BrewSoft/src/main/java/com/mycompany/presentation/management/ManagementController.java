@@ -77,6 +77,7 @@ public class ManagementController implements Initializable {
     private TableColumn<UIBatch, String> tc_ProductionQueue_SpeedForProduction;
     @FXML
     private TextField text_SearchProductionQueue;
+    @FXML
     private Button btn_SearchProductionQueue;
     @FXML
     private AnchorPane ap_CompletedBatchesLayout;
@@ -102,17 +103,16 @@ public class ManagementController implements Initializable {
     private TableColumn<UIBatch, String> tc_CompletedBatches_DefectAmount;
     @FXML
     private TextField text_SearchCompletedBarches;
+    @FXML
     private Button btn_SearchCompletedBatches;
+    @FXML
     private Button btn_generateBatch;
     @FXML
     private TextField textf_CreateBatchOrder_AmountToProduces;
-    private TextField textf_CreateBatchOrder_TypeofProduct;
     @FXML
     private TextField textf_CreateBatchOrder_Speed;
     @FXML
     private DatePicker dp_CreateBatchOrder;
-    @FXML
-    private ListView<BeerTypes> lv_CreateBatchOrder_TypeofBeer;
     @FXML
     private TableView<UIBatch> tw_CreateBatchOrder_BatchesOnSpecificDay;
     @FXML
@@ -149,11 +149,14 @@ public class ManagementController implements Initializable {
     private TextField tf_SpeedEditBatch;
     @FXML
     private TextField tf_AmountToProduceEditBatch;
-    private TextField tf_TypeOfProductEditBatch;
+    @FXML
+    private ComboBox<BeerTypes> cb_beerType;
+    @FXML
+    private ComboBox<BeerTypes> cb_beertypeCreateBatch;
 
     // Class calls
     private IManagementDomain managementDomain;
-    private IBatchReportGenerate ibrg; // TODO Get class ..
+    private IBatchReportGenerate ibrg;
 
     // Variables
     private List<Batch> batches;
@@ -168,10 +171,6 @@ public class ManagementController implements Initializable {
     private UIBatch selectedQueuedBatch;
     private RadioButton rb_QueuedBatchID;
     private RadioButton rb_QueuedDeadline;
-    @FXML
-    private ComboBox<BeerTypes> cb_beerType;
-    @FXML
-    private ComboBox<BeerTypes> cb_beertypeCreateBatch;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -342,7 +341,6 @@ public class ManagementController implements Initializable {
 
     private void generatingBatchreportAction(ActionEvent e) {
         Stage primaryStage = new Stage();
-        // TODO: Use createPDF from Domain
         // Extract batch id, machine id, production list ID, from the the list to use in the createPDF method
         // generated batchreport pdf will then be created, and needs to be loaded in.
         if (e.getSource() == btn_generateBatch) {
@@ -371,7 +369,6 @@ public class ManagementController implements Initializable {
                             Integer.valueOf(batch.getMachineID().getValue()));
 
                     ibrg.savePDF(doc, fileChooser.getInitialFileName(), fileChooser.getInitialDirectory().getAbsolutePath());
-
                 }
             } catch (IOException ex) {
                 Logger.getLogger(ManagementController.class.getName()).log(Level.SEVERE, null, ex);
@@ -390,11 +387,9 @@ public class ManagementController implements Initializable {
         beerTypes.forEach((beer) -> {
             beerTypesObservableList.add(beer);
         });
-
     }
 
     private void initializeObservableCompletedBatchList() {
-
         tw_SearchTableCompletedBatches.setPlaceholder(new Label());
         tw_SearchTableCompletedBatches.setItems(completedBatchObservableList);
 
@@ -404,7 +399,6 @@ public class ManagementController implements Initializable {
         tc_CompletedBatches_DateOfCreation.setCellValueFactory(callData -> callData.getValue().getDateofCreation());
         tc_CompletedBatches_Deadline.setCellValueFactory(callData -> callData.getValue().getDeadline());
         tc_CompletedBatches_DateOfCompletion.setCellValueFactory(callData -> callData.getValue().getDateofCompletion());
-//        tc_CompletedBatches_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
         tc_CompletedBatches_TotalAmount.setCellValueFactory(callData -> callData.getValue().getTotalAmount());
         tc_CompletedBatches_GoodAmount.setCellValueFactory(callData -> callData.getValue().getGoodAmount());
         tc_CompletedBatches_DefectAmount.setCellValueFactory(callData -> callData.getValue().getDefectAmount());
@@ -412,7 +406,6 @@ public class ManagementController implements Initializable {
     }
 
     private void initializeObservableQueueList() {
-
         tw_SearchTableProductionQueue.setPlaceholder(new Label());
         tw_SearchTableProductionQueue.setItems(queuedBatcheObservableList);
 
@@ -439,7 +432,6 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void toggleSpeed(ActionEvent event) {
-
         if (toggleSpeedBtn.isSelected()) {
             textf_CreateBatchOrder_Speed.setEditable(true);
             textf_CreateBatchOrder_Speed.setDisable(false);
@@ -534,7 +526,6 @@ public class ManagementController implements Initializable {
             ));
         }
         initializeObservableCompletedBatchList();
-
     }
 
     @FXML
@@ -664,9 +655,5 @@ public class ManagementController implements Initializable {
     private void comboboxAction(ActionEvent event) {
         textf_CreateBatchOrder_Speed.setText(String.valueOf(cb_beertypeCreateBatch.getSelectionModel().getSelectedItem().getProductionSpeed()));
 
-    }
-
-    @FXML
-    private void GeneratingBatchreportAction(ActionEvent event) {
     }
 }

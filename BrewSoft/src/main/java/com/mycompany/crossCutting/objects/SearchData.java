@@ -4,8 +4,8 @@ import com.mycompany.crossCutting.interfaces.ISearchData;
 
 public class SearchData implements ISearchData {
 
-    private String dateOfCompletion;
-    private float batchID;
+    private final String dateOfCompletion;
+    private final float batchID;
 
     public SearchData(String dateOfCompletion, float batchID) {
         this.dateOfCompletion = dateOfCompletion;
@@ -21,5 +21,4 @@ public class SearchData implements ISearchData {
     public float getBatchID() {
         return this.batchID;
     }
-
 }

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.presentation.chooseuser;
 
 import com.mycompany.presentation.breweryWorker.BrewWorker_UI_Controller;
@@ -26,11 +21,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 
-/**
- * FXML Controller class
- *
- * @author Mathias
- */
 public class ChooseViewController implements Initializable {
 
     @FXML
@@ -66,7 +56,6 @@ public class ChooseViewController implements Initializable {
                 Scene managerScene = new Scene(managerParent);
                 Stage app_stage = (Stage)((Node) event.getSource()).getScene().getWindow();
                 app_stage.centerOnScreen();
-                //app_stage.setMaximized(true);
                 app_stage.setScene(managerScene);
                 app_stage.show();
             } catch (IOException ex) {

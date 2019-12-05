@@ -26,12 +26,21 @@ public class DatabaseConnection {
 
     }
 
-    private PreparedStatement prepareStatement(String query, Object... values) throws SQLException, ClassNotFoundException {
-        con = connect();
-        PreparedStatement statement = con.prepareStatement(query);
+    private PreparedStatement prepareStatement(String query, Object... values) {
+        PreparedStatement statement = null;
 
-        for (int i = 0; i < values.length; i++) {
-            statement.setObject(i + 1, values[i]);
+        try {
+            con = connect();
+            statement = con.prepareStatement(query);
+
+            for (int i = 0; i < values.length; i++) {
+                statement.setObject(i + 1, values[i]);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return statement;
     }
@@ -43,8 +52,6 @@ public class DatabaseConnection {
             statement.executeUpdate();
 
         } catch (SQLException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             disconnect();
@@ -76,8 +83,6 @@ public class DatabaseConnection {
                 }
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             disconnect();

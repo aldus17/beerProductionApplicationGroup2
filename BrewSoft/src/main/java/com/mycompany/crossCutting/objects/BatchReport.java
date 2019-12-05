@@ -13,9 +13,10 @@ public class BatchReport {
     private int AcceptedCount;
 
     public BatchReport() {
-        
+
     }
-    public BatchReport(int batchID, int BreweryMachineID, String deadline, String dateOfCreation, 
+
+    public BatchReport(int batchID, int BreweryMachineID, String deadline, String dateOfCreation,
             String dateOfCompletion, String productType, int totalCount, int defectCount, int AcceptedCount) {
         this.batchID = batchID;
         this.BreweryMachineID = BreweryMachineID;
@@ -64,19 +65,4 @@ public class BatchReport {
     public int getAcceptedCount() {
         return AcceptedCount;
     }
-
-    @Override
-    public String toString() {
-        return "BatchReport{" 
-                + "batchID=" + batchID 
-                + ", BreweryMachineID=" + BreweryMachineID 
-                + ", deadline=" + deadline 
-                + ", dateOfCreation=" + dateOfCreation 
-                + ", dateOfCompletion=" + dateOfCompletion 
-                + ", productType=" + productType 
-                + ", totalCount=" + totalCount 
-                + ", defectCount=" + defectCount 
-                + ", AcceptedCount=" + AcceptedCount + '}';
-    }
-    
 }

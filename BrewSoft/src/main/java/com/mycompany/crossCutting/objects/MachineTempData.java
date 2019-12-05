@@ -38,12 +38,4 @@ public class MachineTempData {
     public double getTemperature() {
         return temperature;
     }
-
-    @Override
-    public String toString() {
-        return "MachineData{" + "machineID=" + machineID
-                + ", temperature=" + temperature;
-    }
-
 }
-

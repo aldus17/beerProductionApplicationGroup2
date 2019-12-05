@@ -14,10 +14,10 @@ import org.eclipse.milo.opcua.stack.core.types.builtin.Variant;
 
 public class MachineController implements IMachineControl {
 
-    private final MachineConnection mconn;
+    private MachineConnection mconn;
 
-    private final NodeId cntrlCmdNodeId = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
-    private final NodeId cmdChangeRequestNodeId = new NodeId(6, "::Program:Cube.Command.CmdChangeRequest");
+    private NodeId cntrlCmdNodeId = new NodeId(6, "::Program:Cube.Command.CntrlCmd");
+    private NodeId cmdChangeRequestNodeId = new NodeId(6, "::Program:Cube.Command.CmdChangeRequest");
 
     private Batch newBatch;
 
@@ -26,8 +26,7 @@ public class MachineController implements IMachineControl {
     private IMachineSubscribe subscriber;
 
     public MachineController() {
-        //this("127.0.0.1", 4840, null);
-        this("192.168.0.122", 4840, null);
+
     }
 
     public MachineController(String hostname, int port) {
@@ -67,7 +66,7 @@ public class MachineController implements IMachineControl {
         } catch (ExecutionException ex) {
             Logger.getLogger(MachineController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         // Start the production
         sendCntrlCmd(new Variant(2));
         sendCmdRequest();

@@ -42,11 +42,8 @@ public class BrewWorker_UI_Controller implements Initializable {
     @FXML
     private AnchorPane AP_overlay;
 
-    //private String hostname;
-    //private int port;
-
-    private IMachineSubscribe subscriber;// = new MachineSubscriber("192.168.0.122", 4840);
-    private IMachineControl controls;// = new MachineController("192.168.0.122", 4840, subscriber);
+    private IMachineSubscribe subscriber;
+    private IMachineControl controls;
 
     public void setServer(String hostname, int port) {
         subscriber = new MachineSubscriber(hostname, port);
