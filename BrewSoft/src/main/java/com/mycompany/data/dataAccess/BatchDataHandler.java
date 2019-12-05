@@ -303,8 +303,8 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                             String.valueOf(set.get(i, "deadline")),
                             String.valueOf(set.get(i, "dateofcompletion")),
                             (int) set.get(i, "totalcount"),
-                            (float) set.get(i, "acceptedcount"),
-                            (float) set.get(i, "defectcount")
+                            Float.parseFloat(String.valueOf(set.get(i, "acceptedcount"))),
+                            Float.parseFloat(String.valueOf(set.get(i, "defectcount")))
                     )
             );
         }

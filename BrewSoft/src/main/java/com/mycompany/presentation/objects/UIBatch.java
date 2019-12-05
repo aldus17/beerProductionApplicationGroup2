@@ -17,19 +17,33 @@ public class UIBatch {
     private StringProperty totalAmount;
     private StringProperty goodAmount;
     private StringProperty defectAmount;
+    private StringProperty calulateProductionTime;
 
-    //Queue batch object
-    public UIBatch(String batchID, String type, String totalAmount,
-            String deadline, String speedforProduction) {
-        this.BatchID = new SimpleStringProperty(batchID);
+    public UIBatch(String BatchID, String type, String dateofCreation,
+            String deadline, String speedforProduction, String totalAmount,
+            String calulateProductionTime) {
+        this.BatchID = new SimpleStringProperty(BatchID);
         this.type = new SimpleStringProperty(type);
-        this.totalAmount = new SimpleStringProperty(totalAmount);
+        this.dateofCreation = new SimpleStringProperty(dateofCreation);
         this.deadline = new SimpleStringProperty(deadline);
         this.speedforProduction = new SimpleStringProperty(speedforProduction);
+        this.totalAmount = new SimpleStringProperty(totalAmount);
+        this.calulateProductionTime = new SimpleStringProperty(calulateProductionTime);
     }
 
-    public UIBatch(String BatchID, String MachineID, String type,
-            String dateofCreation, String deadline, String dateofCompletion,
+    public UIBatch(String BatchID, String type, String dateofCreation,
+            String deadline, String speedforProduction, String totalAmount) {
+        this.BatchID = new SimpleStringProperty(BatchID);
+        this.type = new SimpleStringProperty(type);
+        this.dateofCreation = new SimpleStringProperty(dateofCreation);
+        this.deadline = new SimpleStringProperty(deadline);
+        this.speedforProduction = new SimpleStringProperty(speedforProduction);
+        this.totalAmount = new SimpleStringProperty(totalAmount);
+    }
+
+    public UIBatch(String BatchID, String MachineID,
+            String type, String dateofCreation,
+            String deadline, String dateofCompletion,
             String totalAmount, String goodAmount,
             String defectAmount) {
         this.BatchID = new SimpleStringProperty(BatchID);
@@ -42,27 +56,6 @@ public class UIBatch {
         this.goodAmount = new SimpleStringProperty(goodAmount);
         this.defectAmount = new SimpleStringProperty(defectAmount);
     }
-
-    public UIBatch(String productionListID, String BatchID, String type, String totalAmount, String deadline, String speedforProduction, String dateofCreation) {
-        this.productionListID = new SimpleStringProperty(productionListID);
-        this.BatchID = new SimpleStringProperty(BatchID);
-        this.type = new SimpleStringProperty(type);
-        this.totalAmount = new SimpleStringProperty(totalAmount);
-        this.deadline = new SimpleStringProperty(deadline);
-        this.speedforProduction = new SimpleStringProperty(speedforProduction);
-        this.dateofCreation = new SimpleStringProperty(dateofCreation);
-    }
-
-    public UIBatch(String BatchID, String dateofCreation, String type, String totalAmount, String deadline, String speedforProduction) {
-        this.BatchID = new SimpleStringProperty(BatchID);
-        this.type = new SimpleStringProperty(type);
-        this.dateofCreation = new SimpleStringProperty(dateofCreation);
-        this.deadline = new SimpleStringProperty(deadline);
-        this.speedforProduction = new SimpleStringProperty(speedforProduction);
-        this.totalAmount = new SimpleStringProperty(totalAmount);
-    }
-    
-    
 
     public StringProperty getBatchID() {
         return BatchID;
@@ -109,9 +102,6 @@ public class UIBatch {
     }
 
     public StringProperty CalulateProductionTime() {
-
-        int productionTime = (int) (Double.parseDouble(totalAmount.getValue()) / Double.parseDouble(speedforProduction.getValue()));
-
-        return new SimpleStringProperty(String.valueOf(productionTime));
+        return calulateProductionTime;
     }
 }
