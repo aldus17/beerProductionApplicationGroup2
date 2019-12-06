@@ -177,7 +177,7 @@ public class ManagementDomain implements IManagementDomain {
             OEE += (oeeObject.getAcceptedCount() * oeeObject.getIdealcycletime());
         }
 
-        float calculatedOEE = (OEE / plannedproductiontime) / 100;
+        float calculatedOEE = (OEE / plannedproductiontime) * 100;
         return String.format("%.2f", calculatedOEE);
     }
 
