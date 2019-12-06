@@ -41,11 +41,12 @@ public class UIBatch {
         this.totalAmount = new SimpleStringProperty(totalAmount);
     }
 
-    public UIBatch(String BatchID, String MachineID,
+    public UIBatch(String productionListID, String BatchID, String MachineID,
             String type, String dateofCreation,
             String deadline, String dateofCompletion,
             String totalAmount, String goodAmount,
             String defectAmount) {
+        this.productionListID = new SimpleStringProperty(productionListID);
         this.BatchID = new SimpleStringProperty(BatchID);
         this.MachineID = new SimpleStringProperty(MachineID);
         this.type = new SimpleStringProperty(type);
@@ -56,7 +57,7 @@ public class UIBatch {
         this.goodAmount = new SimpleStringProperty(goodAmount);
         this.defectAmount = new SimpleStringProperty(defectAmount);
     }
-
+    
     public StringProperty getBatchID() {
         return BatchID;
     }

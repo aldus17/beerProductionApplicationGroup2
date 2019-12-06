@@ -25,8 +25,6 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -294,7 +292,6 @@ public class ManagementController implements Initializable {
 //        }
 //
 //    }
-
     @FXML
     private void GetOrdersForSpecificDay(ActionEvent event) {
         productionListObservableList.clear();
@@ -470,6 +467,7 @@ public class ManagementController implements Initializable {
         }
         for (Batch b : completedBatchList) {
             completedBatchObservableList.add(new UIBatch(
+                    String.valueOf(b.getProductionListID()),
                     String.valueOf(b.getBatchID()),
                     String.valueOf(b.getMachineID()),
                     String.valueOf(b.getType()),
@@ -638,9 +636,9 @@ public class ManagementController implements Initializable {
                     fileChooser.setInitialDirectory(dir);
                     System.out.println(fileChooser.getInitialDirectory().getAbsolutePath());
                     ibrg = new PDF();
-                    PDDocument doc = ibrg.createNewPDF(Integer.valueOf(
-                            batch.getBatchID().getValue()),
-                            Integer.valueOf(batch.getProductionListID().getValue()),
+                    PDDocument doc = ibrg.createNewPDF(
+                            Integer.valueOf(batch.getBatchID().getValue()),
+                            Integer.valueOf(batch.getBatchID().getValue()),
                             Integer.valueOf(batch.getMachineID().getValue()));
 
                     ibrg.savePDF(doc, fileChooser.getInitialFileName(), fileChooser.getInitialDirectory().getAbsolutePath());
@@ -648,11 +646,12 @@ public class ManagementController implements Initializable {
             } catch (IOException ex) {
                 Logger.getLogger(ManagementController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NullPointerException ex) {
-                Alert alert = new Alert(AlertType.ERROR);
-                alert.setTitle("Batch selection error");
-                alert.setHeaderText("Specified batch does not contain machine information properties");
-                alert.setContentText("Batch does not contain temperature or humidity data");
-                alert.showAndWait();
+                Logger.getLogger(ManagementController.class.getName()).log(Level.SEVERE, null, ex);
+//                Alert alert = new Alert(AlertType.ERROR);
+//                alert.setTitle("Batch selection error");
+//                alert.setHeaderText("Specified batch does not contain machine information properties");
+//                alert.setContentText("Batch does not contain temperature or humidity data");
+//                alert.showAndWait();
             }
         }
     }
