@@ -1,5 +1,6 @@
 package com.mycompany.presentation.breweryWorker;
 
+import com.mycompany.crossCutting.objects.Machine;
 import com.mycompany.domain.breweryWorker.MachineController;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
 import com.mycompany.domain.breweryWorker.interfaces.IMachineControl;
@@ -44,10 +45,10 @@ public class BrewWorker_UI_Controller implements Initializable {
 
     private IMachineSubscribe subscriber;
     private IMachineControl controls;
-
-    public void setServer(String hostname, int port) {
-        subscriber = new MachineSubscriber(hostname, port);
-        controls = new MachineController(hostname, port, subscriber);
+    
+    public void setMachine(Machine machineObj) {
+        subscriber = new MachineSubscriber(machineObj);
+        controls = new MachineController(machineObj, subscriber);
     }
 
     @Override

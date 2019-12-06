@@ -38,7 +38,6 @@ public class ManagementDomain implements IManagementDomain {
         this.batchDataHandler = new BatchDataHandler();
         this.searchDataHandler = new SearchDataHandler();
         this.managementData = new BatchDataHandler(); // missing suitable class
-
     }
 
     /**
