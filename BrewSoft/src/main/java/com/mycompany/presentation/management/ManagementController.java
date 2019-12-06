@@ -339,7 +339,8 @@ public class ManagementController implements Initializable {
         }
     }
 
-    private void generatingBatchreportAction(ActionEvent e) {
+    @FXML
+    public void GeneratingBatchreportAction(ActionEvent e) {
         Stage primaryStage = new Stage();
         // Extract batch id, machine id, production list ID, from the the list to use in the createPDF method
         // generated batchreport pdf will then be created, and needs to be loaded in.
