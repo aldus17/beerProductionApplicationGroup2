@@ -22,17 +22,25 @@ public class DatabaseConnection {
     }
 
     private Connection connect() throws SQLException, ClassNotFoundException {
-        System.out.println("succes");
         return DriverManager.getConnection(url, user, password);
 
     }
 
-    private PreparedStatement prepareStatement(String query, Object... values) throws SQLException, ClassNotFoundException {
-        con = connect();
-        PreparedStatement statement = con.prepareStatement(query);
+    private PreparedStatement prepareStatement(String query, Object... values) {
+        PreparedStatement statement = null;
 
-        for (int i = 0; i < values.length; i++) {
-            statement.setObject(i + 1, values[i]);
+        try {
+            con = connect();
+            statement = con.prepareStatement(query);
+
+            for (int i = 0; i < values.length; i++) {
+                statement.setObject(i + 1, values[i]);
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         }
         return statement;
     }
@@ -45,14 +53,12 @@ public class DatabaseConnection {
 
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             disconnect();
             return affectedRows;
         }
     }
-    
+
     public SimpleSet query(String query, Object... values) {
 
         SimpleSet set = new SimpleSet();
@@ -61,14 +67,13 @@ public class DatabaseConnection {
                 while (rs.next()) {
 
                     int count = rs.getMetaData().getColumnCount();
-                    // Bonus points for neat looking lines, right?
                     String[] labels = new String[count];
                     Object[] objcts = new Object[count];
-                    
+
                     for (int i = 0; i < count; i++) {
                         labels[i] = rs.getMetaData().getColumnName(i + 1);
                         objcts[i] = rs.getObject(i + 1);
-                        
+
                         if (rs.wasNull()) {
                             objcts[i] = null;
                         }
@@ -79,17 +84,13 @@ public class DatabaseConnection {
             }
         } catch (SQLException ex) {
             Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ClassNotFoundException ex) {
-            Logger.getLogger(DatabaseConnection.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        finally{
+        } finally {
             disconnect();
             return set;
         }
-        
     }
-    
-    private void disconnect(){
+
+    private void disconnect() {
         try {
             con.close();
         } catch (SQLException ex) {

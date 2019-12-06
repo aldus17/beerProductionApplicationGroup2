@@ -58,7 +58,7 @@ public class MachineConnection {
 
             this.client = OpcUaClient.create(this.cfg.build());
             this.client.connect().get();
-            
+
         } catch (UaException ex) {
             Logger.getLogger(MachineConnection.class.getName()).log(Level.SEVERE, null, ex);
         } catch (InterruptedException ex) {
@@ -70,7 +70,6 @@ public class MachineConnection {
         }
     }
 
-    // TODO Make connect return this ?
     public OpcUaClient getClient() {
         return this.client;
     }

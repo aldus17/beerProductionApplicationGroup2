@@ -1,6 +1,8 @@
 package com.mycompany.domain.breweryWorker;
 
 import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.Machine;
+import com.mycompany.crossCutting.objects.TemporaryProductionBatch;
 import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
@@ -31,7 +33,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     private MachineConnection mconn;
     private Map<String, Consumer<String>> consumerMap;
 
-    private IMachineSubscriberDataHandler msdh = new MachineSubscribeDataHandler();
+    private final IMachineSubscriberDataHandler msdh = new MachineSubscribeDataHandler();
 
     // Production detail nodes
     private final NodeId batchIdNode = new NodeId(6, "::Program:Cube.Status.Parameter[0].Value");
@@ -63,37 +65,34 @@ public class MachineSubscriber implements IMachineSubscribe {
     private final NodeId wheatNode = new NodeId(6, "::Program:Inventory.Wheat");
     private final NodeId yeastNode = new NodeId(6, "::Program:Inventory.Yeast");
 
-    private String batchIDValue;
-    private String totalProductValue;
-    private String temperaturValue = "0";
-    private String humidityValue;
-    private String vibrationValue = "0";
-    private String productionCountValue;
-    private String defectCountValue;
-    private String acceptableCountValue;
-    private String productionPrMinValue;
+    private float batchIDValue;
+    private float totalProductValue;
+    private float temperaturValue;
+    private float humidityValue;
+    private float vibrationValue;
+    private int productionCountValue;
+    private int defectCountValue;
+    private int acceptableCountValue;
+    private float productionPrMinValue;
 
-    private String StopReasonID;
-    private String currentStateValue;
-    private String maintenanceValue;
+    private int StopReasonID;
+    private int currentStateValue;
+    private int maintenanceValue;
 
-    private String barleyValue;
-    private String hopsValue;
-    private String maltValue;
-    private String wheatValue;
-    private String yeastValue;
+    private float barleyValue;
+    private float hopsValue;
+    private float maltValue;
+    private float wheatValue;
+    private float yeastValue;
 
     private Batch batch;
-
-    // TODO pull ip and port from DB
-    public MachineSubscriber() {
-        this("127.0.0.1", 4840);
-    }
-
-    public MachineSubscriber(String hostname, int port) {
-        mconn = new MachineConnection(hostname, port);
+    private Machine machineObj;
+    
+    public MachineSubscriber(Machine machineObj) {
+        mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
         mconn.connect();
         consumerMap = new HashMap();
+        this.machineObj = machineObj;
     }
 
     @Override
@@ -123,7 +122,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         requestList.add(new MonitoredItemCreateRequest(readValueId(yeastNode), MonitoringMode.Reporting, monitoringParameters()));
         requestList.add(new MonitoredItemCreateRequest(readValueId(maintenanceCounterNode), MonitoringMode.Reporting, monitoringParameters()));
 
-        Consumer<DataValue> onBatchIdItem = (DataValue dataValue) -> consumerStarter(BATCHID_NODENAME, dataValue);
+        Consumer<DataValue> onBatchIdItem = (dataValue) -> consumerStarter(BATCHID_NODENAME, dataValue);
         Consumer<DataValue> onTotalProductsItem = (dataValue) -> consumerStarter(TOTAL_PRODUCTS_NODENAME, dataValue);
         Consumer<DataValue> onTempratureItem = (dataValue) -> consumerStarter(TEMPERATURE_NODENAME, dataValue);
         Consumer<DataValue> onHumidityItem = (dataValue) -> consumerStarter(HUMIDITY_NODENAME, dataValue);
@@ -183,12 +182,10 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void sendProductionData() {
         float checkHumidity = 0;
         float checkTemperatur = 0;
-        System.out.println("Production Data");
-        if (checkHumidity != Float.parseFloat(humidityValue) || checkTemperatur != Float.parseFloat(temperaturValue)) {
-            System.out.println("TESTER " + humidityValue);
-            checkHumidity = Float.parseFloat(humidityValue);
-            checkTemperatur = Float.parseFloat(temperaturValue);
-            msdh.insertProductionInfo(Integer.parseInt(batch.getProductionListID().getValue()), 1, Float.parseFloat(humidityValue), Float.parseFloat(temperaturValue));
+        if (checkHumidity != humidityValue || checkTemperatur != temperaturValue) {
+            checkHumidity = humidityValue;
+            checkTemperatur = temperaturValue;
+            msdh.insertProductionInfo(batch.getProductionListID(), 1, humidityValue, temperaturValue);
         }
     }
 
@@ -196,110 +193,28 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void sendTimeInState() {
         int checkCurrentState = -1;
 
-        //String timeObject = LocalTime.now().getHour() + ":" + LocalTime.now().getMinute() + ":" + LocalTime.now().getSecond();
-        System.out.println("Current State: " + currentStateValue);
-        if (checkCurrentState != Integer.parseInt(currentStateValue)) {
-            checkCurrentState = Integer.parseInt(currentStateValue);
-            msdh.insertTimesInStates(Integer.parseInt(batch.getProductionListID().getValue()), 1, Integer.parseInt(currentStateValue));
+        if (checkCurrentState != currentStateValue) {
+            checkCurrentState = currentStateValue;
+            msdh.insertTimesInStates(batch.getProductionListID(), 1, currentStateValue);
         }
     }
-
+    
+    // TODO Insert machine ID and Production List ID
     public void sendStopDuingProduction() {
-        msdh.insertStopsDuringProduction(Integer.parseInt(batch.getProductionListID().getValue()), 1, Integer.parseInt(StopReasonID));
-    }
-
-    public void completedBatch() {
-        System.out.println(batch.getDateofCreation());
-        System.out.println(batch.getBatchID());
-        System.out.println(batch.getDateofCompletion());
-        System.out.println(batch.getDeadline());
-        System.out.println(batch.getDefectAmount());
-        System.out.println(batch.getGoodAmount());
-        System.out.println(batch.getMachineID());
-        System.out.println(batch.getProductionListID());
-        System.out.println(batch.getSpeedforProduction());
-        System.out.println(batch.getTotalAmount());
-        System.out.println(batch.getType());
-        System.out.println("Completed: "+Float.parseFloat(batch.getTotalAmount().getValue()) +" <= " +Float.parseFloat(this.productionCountValue));
-        if (Float.parseFloat(batch.getTotalAmount().getValue()) <= Float.parseFloat(this.productionCountValue)) {
-            msdh.changeProductionListStatus(Integer.parseInt(batch.getProductionListID().getValue()), "Completed");
-            System.out.println("completed test");
-            System.out.println(Integer.parseInt(batch.getProductionListID().getValue())+ 1+ batch.getDeadline().getValue());
-                    System.out.println(batch.getDateofCreation().getValue()+ Integer.parseInt(batch.getType().getValue()));
-                    System.out.println(Float.parseFloat(batch.getTotalAmount().getValue())+ Integer.parseInt(defectCountValue)+ Integer.parseInt(acceptableCountValue));
-            msdh.insertFinalBatchInformation(Integer.parseInt(batch.getProductionListID().getValue()), 1, batch.getDeadline().getValue(),
-                    batch.getDateofCreation().getValue(), Integer.parseInt(batch.getType().getValue()),
-                    Float.parseFloat(totalProductValue), Integer.parseInt(defectCountValue), Integer.parseInt(acceptableCountValue));
-            System.out.println("completed test 2");
+        if (StopReasonID != 0) {
+            msdh.insertStopsDuringProduction(batch.getProductionListID(), 1, StopReasonID);
         }
     }
 
-    public String getBatchIDValue() {
-        return batchIDValue;
-    }
+    // TODO Insert machine ID and Production List ID
+    public void completedBatch() {
+        if (batch.getTotalAmount() <= this.productionCountValue) {
+            msdh.changeProductionListStatus(batch.getProductionListID(), "Completed");
+            msdh.insertFinalBatchInformation(batch.getProductionListID(), 1, batch.getDeadline(),
+                    batch.getDateofCreation(), batch.getType(),
+                    totalProductValue, defectCountValue, acceptableCountValue);
 
-    public String getTotalProductValue() {
-        return totalProductValue;
-    }
-
-    public String getTemperaturValue() {
-        return temperaturValue;
-    }
-
-    public String getHumidityValue() {
-        return humidityValue;
-    }
-
-    public String getVibrationValue() {
-        return vibrationValue;
-    }
-
-    public String getProductionCountValue() {
-        return productionCountValue;
-    }
-
-    public String getDefectCountValue() {
-        return defectCountValue;
-    }
-
-    public String getAcceptableCountValue() {
-        return acceptableCountValue;
-    }
-
-    public String getProductionPrMinValue() {
-        return productionPrMinValue;
-    }
-
-    public String getStopReasonID() {
-        return StopReasonID;
-    }
-
-    public String getCurrentStateValue() {
-        return currentStateValue;
-    }
-
-    public String getMaintenanceValue() {
-        return maintenanceValue;
-    }
-
-    public String getBarleyValue() {
-        return barleyValue;
-    }
-
-    public String getHopsValue() {
-        return hopsValue;
-    }
-
-    public String getMaltValue() {
-        return maltValue;
-    }
-
-    public String getWheatValue() {
-        return wheatValue;
-    }
-
-    public String getYeastValue() {
-        return yeastValue;
+        }
     }
 
     private MonitoringParameters monitoringParameters() {
@@ -321,66 +236,69 @@ public class MachineSubscriber implements IMachineSubscribe {
 
         switch (nodename) {
             case BATCHID_NODENAME:
-                this.batchIDValue = dataValue.getValue().getValue().toString();
+                this.batchIDValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
             case TOTAL_PRODUCTS_NODENAME:
-                this.totalProductValue = dataValue.getValue().getValue().toString();
+                this.totalProductValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
             case TEMPERATURE_NODENAME:
-                this.temperaturValue = dataValue.getValue().getValue().toString();
+                this.temperaturValue = Float.parseFloat(dataValue.getValue().getValue().toString());
             case HUMIDITY_NODENAME:
                 if (nodename.equals(HUMIDITY_NODENAME)) {
-                    this.humidityValue = dataValue.getValue().getValue().toString();
+                    this.humidityValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 }
                 this.sendProductionData();
                 break;
             case VIBRATION_NODENAME:
-                this.vibrationValue = dataValue.getValue().getValue().toString();
+                this.vibrationValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
 
             case DEFECT_PRODUCTS_NODENAME:
-                this.defectCountValue = dataValue.getValue().getValue().toString();
+                this.defectCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
                 break;
             case PRODUCTS_PR_MINUTE_NODENAME:
-                this.productionPrMinValue = dataValue.getValue().getValue().toString();
+                this.productionPrMinValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
             case ACCEPTABLE_PRODUCTS_NODENAME:
-                this.acceptableCountValue = dataValue.getValue().getValue().toString();
+                this.acceptableCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
                 break;
             case STOP_REASON_NODENAME:
-                this.StopReasonID = dataValue.getValue().getValue().toString();
-                //sendStopDuingProduction();
+                this.StopReasonID = Integer.parseInt(dataValue.getValue().getValue().toString());
+                sendStopDuingProduction();
                 break;
             case STATE_CURRENT_NODENAME:
-                this.currentStateValue = dataValue.getValue().getValue().toString();
-                System.out.println("state " + this.currentStateValue);
+                this.currentStateValue = Integer.parseInt(dataValue.getValue().getValue().toString());
                 sendTimeInState();
                 break;
             case MAINTENANCE_COUNTER_NODENAME:
-                this.maintenanceValue = dataValue.getValue().getValue().toString();
+                this.maintenanceValue = Integer.parseInt(dataValue.getValue().getValue().toString());
                 break;
             case BARLEY_NODENAME:
-                this.barleyValue = dataValue.getValue().getValue().toString();
+                this.barleyValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
             case HOPS_NODENAME:
-                this.hopsValue = dataValue.getValue().getValue().toString();
+                this.hopsValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
             case MALT_NODENAME:
-                this.maltValue = dataValue.getValue().getValue().toString();
+                this.maltValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
             case WHEAT_NODENAME:
-                this.wheatValue = dataValue.getValue().getValue().toString();
+                this.wheatValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
             case YEAST_NODENAME:
-                this.yeastValue = dataValue.getValue().getValue().toString();
+                this.yeastValue = Float.parseFloat(dataValue.getValue().getValue().toString());
                 break;
             case PRODUCED_PRODUCTS_NODENAME:
-                this.productionCountValue = dataValue.getValue().getValue().toString();
+                this.productionCountValue = Integer.parseInt(dataValue.getValue().getValue().toString());
                 this.completedBatch();
                 break;
             default:
-                System.out.println("There are no Node for this!!");
         }
+    }
+
+    public void stoppedproduction(int productionlistid) {
+        TemporaryProductionBatch tpb = new TemporaryProductionBatch(productionlistid, acceptableCountValue, defectCountValue, totalProductValue);
+        msdh.insertStoppedProductionToTempTable(tpb);
     }
 
     // TODO Get data from database.

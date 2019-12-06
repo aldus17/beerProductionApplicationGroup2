@@ -1,19 +1,21 @@
 package com.mycompany.presentation.breweryWorker;
 
-import com.mycompany.domain.breweryWorker.interfaces.IMachineControl;
-import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
+import com.mycompany.crossCutting.objects.Machine;
 import com.mycompany.domain.breweryWorker.MachineController;
 import com.mycompany.domain.breweryWorker.MachineSubscriber;
+import com.mycompany.domain.breweryWorker.interfaces.IMachineControl;
+import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
-import javafx.application.Platform;
+import javafx.scene.layout.AnchorPane;
 
 public class BrewWorker_UI_Controller implements Initializable {
 
@@ -38,11 +40,23 @@ public class BrewWorker_UI_Controller implements Initializable {
     @FXML
     private ProgressBar pb_Maintenance;
 
-    private final IMachineSubscribe subscriber = new MachineSubscriber();
-    private final IMachineControl controls = new MachineController("127.0.0.1", 4840, subscriber);
+    @FXML
+    private AnchorPane AP_overlay;
+
+    private IMachineSubscribe subscriber;
+    private IMachineControl controls;
+    
+    public void setMachine(Machine machineObj) {
+        subscriber = new MachineSubscriber(machineObj);
+        controls = new MachineController(machineObj, subscriber);
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+    }
+
+    public void setConsumers() {
         controls.resetMachine();
 
         Consumer<String> barleyUpdater = text -> Platform.runLater(() -> lbl_Barley.setText(text));
@@ -51,22 +65,37 @@ public class BrewWorker_UI_Controller implements Initializable {
         Consumer<String> wheatUpdater = text -> Platform.runLater(() -> lbl_Wheat.setText(text));
         Consumer<String> yeastUpdater = text -> Platform.runLater(() -> lbl_Yeast.setText(text));
 
-        Consumer<String> temperatureUpdater = text -> Platform.runLater(() -> lbl_Temprature.setText(text));
-        Consumer<String> batchIdUpdater = text -> Platform.runLater(() -> lbl_BatchID.setText(text));
+        Consumer<String> batchIdUpdater = text -> Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("Batch ID: " + text);
+                lbl_BatchID.setText(text);
+            }
+        });
         Consumer<String> producedUpdater = text -> Platform.runLater(() -> lbl_Produced.setText(text));
-        Consumer<String> humidityUpdater = text -> Platform.runLater(() -> lbl_Humidity.setText(text));
         Consumer<String> totalProductsUpdater = text -> Platform.runLater(() -> lbl_TotalProducts.setText(text));
-        Consumer<String> acceptableUpdater = text -> Platform.runLater(() -> lbl_Acceptable.setText(text));
-        Consumer<String> vibrationUpdater = text -> Platform.runLater(() -> lbl_Vibration.setText(text));
         Consumer<String> productsPrMinuteUpdater = text -> Platform.runLater(() -> lbl_ProductsPrMinute.setText(text));
         Consumer<String> stopReasonUpdater = text -> Platform.runLater(() -> lbl_StopReason.setText(subscriber.stopReasonTranslator(text)));
-        Consumer<String> stateUpdater = text -> Platform.runLater(() -> lbl_State.setText(subscriber.stateTranslator(text)));
-        Consumer<String> defectUpdater = text -> Platform.runLater(() -> lbl_Defect.setText(text));
+        Consumer<String> stateUpdater = text -> Platform.runLater(() -> {
+            if (text.equalsIgnoreCase(subscriber.HELD)) {
+                AP_overlay.setVisible(true);
+            } else {
+                AP_overlay.setVisible(false);
+            }
+            lbl_State.setText(subscriber.stateTranslator(text));
+        });
 
         Consumer<String> maintenanceCounterUpdater = text -> Platform.runLater(() -> {
             pb_Maintenance.setProgress(Double.valueOf(text) / 30000);
             lbl_MaintenancePercent.setText(String.valueOf((Double.valueOf(text) / 30000) * 100) + "%");
         });
+
+        Consumer<String> acceptableUpdater = text -> Platform.runLater(() -> lbl_Acceptable.setText(text));
+        Consumer<String> defectUpdater = text -> Platform.runLater(() -> lbl_Defect.setText(text));
+
+        Consumer<String> temperatureUpdater = text -> Platform.runLater(() -> lbl_Temprature.setText(text));
+        Consumer<String> humidityUpdater = text -> Platform.runLater(() -> lbl_Humidity.setText(text));
+        Consumer<String> vibrationUpdater = text -> Platform.runLater(() -> lbl_Vibration.setText(text));
 
         subscriber.setConsumer(batchIdUpdater, subscriber.BATCHID_NODENAME);
         subscriber.setConsumer(temperatureUpdater, subscriber.TEMPERATURE_NODENAME);
@@ -90,7 +119,6 @@ public class BrewWorker_UI_Controller implements Initializable {
         subscriber.setConsumer(maintenanceCounterUpdater, subscriber.MAINTENANCE_COUNTER_NODENAME);
 
         subscriber.subscribe();
-
     }
 
     @FXML
@@ -100,8 +128,6 @@ public class BrewWorker_UI_Controller implements Initializable {
             controls.startProduction();
         } else if (event.getSource() == btn_Reset) {
             controls.resetMachine();
-            // TODO remove hard code
-            //lbl_Produced.setText("0");
         } else if (event.getSource() == btn_Clear) {
             controls.clearState();
         } else if (event.getSource() == btn_Stop) {
@@ -109,6 +135,5 @@ public class BrewWorker_UI_Controller implements Initializable {
         } else if (event.getSource() == btn_Abort) {
             controls.abortProduction();
         }
-
     }
 }
