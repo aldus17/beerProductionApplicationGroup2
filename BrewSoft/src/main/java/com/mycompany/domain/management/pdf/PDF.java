@@ -192,15 +192,4 @@ public class PDF implements IBatchReportGenerate {
         document.close();
 
     }
-    public static void main(String[] args) {
-        PDF c = new PDF();
-
-        try {
-//            c.savePDF(c.createNewPDF(100, 449, 1), "TestMain", "S:\\git\\brewSoft_Group2\\BrewSoft");
-            c.savePDF(c.createNewPDF(101, 450, 1), "TestMain", "D:\\git\\brewSoft_Group2\\BrewSoft");
-        } catch (IOException ex) {
-            Logger.getLogger(PDF.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
 }
