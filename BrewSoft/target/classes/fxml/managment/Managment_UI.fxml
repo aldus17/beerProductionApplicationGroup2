@@ -136,7 +136,7 @@
                                  </GridPane.margin>
                               </TableView>
                               <TextField fx:id="text_SearchCompletedBarches" prefHeight="25.0" prefWidth="947.0" promptText="Search Batch ID / Deadline" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                              <Button mnemonicParsing="false" onAction="#GeneratingBatchreportAction" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <Button fx:id="btn_generateBatchreport" mnemonicParsing="false" onAction="#GeneratingBatchreportActionn" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="4" />
                               <Label text="Completed Batches" GridPane.columnIndex="1" GridPane.columnSpan="2">
                                  <font>
                                     <Font size="18.0" />
