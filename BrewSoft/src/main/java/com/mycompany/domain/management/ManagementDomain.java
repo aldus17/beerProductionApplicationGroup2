@@ -16,7 +16,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -189,5 +188,22 @@ public class ManagementDomain implements IManagementDomain {
     @Override
     public ArrayList<Batch> getCompletedBatches() {
         return managementData.getCompletedBatches();
+    }
+    public static void main(String[] args) {
+        ManagementDomain md = new ManagementDomain();
+
+//        Map<Integer, String> testMap = new TreeMap<>();
+//        testMap = md.getTimeInStates(410);
+//
+//        System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
+//
+        Map<Integer, String> testMap = new TreeMap<>();
+        testMap = md.getTimeInStates(450, 1);
+
+        System.out.println(testMap.toString());
+        System.out.println(
+                "Test Addition: " + md.getAdditionTimeInState("13:10:10", "12:10:10"));
+        System.out.println(
+                "Test Get difference " + md.getDifferenceTimeInState("12:03:05", "13:05:10"));
     }
 }

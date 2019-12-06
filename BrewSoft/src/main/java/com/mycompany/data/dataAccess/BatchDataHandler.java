@@ -1,9 +1,9 @@
 package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.Batch;
-import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.BeerTypes;
+import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.crossCutting.objects.MachineTempData;
 import com.mycompany.crossCutting.objects.OeeObject;
@@ -88,11 +88,11 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         SimpleSet stateSet2 = dbConnection.query("SELECT * FROM timeinstate WHERE productionlistid = ( "
                 + "SELECT productionlistid "
                 + "FROM finalbatchinformation "
-                + "WHERE finalbatchinformationid < (SELECT finalbatchinformationid FROM finalbatchinformation WHERE productionlistid =? AND brewerymachineid =?) "
+                + "WHERE finalbatchinformationid > (SELECT finalbatchinformationid FROM finalbatchinformation WHERE productionlistid =? AND brewerymachineid =?) "
                 + "AND brewerymachineid =? "
-                + "ORDER BY finalbatchinformationid DESC LIMIT 1) "
+                + "ORDER BY finalbatchinformationid ASC LIMIT 1) "
                 + "AND starttimeinstate IS NOT NULL "
-                + "ORDER BY starttimeinstate DESC LIMIT 1;", prodListID, machineID, machineID);
+                + "ORDER BY starttimeinstate ASC LIMIT 1;", prodListID, machineID, machineID);
         if (stateSet.isEmpty()) {
             throw new NullPointerException("StateSet is empty, check productionInfo table if productionListID + " + prodListID + " contains machine data");
         } else {
@@ -145,15 +145,15 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             List<Object> list = new ArrayList<>();
             for (int i = 0; i < reportSet.getRows(); i++) {
                 batchReport = new BatchReport(
-                        Integer.valueOf(String.valueOf(reportSet.get(i, "batchid"))),
-                        Integer.valueOf(String.valueOf(reportSet.get(i, "brewerymachineid"))),
+                        (int) reportSet.get(i, "batchid"),
+                        (int) reportSet.get(i, "brewerymachineid"),
                         String.valueOf(reportSet.get(i, "deadline")),
                         String.valueOf(reportSet.get(i, "dateofcreation")),
                         String.valueOf(reportSet.get(i, "dateofcompletion")),
                         String.valueOf(reportSet.get(i, "productname")),
-                        Integer.valueOf(String.valueOf(reportSet.get(i, "totalcount"))),
-                        Integer.valueOf(String.valueOf(reportSet.get(i, "defectcount"))),
-                        Integer.valueOf(String.valueOf(reportSet.get(i, "acceptedcount")))
+                        (int) reportSet.get(i, "totalcount"),
+                        (double) reportSet.get(i, "defectcount"),
+                        (double) reportSet.get(i, "acceptedcount")
                 );
             }
             return batchReport;

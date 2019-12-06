@@ -25,6 +25,8 @@ import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -647,11 +649,11 @@ public class ManagementController implements Initializable {
                 Logger.getLogger(ManagementController.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NullPointerException ex) {
                 Logger.getLogger(ManagementController.class.getName()).log(Level.SEVERE, null, ex);
-//                Alert alert = new Alert(AlertType.ERROR);
-//                alert.setTitle("Batch selection error");
-//                alert.setHeaderText("Specified batch does not contain machine information properties");
-//                alert.setContentText("Batch does not contain temperature or humidity data");
-//                alert.showAndWait();
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Batch selection error");
+                alert.setHeaderText("Specified batch does not contain machine information properties");
+                alert.setContentText("Batch does not contain temperature or humidity data");
+                alert.showAndWait();
             }
         }
     }

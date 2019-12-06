@@ -9,15 +9,15 @@ public class BatchReport {
     private String dateOfCompletion;
     private String productType;
     private int totalCount;
-    private int defectCount;
-    private int AcceptedCount;
+    private double defectCount;
+    private double AcceptedCount;
 
     public BatchReport() {
 
     }
 
     public BatchReport(int batchID, int BreweryMachineID, String deadline, String dateOfCreation,
-            String dateOfCompletion, String productType, int totalCount, int defectCount, int AcceptedCount) {
+            String dateOfCompletion, String productType, int totalCount, double defectCount, double AcceptedCount) {
         this.batchID = batchID;
         this.BreweryMachineID = BreweryMachineID;
         this.deadline = deadline;
@@ -58,11 +58,11 @@ public class BatchReport {
         return totalCount;
     }
 
-    public int getDefectCount() {
+    public double getDefectCount() {
         return defectCount;
     }
 
-    public int getAcceptedCount() {
+    public double getAcceptedCount() {
         return AcceptedCount;
     }
 }
