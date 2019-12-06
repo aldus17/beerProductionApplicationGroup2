@@ -1,6 +1,7 @@
 package com.mycompany.domain.breweryWorker;
 
 import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.Machine;
 import com.mycompany.crossCutting.objects.TemporaryProductionBatch;
 import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
@@ -85,16 +86,13 @@ public class MachineSubscriber implements IMachineSubscribe {
     private float yeastValue;
 
     private Batch batch;
-
-    // TODO pull ip and port from DB
-    public MachineSubscriber() {
-
-    }
-
-    public MachineSubscriber(String hostname, int port) {
-        mconn = new MachineConnection(hostname, port);
+    private Machine machineObj;
+    
+    public MachineSubscriber(Machine machineObj) {
+        mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
         mconn.connect();
         consumerMap = new HashMap();
+        this.machineObj = machineObj;
     }
 
     @Override

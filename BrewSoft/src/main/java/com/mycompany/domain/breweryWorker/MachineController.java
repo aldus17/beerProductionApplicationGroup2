@@ -1,6 +1,7 @@
 package com.mycompany.domain.breweryWorker;
 
 import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.Machine;
 import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import com.mycompany.domain.breweryWorker.interfaces.IMachineControl;
@@ -24,18 +25,12 @@ public class MachineController implements IMachineControl {
     private IMachineSubscriberDataHandler msdh = new MachineSubscribeDataHandler();
 
     private IMachineSubscribe subscriber;
-
-    public MachineController() {
-
-    }
-
-    public MachineController(String hostname, int port) {
-        this(hostname, port, null);
-    }
-
-    public MachineController(String hostname, int port, IMachineSubscribe subscriber) {
-        mconn = new MachineConnection(hostname, port);
-        mconn.connect();
+    private Machine machineObj;
+    
+    public MachineController(Machine machineObj, IMachineSubscribe subscriber) {
+        this.machineObj = machineObj;
+        this.mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
+        this.mconn.connect();
         this.subscriber = subscriber;
     }
 
