@@ -60,6 +60,7 @@ public class ManagementDomain implements IManagementDomain {
         batchDataHandler.insertBatchToQueue(batchWithID);
     }
 
+    @Override
     public void editQueuedBatch(Batch batch) {
         batchDataHandler.editQueuedBatch(batch);
     }
@@ -166,6 +167,7 @@ public class ManagementDomain implements IManagementDomain {
         }
     }
 
+    @Override
     public String calculateOEE(LocalDate dateofcompletion, int plannedproductiontime) {
         List<OeeObject> list = new ArrayList<>();
         float OEE = 0.0f;
@@ -175,7 +177,7 @@ public class ManagementDomain implements IManagementDomain {
             OEE += (oeeObject.getAcceptedCount() * oeeObject.getIdealcycletime());
         }
 
-        float calculatedOEE = (OEE / plannedproductiontime) / 100;
+        float calculatedOEE = (OEE / plannedproductiontime) * 100;
         return String.format("%.2f", calculatedOEE);
     }
 
@@ -187,22 +189,5 @@ public class ManagementDomain implements IManagementDomain {
     @Override
     public ArrayList<Batch> getCompletedBatches() {
         return managementData.getCompletedBatches();
-    }
-    public static void main(String[] args) {
-        ManagementDomain md = new ManagementDomain();
-
-//        Map<Integer, String> testMap = new TreeMap<>();
-//        testMap = md.getTimeInStates(410);
-//
-//        System.out.println(Arrays.toString(testMap.keySet().toArray()) + " " + Arrays.toString(testMap.values().toArray()));
-//
-        Map<Integer, String> testMap = new TreeMap<>();
-        testMap = md.getTimeInStates(450, 1);
-
-        System.out.println(testMap.toString());
-        System.out.println(
-                "Test Addition: " + md.getAdditionTimeInState("13:10:10", "12:10:10"));
-        System.out.println(
-                "Test Get difference " + md.getDifferenceTimeInState("12:03:05", "13:05:10"));
     }
 }
