@@ -62,7 +62,6 @@ public class InsertProductionDataTest {
         db.queryUpdate("ALTER SEQUENCE productioninfo_productioninfoid_seq RESTART;");
     }
 
-    // Work in progres
     /**
      * Test of sendProductionData method, of class MachineSubscriber.
      */

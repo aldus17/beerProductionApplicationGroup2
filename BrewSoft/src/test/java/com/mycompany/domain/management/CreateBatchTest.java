@@ -1,0 +1,82 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.mycompany.domain.management;
+
+import com.mycompany.crossCutting.objects.Batch;
+import com.mycompany.crossCutting.objects.BeerTypes;
+import com.mycompany.crossCutting.objects.SearchData;
+import com.mycompany.data.dataAccess.BatchDataHandler;
+import com.mycompany.data.dataAccess.Connect.SimpleSet;
+import com.mycompany.data.dataAccess.Connect.TestDatabase;
+import com.mycompany.data.dataAccess.SearchDataHandler;
+import com.mycompany.data.interfaces.IBatchDataHandler;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+/**
+ *
+ * @author Glumby
+ */
+public class CreateBatchTest {
+
+    TestDatabase db = new TestDatabase();
+    ManagementDomain mmd = new ManagementDomain(new BatchDataHandler(db), new SearchDataHandler(), new BatchDataHandler(db));
+
+    public CreateBatchTest() {
+    }
+
+    @BeforeClass
+    public static void setUpClass() {
+    }
+
+    @AfterClass
+    public static void tearDownClass() {
+    }
+
+    @Before
+    public void setUp() {
+        db.queryUpdate("DELETE FROM Productionlist;");
+        db.queryUpdate("ALTER SEQUENCE productionlist_productionlistid_seq RESTART;");
+        BatchDataHandler b = new BatchDataHandler(db);
+        b.insertBatchToQueue(new Batch(800, 2, 20000, "2019-12-08", 100.0f));
+    }
+
+    @After
+    public void tearDown() {
+        db.queryUpdate("DELETE FROM Productionlist;");
+        db.queryUpdate("ALTER SEQUENCE productionlist_productionlistid_seq RESTART;");
+    }
+
+    /**
+     * Test of createBatch method, of class ManagementDomain.
+     */
+    @Test
+    public void testCreateBatch() {
+        int expectedBatchID = 801;
+        mmd.createBatch(new Batch(-1, 2, 8000, "2019-12-08", 100.0f));
+        SimpleSet set = db.query("SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1");
+        Batch batch = null;
+        for (int i = 0; i < set.getRows(); i++) {
+            batch = new Batch(
+                    (int) set.get(i, "batchid"),
+                    (int) set.get(i, "productid"),
+                    (int) set.get(i, "productamount"),
+                    String.valueOf(set.get(i, "deadline")),
+                    Float.parseFloat(String.valueOf(set.get(i, "speed")))
+            );   
+        }
+        assertEquals(expectedBatchID, batch.getBatchID());
+    }
+
+}
