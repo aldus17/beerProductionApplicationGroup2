@@ -1,15 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.mycompany.domain.management;
 
 import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.dataAccess.Connect.TestDatabase;
 import com.mycompany.data.interfaces.IBatchDataHandler;
-import java.util.Arrays;
+import com.mycompany.databaseSetup.TestDatabaseSetup;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -21,13 +16,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-/**
- *
- * @author PCATG
- */
 public class TestMachineStateCalculationFunctionality {
 
     private TestDatabase db = new TestDatabase();
+    private TestDatabaseSetup testDatabaseSetup = new TestDatabaseSetup(db);
     private IBatchDataHandler batchDataHandler = new BatchDataHandler(db);
 
     public TestMachineStateCalculationFunctionality() {
@@ -43,28 +35,12 @@ public class TestMachineStateCalculationFunctionality {
 
     @Before
     public void setUp() {
-        db = new TestDatabase();
-        db.queryUpdate("DELETE FROM timeinstate; ");
-        db.queryUpdate("DELETE FROM finalbatchinformation; ");
-        db.queryUpdate("DELETE FROM productionlist; ");
-        db.queryUpdate("DELETE FROM brewerymachine; ");
-        db.queryUpdate("ALTER SEQUENCE timeinstate_timeinstateid_seq RESTART; ");
-        db.queryUpdate("ALTER SEQUENCE brewerymachine_brewerymachineid_seq RESTART; ");
-        db.queryUpdate("ALTER SEQUENCE finalbatchinformation_finalbatchinformationid_seq RESTART; ");
-        db.queryUpdate("ALTER SEQUENCE productionlist_productionlistid_seq RESTART; ");
+        testDatabaseSetup.tearDownDatabaseData();
     }
 
     @After
     public void tearDown() {
-        db = new TestDatabase();
-        db.queryUpdate("DELETE FROM timeinstate; ");
-        db.queryUpdate("DELETE FROM finalbatchinformation; ");
-        db.queryUpdate("DELETE FROM productionlist; ");
-        db.queryUpdate("DELETE FROM brewerymachine; ");
-        db.queryUpdate("ALTER SEQUENCE timeinstate_timeinstateid_seq RESTART; ");
-        db.queryUpdate("ALTER SEQUENCE brewerymachine_brewerymachineid_seq RESTART; ");
-        db.queryUpdate("ALTER SEQUENCE finalbatchinformation_finalbatchinformationid_seq RESTART; ");
-        db.queryUpdate("ALTER SEQUENCE productionlist_productionlistid_seq RESTART; ");
+        testDatabaseSetup.tearDownDatabaseData();
 
     }
 
@@ -73,7 +49,7 @@ public class TestMachineStateCalculationFunctionality {
      */
     @Test
     public void getDifferenceTimeInState() {
-        System.out.println("getDifferenceTimeInState");
+        System.out.println("\ngetDifferenceTimeInState");
         ManagementDomain instance = new ManagementDomain();
         String value1 = "12:31:22";
         String value2 = "13:40:49";
@@ -93,23 +69,58 @@ public class TestMachineStateCalculationFunctionality {
     /**
      * Test of getAdditionTimeInState method, of class ManagementDomain.
      */
-//    @Test
-//    public void getAdditionTimeInState() {
-//
-//    }
+    @Test
+    public void getAdditionTimeInState() {
+        System.out.println("\ngetAdditionTimeInState");
+        ManagementDomain instance = new ManagementDomain();
+        String value1 = "12:31:22";
+        String value2 = "13:40:49";
+        String diff1 = instance.getDifferenceTimeInState(value1, value2);
+        String value3 = "13:45:00";
+        String value4 = "14:00:00";
+        String diff2 = instance.getDifferenceTimeInState(value3, value4);
+
+        String expectedValue1 = "01:24:27";
+        String actualValue1 = instance.getAdditionTimeInState(diff1, diff2);
+
+        String value5 = "12:50:22";
+        String value6 = "13:35:26";
+        String expectedValue2 = "01:02:20:48";
+        String actualValue2 = instance.getAdditionTimeInState(value5, value6);
+
+        System.out.println("Test minutes and seconds");
+        System.out.println("####Expected####: " + expectedValue1 + "\n####ActualValue####: " + actualValue1);
+
+        // Test minutes and seconds
+        if (!expectedValue1.startsWith("-") && !expectedValue1.isEmpty()) {
+            assertEquals(expectedValue1, actualValue1);
+        } else {
+            fail("String is either negative or is empty, test failed");
+        }
+
+        System.out.println("Test days, minutes and seconds");
+        System.out.println("####Expected####: " + expectedValue2 + "\n####ActualValue####: " + actualValue2);
+
+        // Test days, minutes and seconds
+        if (!expectedValue1.startsWith("-") && !expectedValue1.isEmpty()) {
+            assertEquals(expectedValue2, actualValue2);
+        } else {
+            fail("String is either negative or is empty, test failed");
+        }
+    }
+
     /**
      * Test of getTimeInStates method, of class ManagementDomain.
      */
     @Test
     public void testGetTimeInStates() {
-        System.out.println("getTimeInStates");
-        setUpDatabaseForGetTimeInStates();
+        System.out.println("\ngetTimeInStates");
+        testDatabaseSetup.setUpDatabaseForGetTimeInStates();
         int prodListID = 1;
         int machineID = 1;
 
         ManagementDomain instance = new ManagementDomain(db);
         List<MachineState> ms = batchDataHandler.getMachineState(prodListID, machineID);
-        System.out.println(Arrays.toString(ms.toArray()));
 
         Map<Integer, String> timeDifferenceMap = new TreeMap<>();
         timeDifferenceMap = instance.getTimeInStates(prodListID, machineID);
@@ -128,50 +139,7 @@ public class TestMachineStateCalculationFunctionality {
 
             assertEquals(expectedMap, timeDifferenceMap);
         } else {
-
             fail("No values in map, test failed");
         }
-    }
-
-    private void setUpDatabaseForGetTimeInStates() {
-        db.queryUpdate("INSERT INTO brewerymachine( "
-                + "hostname, port) "
-                + "VALUES ('TestDatabase', 5432); ");
-        db.queryUpdate("INSERT INTO ProductionList "
-                + "(batchid, productid, productamount, deadline, speed, status, dateofcreation) "
-                + "VALUES(1, 1, 10000, '2019-12-06', 100, 'Completed', '2019-12-06')");
-        db.queryUpdate("INSERT INTO ProductionList "
-                + "(batchid, productid, productamount, deadline, speed, status, dateofcreation) "
-                + "VALUES(2, 3, 5000, '2019-12-06', 200, 'Completed', '2019-12-06'); ");
-        db.queryUpdate("INSERT INTO finalbatchinformation( "
-                + "productionlistid, brewerymachineid, deadline, dateofcreation, dateofcompletion, productid, totalcount, defectcount, acceptedcount) "
-                + "VALUES (1, 1, '2019-12-06', '2019-12-06', '2019-12-06', 1, 10000, 2000, 8000); ");
-        db.queryUpdate("INSERT INTO finalbatchinformation( "
-                + "productionlistid, brewerymachineid, deadline, dateofcreation, dateofcompletion, productid, totalcount, defectcount, acceptedcount) "
-                + "VALUES (2, 1, '2019-12-06', '2019-12-06', '2019-12-06', 3, 5000, 1000, 7000); ");
-        db.queryUpdate("INSERT INTO timeinstate( "
-                + "productionlistid, brewerymachineid, starttimeinstate, machinestateid) "
-                + "VALUES (1, 1, '10:43:31', 6); ");
-        db.queryUpdate("INSERT INTO timeinstate( "
-                + "productionlistid, brewerymachineid, starttimeinstate, machinestateid) "
-                + "VALUES (1, 1, '11:03:34', 17); ");
-        db.queryUpdate("INSERT INTO timeinstate( "
-                + "productionlistid, brewerymachineid, starttimeinstate, machinestateid) "
-                + "VALUES (1, 1, '11:03:47', 15); ");
-        db.queryUpdate("INSERT INTO timeinstate( "
-                + "productionlistid, brewerymachineid, starttimeinstate, machinestateid) "
-                + "VALUES (1, 1, '11:03:48', 4); ");
-        db.queryUpdate("INSERT INTO timeinstate( "
-                + "productionlistid, brewerymachineid, starttimeinstate, machinestateid) "
-                + "VALUES (2, 1, '11:05:22', 6); ");
-        db.queryUpdate("INSERT INTO timeinstate( "
-                + "productionlistid, brewerymachineid, starttimeinstate, machinestateid) "
-                + "VALUES (2, 1, '11:13:29', 17); ");
-        db.queryUpdate("INSERT INTO timeinstate( "
-                + "productionlistid, brewerymachineid, starttimeinstate, machinestateid) "
-                + "VALUES (2, 1, '11:13:33', 15); ");
-        db.queryUpdate("INSERT INTO timeinstate( "
-                + "productionlistid, brewerymachineid, starttimeinstate, machinestateid) "
-                + "VALUES (2, 1, '11:14:33', 15); ");
     }
 }

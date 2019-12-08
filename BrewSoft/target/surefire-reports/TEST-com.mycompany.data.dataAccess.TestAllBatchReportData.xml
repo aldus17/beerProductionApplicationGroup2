@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<testsuite tests="3" failures="0" name="com.mycompany.domain.management.TestMachineStateCalculationFunctionality" time="6.16" errors="0" skipped="0">
+<testsuite tests="3" failures="0" name="com.mycompany.data.dataAccess.TestAllBatchReportData" time="6.449" errors="0" skipped="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="D:\Program Files\Java\jdk1.8.0_221\jre\bin"/>
@@ -61,7 +61,7 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase classname="com.mycompany.domain.management.TestMachineStateCalculationFunctionality" name="getAdditionTimeInState" time="1.475"/>
-  <testcase classname="com.mycompany.domain.management.TestMachineStateCalculationFunctionality" name="getDifferenceTimeInState" time="1.928"/>
-  <testcase classname="com.mycompany.domain.management.TestMachineStateCalculationFunctionality" name="testGetTimeInStates" time="2.741"/>
+  <testcase classname="com.mycompany.data.dataAccess.TestAllBatchReportData" name="testGetBatchReportProductionData" time="2.255"/>
+  <testcase classname="com.mycompany.data.dataAccess.TestAllBatchReportData" name="testGetMachineTempData" time="2.11"/>
+  <testcase classname="com.mycompany.data.dataAccess.TestAllBatchReportData" name="testGetMachineHumiData" time="1.942"/>
 </testsuite>

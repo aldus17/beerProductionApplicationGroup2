@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
-Test set: com.mycompany.domain.management.TestMachineStateCalculationFunctionality
+Test set: com.mycompany.data.dataAccess.TestTimeInStatesData
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.147 sec
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.15 sec
