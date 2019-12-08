@@ -9,6 +9,7 @@ import com.mycompany.crossCutting.objects.MachineTempData;
 import com.mycompany.crossCutting.objects.OeeObject;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
+import com.mycompany.data.dataAccess.Connect.TestDatabase;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.data.interfaces.IManagementData;
 import java.sql.Date;
@@ -23,6 +24,9 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
 
     public BatchDataHandler() {
         dbConnection = new DatabaseConnection();
+    }
+    public BatchDataHandler(TestDatabase testDatabase) {
+        dbConnection = new TestDatabase();
     }
 
     @Override

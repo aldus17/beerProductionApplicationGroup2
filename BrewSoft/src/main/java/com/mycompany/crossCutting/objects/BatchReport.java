@@ -65,4 +65,10 @@ public class BatchReport {
     public double getAcceptedCount() {
         return AcceptedCount;
     }
+
+    @Override
+    public String toString() {
+        return "BatchReport{" + "batchID=" + batchID + ", BreweryMachineID=" + BreweryMachineID + ", deadline=" + deadline + ", dateOfCreation=" + dateOfCreation + ", dateOfCompletion=" + dateOfCompletion + ", productType=" + productType + ", totalCount=" + totalCount + ", defectCount=" + defectCount + ", AcceptedCount=" + AcceptedCount + '}';
+    }
+
 }
