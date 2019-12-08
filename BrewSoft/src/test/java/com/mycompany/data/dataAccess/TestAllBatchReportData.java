@@ -3,7 +3,6 @@ package com.mycompany.data.dataAccess;
 import com.mycompany.crossCutting.objects.BatchReport;
 import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.MachineTempData;
-import com.mycompany.data.dataAccess.Connect.TestDatabase;
 import com.mycompany.databaseSetup.TestDatabaseSetup;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,9 +17,8 @@ import org.junit.Test;
 
 public class TestAllBatchReportData {
 
-    private TestDatabase db = new TestDatabase();
-    private TestDatabaseSetup testDatabaseSetup = new TestDatabaseSetup(db);
-    private BatchDataHandler batchDataHandler = new BatchDataHandler(db);
+    private TestDatabaseSetup testDatabaseSetup = new TestDatabaseSetup();
+    private BatchDataHandler batchDataHandler = new BatchDataHandler(testDatabaseSetup.getDb());
 
     public TestAllBatchReportData() {
     }

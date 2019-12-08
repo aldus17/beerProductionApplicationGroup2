@@ -2,7 +2,6 @@ package com.mycompany.domain.management;
 
 import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.data.dataAccess.BatchDataHandler;
-import com.mycompany.data.dataAccess.Connect.TestDatabase;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.databaseSetup.TestDatabaseSetup;
 import java.util.List;
@@ -18,9 +17,8 @@ import org.junit.Test;
 
 public class TestMachineStateCalculationFunctionality {
 
-    private TestDatabase db = new TestDatabase();
-    private TestDatabaseSetup testDatabaseSetup = new TestDatabaseSetup(db);
-    private IBatchDataHandler batchDataHandler = new BatchDataHandler(db);
+    private TestDatabaseSetup testDatabaseSetup = new TestDatabaseSetup();
+    private IBatchDataHandler batchDataHandler = new BatchDataHandler(testDatabaseSetup.getDb());
 
     public TestMachineStateCalculationFunctionality() {
     }
@@ -119,7 +117,7 @@ public class TestMachineStateCalculationFunctionality {
         int prodListID = 1;
         int machineID = 1;
 
-        ManagementDomain instance = new ManagementDomain(db);
+        ManagementDomain instance = new ManagementDomain(testDatabaseSetup.getDb());
         List<MachineState> ms = batchDataHandler.getMachineState(prodListID, machineID);
 
         Map<Integer, String> timeDifferenceMap = new TreeMap<>();

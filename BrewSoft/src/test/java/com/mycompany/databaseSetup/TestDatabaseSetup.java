@@ -4,10 +4,14 @@ import com.mycompany.data.dataAccess.Connect.TestDatabase;
 
 public class TestDatabaseSetup {
 
-    private TestDatabase db = new TestDatabase();
+    private TestDatabase db;
 
-    public TestDatabaseSetup(TestDatabase testDatabase) {
-        this.db = testDatabase;
+    public TestDatabaseSetup() {
+        this.db = new TestDatabase();
+    }
+
+    public TestDatabase getDb() {
+        return db;
     }
 
     public void tearDownDatabaseData() {

@@ -1,7 +1,6 @@
 package com.mycompany.data.dataAccess;
 
 import com.mycompany.crossCutting.objects.MachineState;
-import com.mycompany.data.dataAccess.Connect.TestDatabase;
 import com.mycompany.databaseSetup.TestDatabaseSetup;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,9 +17,8 @@ import org.junit.Test;
 
 public class TestTimeInStatesData {
 
-    private TestDatabase db = new TestDatabase();
-    private TestDatabaseSetup testDatabaseSetup = new TestDatabaseSetup(db);
-    private BatchDataHandler batchDataHandler = new BatchDataHandler(db);
+    private TestDatabaseSetup testDatabaseSetup = new TestDatabaseSetup();
+    private BatchDataHandler batchDataHandler = new BatchDataHandler(testDatabaseSetup.getDb());
 
     public TestTimeInStatesData() {
     }
@@ -65,7 +63,7 @@ public class TestTimeInStatesData {
         System.out.println("####Actual####: " + Arrays.toString(actualList.toArray()));
 
         if (!actualList.isEmpty()) {
-           assertEquals(Arrays.toString(expectedList.toArray()), Arrays.toString(actualList.toArray()));
+            assertEquals(Arrays.toString(expectedList.toArray()), Arrays.toString(actualList.toArray()));
         } else {
             fail("The lists are empty or the states do not exist in the database");
         }
