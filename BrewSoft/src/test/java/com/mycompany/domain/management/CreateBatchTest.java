@@ -48,8 +48,6 @@ public class CreateBatchTest {
     public void setUp() {
         db.queryUpdate("DELETE FROM Productionlist;");
         db.queryUpdate("ALTER SEQUENCE productionlist_productionlistid_seq RESTART;");
-        BatchDataHandler b = new BatchDataHandler(db);
-        b.insertBatchToQueue(new Batch(800, 2, 20000, "2019-12-08", 100.0f));
     }
 
     @After
@@ -57,12 +55,35 @@ public class CreateBatchTest {
         db.queryUpdate("DELETE FROM Productionlist;");
         db.queryUpdate("ALTER SEQUENCE productionlist_productionlistid_seq RESTART;");
     }
-
-    /**
-     * Test of createBatch method, of class ManagementDomain.
+    
+     /**
+     * Test of createBatch method with empty database
      */
     @Test
     public void testCreateBatch() {
+        int expectedBatchID = 0;
+        mmd.createBatch(new Batch(-1, 2, 8000, "2019-12-08", 100.0f));
+        SimpleSet set = db.query("SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1");
+        Batch batch = null;
+        for (int i = 0; i < set.getRows(); i++) {
+            batch = new Batch(
+                    (int) set.get(i, "batchid"),
+                    (int) set.get(i, "productid"),
+                    (int) set.get(i, "productamount"),
+                    String.valueOf(set.get(i, "deadline")),
+                    Float.parseFloat(String.valueOf(set.get(i, "speed")))
+            );
+        }
+        assertEquals(expectedBatchID, batch.getBatchID());
+    }
+
+    /**
+     * Test of createBatch method with non empty database
+     */
+    @Test
+    public void testCreateBatch_Mid() {
+        BatchDataHandler b = new BatchDataHandler(db);
+        b.insertBatchToQueue(new Batch(800, 2, 20000, "2019-12-08", 100.0f));
         int expectedBatchID = 801;
         mmd.createBatch(new Batch(-1, 2, 8000, "2019-12-08", 100.0f));
         SimpleSet set = db.query("SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1");
@@ -74,7 +95,30 @@ public class CreateBatchTest {
                     (int) set.get(i, "productamount"),
                     String.valueOf(set.get(i, "deadline")),
                     Float.parseFloat(String.valueOf(set.get(i, "speed")))
-            );   
+            );
+        }
+        assertEquals(expectedBatchID, batch.getBatchID());
+    }
+    
+     /**
+     * Test of createBatch method edge case
+     */
+    @Test
+    public void testCreateBatch_EdgeCase() {
+        BatchDataHandler b = new BatchDataHandler(db);
+        b.insertBatchToQueue(new Batch(65535, 2, 20000, "2019-12-08", 100.0f));
+        int expectedBatchID = 0;
+        mmd.createBatch(new Batch(-1, 2, 8000, "2019-12-08", 100.0f));
+        SimpleSet set = db.query("SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1");
+        Batch batch = null;
+        for (int i = 0; i < set.getRows(); i++) {
+            batch = new Batch(
+                    (int) set.get(i, "batchid"),
+                    (int) set.get(i, "productid"),
+                    (int) set.get(i, "productamount"),
+                    String.valueOf(set.get(i, "deadline")),
+                    Float.parseFloat(String.valueOf(set.get(i, "speed")))
+            );
         }
         assertEquals(expectedBatchID, batch.getBatchID());
     }
