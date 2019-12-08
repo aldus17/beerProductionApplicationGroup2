@@ -36,6 +36,25 @@ public class PDF implements IBatchReportGenerate {
 
     }
 
+    /**
+     * Creates a PDF document filled in with the neccesary pages, final batch
+     * information
+     * {@link PDF#addPageWithBatchInfo(com.mycompany.crossCutting.objects.BatchReport, java.util.Map)},
+     * graph for temperature data
+     * {@link PDF#addXYChartToDocument(java.lang.String, java.util.List, java.lang.String, java.lang.String)}
+     * and graph for humidity data {@link PDF#addCategoryChartToDocument(java.lang.String, java.util.List, java.util.List, java.lang.String, java.lang.String)
+     * }. All this is combined in a PDDocument object and returned after all
+     * data has been generated.
+     *
+     * @param batchID, type int
+     * @param prodListID, type int
+     * @param machineID, type int
+     *
+     * @return returns a PDDocument type of the build pages with all data.
+     *
+     * @throws NullPointerException if the list recieved from the database is
+     * empty, or if PDF object has not been instantiated.
+     */
     @Override
     public PDDocument createNewPDF(int batchID, int prodListID, int machineID) throws NullPointerException {
         batchDataHandler = new BatchDataHandler();
@@ -67,6 +86,15 @@ public class PDF implements IBatchReportGenerate {
         return document;
     }
 
+    /**
+     * Creates a PDPage with final batch information.
+     *
+     * @param batchReport, type BatchReport
+     * @param timeInStatesMap, type Map<Integer, String>
+     *
+     * @return returns a PDPage that can be used to generate the final
+     * PDDocument {@link PDF#createNewPDF(int, int, int)}
+     */
     private PDPage addPageWithBatchInfo(BatchReport batchReport, Map<Integer, String> timeInStatesMap) {
         //Retrieving the pages of the document
         PDPage page = new PDPage();
@@ -137,6 +165,17 @@ public class PDF implements IBatchReportGenerate {
         return page;
     }
 
+    /**
+     * Creates a XY chart based on the specified information.
+     *
+     * @param chartName, type String
+     * @param data, type List<Double>
+     * @param nameOfXAxis, type String
+     * @param nameOfYAxis, type String
+     *
+     * @return returns a PDPage that can be used to generate the final
+     * PDDocument {@link PDF#createNewPDF(int, int, int)}
+     */
     private PDPage addXYChartToDocument(String chartName, List<Double> data,
             String nameOfXAxis, String nameOfYAxis) {
 
@@ -160,6 +199,18 @@ public class PDF implements IBatchReportGenerate {
         return pdfChart;
     }
 
+    /**
+     * Creates a histodiagram chart based on the specified information.
+     *
+     * @param chartName, type String
+     * @param xData, type List<Double>
+     * @param yData, type List<Double>
+     * @param nameOfXAxis, type String
+     * @param nameOfYAxis, type String
+     *
+     * @return returns a PDPage that can be used to generate the final
+     * PDDocument {@link PDF#createNewPDF(int, int, int)}
+     */
     private PDPage addCategoryChartToDocument(String chartName, List<Double> xData, List<Double> yData,
             String nameOfXAxis, String nameOfYAxis) {
 
@@ -179,17 +230,31 @@ public class PDF implements IBatchReportGenerate {
         } catch (IOException ex) {
             Logger.getLogger(PDF.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return pdfChart;
+
     }
 
+    /**
+     * Saves the generated PDDocument (PDF) with current date in a specified
+     * directory.
+     *
+     * @param document, type PDDocument
+     * @param fileName, type String
+     * @param directory, type String
+     *
+     * @throws IOException, if an error occured while saving the PDDocument
+     */
     @Override
     public void savePDF(PDDocument document, String fileName, String directory) throws IOException {
         LocalDateTime myDateObj = LocalDateTime.now();
         DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd_MM_yyyy__HH_mm_ss");
         String formattedDate = myDateObj.format(myFormatObj);
 
-        document.save(directory + "\\" + fileName + formattedDate + ".pdf"); // TODO: Changes Path or it will save it in project folder.
+        document.save(directory + "\\" + fileName + formattedDate + ".pdf");
+
         document.close();
 
     }
+
 }

@@ -21,6 +21,19 @@ public class Chart {
     public Chart() {
     }
 
+    /**
+     * The method creates a xy coordinat graph based on the data. This graph is
+     * converted to a bufferedImage.
+     *
+     * @param chartName, type String
+     * @param data, type List<Double>
+     * @param nameOfXAxis, type String
+     * @param nameOfYAxis, type String
+     * @param imageWidth, type int
+     * @param imageHeight, type int
+     *
+     * @return returns a BufferedImage of a XYChart.
+     */
     public BufferedImage createXYChart(String chartName, List<Double> data,
             String nameOfXAxis, String nameOfYAxis, int imageWidth, int imageHeight) {
 
@@ -29,8 +42,12 @@ public class Chart {
                 .yAxisTitle(nameOfYAxis)
                 .theme(ChartTheme.Matlab)
                 .build();
+        
+        // Fill in with data
         XYSeries series = xyChart.addSeries(chartName, data);
         series.setMarker(SeriesMarkers.CIRCLE);
+        
+        // Create image with specified width and height
         BufferedImage bi = BitmapEncoder.getBufferedImage(xyChart);
         try {
             bi = Thumbnails.of(bi).size(imageWidth, imageHeight).asBufferedImage();
@@ -41,6 +58,20 @@ public class Chart {
         return bi;
     }
 
+    /**
+     * The method creates a histodiagram based on the data. This graph is
+     * converted to a bufferedImage.
+     *
+     * @param chartName, type String
+     * @param xData, type List<Double>
+     * @param yData, type List<Double>
+     * @param nameOfXAxis, type String
+     * @param nameOfYAxis, type String
+     * @param imageWidth, type int
+     * @param imageHeight, type int
+     * 
+     * @return returns a BufferedImage of a histodiagram
+     */
     public BufferedImage createCategoryChart(String chartName, List<Double> xData, List<Double> yData,
             String nameOfXAxis, String nameOfYAxis, int imageWidth, int imageHeight) {
 
@@ -49,11 +80,15 @@ public class Chart {
                 .xAxisTitle(nameOfXAxis)
                 .yAxisTitle(nameOfYAxis)
                 .build();
+        
         // Use below for styling purpose
         categoryChart.getStyler().setLegendPosition(LegendPosition.InsideNW);
         categoryChart.getStyler().setHasAnnotations(true);
-
+        
+        // Fill in with data
         categoryChart.addSeries(chartName, xData, yData);
+        
+        // Create image with specified width and height
         BufferedImage bi = BitmapEncoder.getBufferedImage(categoryChart);
         try {
             bi = Thumbnails.of(bi).size(imageWidth, imageHeight).asBufferedImage();
