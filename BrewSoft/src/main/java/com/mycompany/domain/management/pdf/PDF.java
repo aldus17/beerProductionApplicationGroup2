@@ -46,9 +46,9 @@ public class PDF implements IBatchReportGenerate {
      * }. All this is combined in a PDDocument object and returned after all
      * data has been generated.
      *
-     * @param batchID, type int
-     * @param prodListID, type int
-     * @param machineID, type int
+     * @param batchID of type int
+     * @param prodListID of type int
+     * @param machineID of type int
      *
      * @return returns a PDDocument type of the build pages with all data.
      *
@@ -89,8 +89,8 @@ public class PDF implements IBatchReportGenerate {
     /**
      * Creates a PDPage with final batch information.
      *
-     * @param batchReport, type BatchReport
-     * @param timeInStatesMap, type Map<Integer, String>
+     * @param batchReport of type BatchReport
+     * @param timeInStatesMap of type Map<Integer, String>
      *
      * @return returns a PDPage that can be used to generate the final
      * PDDocument {@link PDF#createNewPDF(int, int, int)}
@@ -168,10 +168,10 @@ public class PDF implements IBatchReportGenerate {
     /**
      * Creates a XY chart based on the specified information.
      *
-     * @param chartName, type String
-     * @param data, type List<Double>
-     * @param nameOfXAxis, type String
-     * @param nameOfYAxis, type String
+     * @param chartName of type String
+     * @param data of type List<Double>
+     * @param nameOfXAxis of type String
+     * @param nameOfYAxis of type String
      *
      * @return returns a PDPage that can be used to generate the final
      * PDDocument {@link PDF#createNewPDF(int, int, int)}
@@ -239,9 +239,9 @@ public class PDF implements IBatchReportGenerate {
      * Saves the generated PDDocument (PDF) with current date in a specified
      * directory.
      *
-     * @param document, type PDDocument
-     * @param fileName, type String
-     * @param directory, type String
+     * @param document of type PDDocument
+     * @param fileName of type String
+     * @param directory of type String
      *
      * @throws IOException, if an error occured while saving the PDDocument
      */

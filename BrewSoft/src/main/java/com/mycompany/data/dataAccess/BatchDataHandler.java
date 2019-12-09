@@ -12,6 +12,8 @@ import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.dataAccess.Connect.TestDatabase;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.data.interfaces.IManagementData;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     public BatchDataHandler() {
         dbConnection = new DatabaseConnection();
     }
+
     public BatchDataHandler(TestDatabase testDatabase) {
         dbConnection = new TestDatabase();
     }
@@ -118,17 +121,14 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         }
     }
 
-    /*
-    After a finished batch production the MES must be able to produce a batch report of the produced batch.
-    The batch report must minimum contain the following.
-    • Batch ID.
-    • Product type.
-    • Amount of products (total, defect and acceptable).
-    • Amount of time used in the different states.
-    • Logging of temperature over the production time.
-    • Logging of humidity over the production time.
-    The batch report could be in PDF or dashboard style format. The data can be presented in various charts
-    or in tables.
+    /**
+     * Selects all final batch information, creates a BatchReport object and
+     * returns it with the information
+     *
+     * @param batchID  of type int
+     * @param machineID  of type int
+     *
+     * @return returns BatchReport with final batch information data.
      */
     @Override
     public BatchReport getBatchReportProductionData(int batchID, int machineID) {
@@ -160,10 +160,21 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                         (double) reportSet.get(i, "acceptedcount")
                 );
             }
+            
             return batchReport;
         }
     }
 
+    /**
+     * Selects all temperature data based on the productionlist ID and machine
+     * ID. This data is then saved in a object of type MachineTempData and added
+     * to a List<MachineTempData>, that is returned.
+     *
+     * @param prodID of type int
+     * @param machineID of type int
+     *
+     * @return returns a List<MachineTempData> with all temperature data.
+     */
     @Override
     public List<MachineTempData> getMachineTempData(int prodID, int machineID) {
         SimpleSet prodInfoDataSet = dbConnection.query("SELECT DISTINCT pl.brewerymachineid, pl.temperature "
@@ -203,7 +214,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             for (int i = 0; i < prodInfoDataSet.getRows(); i++) {
                 machineHumiDataList.add(machineHumiData = new MachineHumiData(
                         (int) prodInfoDataSet.get(i, "brewerymachineid"),
-                        (double) prodInfoDataSet.get(i, "humidity"))
+                        round((double) prodInfoDataSet.get(i, "humidity"), 3))
                 );
             }
             return machineHumiDataList;
@@ -298,4 +309,15 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         }
         return completedbatches;
     }
+
+    public static double round(double value, int places) {
+        if (places < 0) {
+            throw new IllegalArgumentException();
+        }
+
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
+
 }

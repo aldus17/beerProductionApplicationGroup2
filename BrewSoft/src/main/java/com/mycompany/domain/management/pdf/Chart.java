@@ -25,12 +25,12 @@ public class Chart {
      * The method creates a xy coordinat graph based on the data. This graph is
      * converted to a bufferedImage.
      *
-     * @param chartName, type String
-     * @param data, type List<Double>
-     * @param nameOfXAxis, type String
-     * @param nameOfYAxis, type String
-     * @param imageWidth, type int
-     * @param imageHeight, type int
+     * @param chartName of  type String
+     * @param data of type List<Double>
+     * @param nameOfXAxis of type String
+     * @param nameOfYAxis of  type String
+     * @param imageWidth of  type int
+     * @param imageHeight of  type int
      *
      * @return returns a BufferedImage of a XYChart.
      */

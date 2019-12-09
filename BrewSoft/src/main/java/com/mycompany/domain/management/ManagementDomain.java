@@ -90,8 +90,8 @@ public class ManagementDomain implements IManagementDomain {
      * takes the difference when it sees a different state. E.g. state 6 | state
      * 6 | state 17 will calculate the first state 6 entry and the new state 17.
      *
-     * @param prodListID, type int
-     * @param machineID, type int
+     * @param prodListID of type int
+     * @param machineID of  type int
      *
      * @return returns a Map<Integer, String> of the calulated states where key
      * is the state and the String is the value of format "HH:mm:ss"
@@ -129,8 +129,8 @@ public class ManagementDomain implements IManagementDomain {
      * <ul><li> Format must be "HH:mm:ss" of type String.<ul/>
      * E.g. "02:10:05" and "01:10:10" the method will output "01:00:05".
      *
-     * @param stateValue1, type String of format "HH:mm:ss"
-     * @param stateValue2, type String of format "HH:mm:ss"
+     * @param stateValue1 of type String of format "HH:mm:ss"
+     * @param stateValue2 of type String of format "HH:mm:ss"
      *
      * @return returns a String of the subtraction of stateValue2 from
      * stateValue1 in the format "HH:mm:ss"
@@ -151,7 +151,7 @@ public class ManagementDomain implements IManagementDomain {
         long seconds = (difference / 1000) % 60;
         long minutes = (difference / (1000 * 60)) % 60;
         long hours = difference / (1000 * 60 * 60);
-
+        
         return String.format("%02d:%02d:%02d", hours, minutes, seconds); //02d e.g. 01 or 00 or 22
     }
 
@@ -163,8 +163,8 @@ public class ManagementDomain implements IManagementDomain {
      * and "01:20:10" the method will output "01:00:40:20". The same goes for
      * minutes and seconds.
      *
-     * @param stateValue1, type String of format "HH:mm:ss"
-     * @param stateValue2, type String of format "HH:mm:ss"
+     * @param stateValue1 of  type String of format "HH:mm:ss"
+     * @param stateValue2 of  type String of format "HH:mm:ss"
      *
      * @return returns a String of the addition of stateValue1 and stateValue2
      * in the format "DD:HH:mm:ss"

@@ -16,12 +16,12 @@ public class Text {
      * Reference of usage to
      * {@link PDF#addPageWithBatchInfo(com.mycompany.crossCutting.objects.BatchReport, java.util.Map)}
      *
-     * @param contentStream, type PDPageContentStream
-     * @param pDFont, type PDFont
-     * @param fontSize, type float
-     * @param offsetX, type float
-     * @param offSetY, type float
-     * @param text, type String
+     * @param contentStream of  type PDPageContentStream
+     * @param pDFont of  type PDFont
+     * @param fontSize of  type float
+     * @param offsetX of type float
+     * @param offSetY of type float
+     * @param text of type String
      *
      * @return returns a PDPageContentStream of the specified text, fontSize,
      * fontType (PDFfont) and x and y offset.
