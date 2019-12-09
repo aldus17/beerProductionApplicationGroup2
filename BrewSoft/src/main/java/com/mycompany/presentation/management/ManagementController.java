@@ -330,7 +330,7 @@ public class ManagementController implements Initializable {
     private void GenerateOEEAction(ActionEvent event) {
         LocalDate dateToCreateOEE = dp_ShowOEE.getValue();
         if (dateToCreateOEE != null) {
-            String oee = managementDomain.calculateOEE(dateToCreateOEE, 1);
+            String oee = managementDomain.calculateOEE(dateToCreateOEE, 28800);
             Texta_ShowOEE_Text.appendText(dateToCreateOEE.toString());
             Texta_ShowOEE_Text.appendText(" | ");
             Texta_ShowOEE_Text.appendText(oee + " %" + "\n");
