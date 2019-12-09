@@ -197,3 +197,4 @@ public class ManagementDomain implements IManagementDomain {
     public ArrayList<Batch> getCompletedBatches() {
         return managementData.getCompletedBatches();
     }
+}
