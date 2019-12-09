@@ -86,11 +86,16 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
 
     /**
      * Gets all the machine states based on the specific productionlist ID and
-     * machine ID. It also adds the first state in the next batch to calculate 
+     * machine ID. It also adds the first state from the next batch.it
      *
-     * @param prodListID
-     * @param machineID
-     * @return
+     * @param prodListID of type int
+     * @param machineID of type int
+     *
+     * @return returns a List<MachineState> of machine states with
+     * machinestateID and timestamp for that state.
+     *
+     * @throws NullPointerException, if the SimpleSet {@link SimpleSet} is
+     * empty, or if SimpleSet has not been instantiated
      */
     @Override
     public List<MachineState> getMachineState(int prodListID, int machineID) {
