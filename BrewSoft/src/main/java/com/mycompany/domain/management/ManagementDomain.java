@@ -83,10 +83,18 @@ public class ManagementDomain implements IManagementDomain {
     }
 
     /**
+     * Collects all machinestate data from the datalayer and calculates the
+     * difference in order to get the time used in that paticular state. If more
+     * values of same machine state appear, it takes the first entry of that
+     * state and then ignores all the repeated machine states (If present) and
+     * takes the difference when it sees a different state. E.g. state 6 | state
+     * 6 | state 17 will calculate the first state 6 entry and the new state 17.
      *
-     * @param prodListID
-     * @param machineID
-     * @return
+     * @param prodListID, type int
+     * @param machineID, type int
+     *
+     * @return returns a Map<Integer, String> of the calulated states where key
+     * is the state and the String is the value of format "HH:mm:ss"
      */
     @Override
     public Map<Integer, String> getTimeInStates(int prodListID, int machineID) {
