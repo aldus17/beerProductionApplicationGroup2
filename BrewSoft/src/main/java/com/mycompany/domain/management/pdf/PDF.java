@@ -24,6 +24,12 @@ import org.apache.pdfbox.pdmodel.graphics.image.JPEGFactory;
 import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.util.Matrix;
 
+/**
+ * Used to instantiate PDF object in order to use the methods and generate a PDF
+ * report.
+ *
+ * @author Group2
+ */
 public class PDF implements IBatchReportGenerate {
 
     private PDDocument document;
@@ -33,7 +39,6 @@ public class PDF implements IBatchReportGenerate {
     private IBatchDataHandler batchDataHandler;
 
     public PDF() {
-
     }
 
     /**
@@ -140,7 +145,7 @@ public class PDF implements IBatchReportGenerate {
                 completed = "Completed: " + en.getValue();
             }
         }
-        
+
         // Add text to document 
         try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
             Text text = new Text();
@@ -202,7 +207,7 @@ public class PDF implements IBatchReportGenerate {
 
     /**
      * Creates a histodiagram chart based on the specified information.
-     * 
+     *
      * @param chartName of type String
      * @param xData of type List<Double>
      * @param yData of type List<Double>

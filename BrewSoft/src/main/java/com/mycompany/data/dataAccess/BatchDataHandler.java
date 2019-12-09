@@ -84,6 +84,14 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         }
     }
 
+    /**
+     * Gets all the machine states based on the specific productionlist ID and
+     * machine ID. It also adds the first state in the next batch to calculate 
+     *
+     * @param prodListID
+     * @param machineID
+     * @return
+     */
     @Override
     public List<MachineState> getMachineState(int prodListID, int machineID) {
 
@@ -125,10 +133,11 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
      * Selects all final batch information, creates a BatchReport object and
      * returns it with the information
      *
-     * @param batchID  of type int
-     * @param machineID  of type int
+     * @param batchID of type int
+     * @param machineID of type int
      *
-     * @return returns BatchReport with final batch information data.
+     * @return returns BatchReport object {@link BatchReport} with final batch
+     * information data.
      */
     @Override
     public BatchReport getBatchReportProductionData(int batchID, int machineID) {
@@ -160,7 +169,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
                         (double) reportSet.get(i, "acceptedcount")
                 );
             }
-            
+
             return batchReport;
         }
     }
@@ -174,6 +183,9 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
      * @param machineID of type int
      *
      * @return returns a List<MachineTempData> with all temperature data.
+     *
+     * @throws NullPointerException, if the SimpleSet {@link SimpleSet} is
+     * empty, or if SimpleSet has not been instantiated
      */
     @Override
     public List<MachineTempData> getMachineTempData(int prodID, int machineID) {
@@ -198,6 +210,19 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         }
     }
 
+    /**
+     * Selects all humidity data based on the productionlist ID and machine ID.
+     * This data is then saved in a object of type MachineHumiData and added to
+     * a List<MachineHumiData>, that is returned.
+     *
+     * @param prodID of type int
+     * @param machineID of type int
+     *
+     * @return returns a List<MachineHumiData> with all temperature data.
+     *
+     * @throws NullPointerException, if the SimpleSet {@link SimpleSet} is
+     * empty, or if SimpleSet has not been instantiated
+     */
     @Override
     public List<MachineHumiData> getMachineHumiData(int prodID, int machineID) {
         SimpleSet prodInfoDataSet = dbConnection.query("SELECT DISTINCT pl.brewerymachineid, pl.humidity "
@@ -314,7 +339,6 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         if (places < 0) {
             throw new IllegalArgumentException();
         }
-
         BigDecimal bd = BigDecimal.valueOf(value);
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
