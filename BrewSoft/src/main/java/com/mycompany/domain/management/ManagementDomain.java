@@ -113,7 +113,6 @@ public class ManagementDomain implements IManagementDomain {
             if (finalTimeInStatesList.containsKey(firstObj.getMachinestateID())) {
                 String t = finalTimeInStatesList.get(firstObj.getMachinestateID());
                 diff = getAdditionTimeInState(diff, t);
-
             }
 
             finalTimeInStatesList.put(firstObj.getMachinestateID(), diff);

@@ -140,7 +140,8 @@ public class PDF implements IBatchReportGenerate {
                 completed = "Completed: " + en.getValue();
             }
         }
-
+        
+        // Add text to document 
         try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
             Text text = new Text();
             text.createText(contentStream, PDType1Font.TIMES_BOLD, 24, 225, 750, header);
@@ -201,12 +202,12 @@ public class PDF implements IBatchReportGenerate {
 
     /**
      * Creates a histodiagram chart based on the specified information.
-     *
-     * @param chartName, type String
-     * @param xData, type List<Double>
-     * @param yData, type List<Double>
-     * @param nameOfXAxis, type String
-     * @param nameOfYAxis, type String
+     * 
+     * @param chartName of type String
+     * @param xData of type List<Double>
+     * @param yData of type List<Double>
+     * @param nameOfXAxis of type String
+     * @param nameOfYAxis of type String
      *
      * @return returns a PDPage that can be used to generate the final
      * PDDocument {@link PDF#createNewPDF(int, int, int)}
