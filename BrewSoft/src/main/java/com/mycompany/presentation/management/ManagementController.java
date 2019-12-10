@@ -611,11 +611,18 @@ public class ManagementController implements Initializable {
 
     }
 
+    /**
+     * Action handler to generate PDF document of the choosen batch. The user
+     * can select a batch in a list and then click on the generate batch button
+     * to get a save window where the user can choose the directory where to
+     * save the specific pdf document.
+     *
+     * @param event
+     */
     @FXML
     private void GeneratingBatchreportActionn(ActionEvent event) {
         Stage primaryStage = new Stage();
-        // Extract batch id, machine id, production list ID, from the the list to use in the createPDF method
-        // generated batchreport pdf will then be created, and needs to be loaded in.
+
         if (event.getSource() == btn_generateBatchreport) {
 
             int index = tw_SearchTableCompletedBatches.getSelectionModel().getSelectedIndex();

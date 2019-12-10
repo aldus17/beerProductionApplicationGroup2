@@ -89,6 +89,20 @@ public class ManagementDomain implements IManagementDomain {
         return managementData.getBeerTypes();
     }
 
+    /**
+     * Collects all machinestate data from the datalayer and calculates the
+     * difference in order to get the time used in that paticular state. If more
+     * values of same machine state appear, it takes the first entry of that
+     * state and then ignores all the repeated machine states (If present) and
+     * takes the difference when it sees a different state. E.g. state 6 | state
+     * 6 | state 17 will calculate the first state 6 entry and the new state 17.
+     *
+     * @param prodListID of type int
+     * @param machineID of  type int
+     *
+     * @return returns a Map<Integer, String> of the calulated states where key
+     * is the state and the String is the value of format "HH:mm:ss"
+     */
     @Override
     public Map<Integer, String> getTimeInStates(int prodListID, int machineID) {
 
@@ -106,7 +120,6 @@ public class ManagementDomain implements IManagementDomain {
             if (finalTimeInStatesList.containsKey(firstObj.getMachinestateID())) {
                 String t = finalTimeInStatesList.get(firstObj.getMachinestateID());
                 diff = getAdditionTimeInState(diff, t);
-
             }
 
             finalTimeInStatesList.put(firstObj.getMachinestateID(), diff);
@@ -117,6 +130,17 @@ public class ManagementDomain implements IManagementDomain {
         return finalTimeInStatesList;
     }
 
+    /**
+     * Takes stateValue2 and subtracts stateValue1.
+     * <ul><li> Format must be "HH:mm:ss" of type String.<ul/>
+     * E.g. "02:10:05" and "01:10:10" the method will output "01:00:05".
+     *
+     * @param stateValue1 of type String of format "HH:mm:ss"
+     * @param stateValue2 of type String of format "HH:mm:ss"
+     *
+     * @return returns a String of the subtraction of stateValue2 from
+     * stateValue1 in the format "HH:mm:ss"
+     */
     public String getDifferenceTimeInState(String stateValue1, String stateValue2) {
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
         long difference = 0;
@@ -133,10 +157,24 @@ public class ManagementDomain implements IManagementDomain {
         long seconds = (difference / 1000) % 60;
         long minutes = (difference / (1000 * 60)) % 60;
         long hours = difference / (1000 * 60 * 60);
-
+        
         return String.format("%02d:%02d:%02d", hours, minutes, seconds); //02d e.g. 01 or 00 or 22
     }
 
+    /**
+     * Takes stateValue1 and adds that to stateValue2.
+     * <ul><li> Format must be "HH:mm:ss" of type String.<ul/>
+     * E.g. "01:10:10" and "02:10:05" the method will output "03:20:15". If
+     * there are more hours than 24 then it will add 1 to days. E.g. "24:20:10"
+     * and "01:20:10" the method will output "01:00:40:20". The same goes for
+     * minutes and seconds.
+     *
+     * @param stateValue1 of  type String of format "HH:mm:ss"
+     * @param stateValue2 of  type String of format "HH:mm:ss"
+     *
+     * @return returns a String of the addition of stateValue1 and stateValue2
+     * in the format "DD:HH:mm:ss"
+     */
     public String getAdditionTimeInState(String stateValue1, String stateValue2) {
 
         String[] s1 = stateValue1.split(":");
