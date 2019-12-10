@@ -3,6 +3,7 @@ package com.mycompany.domain.management.interfaces;
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.SearchData;
+import com.mycompany.data.interfaces.IBatchDataHandler;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

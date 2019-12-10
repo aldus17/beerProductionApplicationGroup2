@@ -4,6 +4,7 @@ import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.TemporaryProductionBatch;
 import com.mycompany.data.dataAccess.Connect.DatabaseConnection;
 import com.mycompany.data.dataAccess.Connect.SimpleSet;
+import com.mycompany.data.dataAccess.Connect.TestDatabase;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import java.sql.Date;
 
@@ -13,6 +14,10 @@ public class MachineSubscribeDataHandler implements IMachineSubscriberDataHandle
 
     public MachineSubscribeDataHandler() {
         connection = new DatabaseConnection();
+    }
+    
+    public MachineSubscribeDataHandler(TestDatabase testDatabase){
+        connection = testDatabase;
     }
 
     @Override
