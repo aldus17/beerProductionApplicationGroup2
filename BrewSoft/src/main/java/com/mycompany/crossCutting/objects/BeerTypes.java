@@ -24,7 +24,7 @@ public class BeerTypes {
         return indexnumber;
     }
     
-    public String toString() {
+    public String getTypeName() {
         return this.typeName;
     }
 }

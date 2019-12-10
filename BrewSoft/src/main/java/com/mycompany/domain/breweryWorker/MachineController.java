@@ -90,9 +90,9 @@ public class MachineController implements IMachineControl {
     @Override
     public void abortProduction() {
         sendCntrlCmd(new Variant(4));
-        msdh.changeProductionListStatus(newBatch.getProductionListID(), "stopped");
+        msdh.changeProductionListStatus(newBatch.getProductionListID(), "aborted");
         sendCmdRequest();
-        subscriber.stoppedproduction(newBatch.getProductionListID());
+        //subscriber.stoppedproduction(newBatch.getProductionListID());
 
     }
 
