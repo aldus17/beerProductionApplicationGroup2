@@ -25,9 +25,6 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     public BatchDataHandler() {
         dbConnection = new DatabaseConnection();
     }
-    public BatchDataHandler(TestDatabase testDatabase) {
-        dbConnection = new TestDatabase();
-    }
 
     public BatchDataHandler(TestDatabase testDatabase) {
         dbConnection = testDatabase;
