@@ -42,3 +42,7 @@ BrewSoft/target/surefire-reports/com.mycompany.domain.management.ManagementDomai
 BrewSoft/target/surefire-reports/TEST-com.mycompany.data.dataAccess.BatchDataHandlerTest.xml
 
 BrewSoft/target/surefire-reports/TEST-com.mycompany.domain.management.ManagementDomainTest.xml
+
+BrewSoft/target/surefire-reports/com.mycompany.domain.management.CreateBatchTest.txt
+
+BrewSoft/target/surefire-reports/TEST-com.mycompany.domain.management.CreateBatchTest.xml

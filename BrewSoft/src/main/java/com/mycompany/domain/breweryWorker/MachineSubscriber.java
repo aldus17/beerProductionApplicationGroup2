@@ -3,7 +3,9 @@ package com.mycompany.domain.breweryWorker;
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.Machine;
 import com.mycompany.crossCutting.objects.TemporaryProductionBatch;
+import com.mycompany.data.dataAccess.BatchDataHandler;
 import com.mycompany.data.dataAccess.MachineSubscribeDataHandler;
+import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.data.interfaces.IMachineSubscriberDataHandler;
 import com.mycompany.domain.breweryWorker.interfaces.IMachineSubscribe;
 import java.util.ArrayList;
@@ -301,6 +303,11 @@ public class MachineSubscriber implements IMachineSubscribe {
         msdh.insertStoppedProductionToTempTable(tpb);
     }
 
+    public String getCurrentProductType() {
+        IBatchDataHandler bdh = new BatchDataHandler();
+        return bdh.getBeerTypes().get(this.batch.getType()).getTypeName();
+    }
+    
     // TODO Get data from database.
     @Override
     public String stopReasonTranslator(String stopReason) {

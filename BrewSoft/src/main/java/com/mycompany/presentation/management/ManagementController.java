@@ -150,8 +150,6 @@ public class ManagementController implements Initializable {
     private ComboBox<BeerTypes> cb_beertypeCreateBatch;
     @FXML
     private Button btn_generateBatchreport;
-    @FXML
-    private ListView<?> lv_CreateBatchOrder_TypeofBeer;
 
     // Class calls
     private IManagementDomain managementDomain;
