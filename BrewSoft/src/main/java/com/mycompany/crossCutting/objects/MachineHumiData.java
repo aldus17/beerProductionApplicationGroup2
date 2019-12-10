@@ -38,4 +38,9 @@ public class MachineHumiData {
     public double getHumidity() {
         return humidity;
     }
+
+    @Override
+    public String toString() {
+        return "MachineHumiData{" + "machineID=" + machineID + ", humidity=" + humidity;
+    }
 }

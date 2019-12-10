@@ -6,6 +6,7 @@ import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.crossCutting.objects.OeeObject;
 import com.mycompany.crossCutting.objects.SearchData;
 import com.mycompany.data.dataAccess.BatchDataHandler;
+import com.mycompany.data.dataAccess.Connect.TestDatabase;
 import com.mycompany.data.dataAccess.SearchDataHandler;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.data.interfaces.IManagementData;
@@ -45,6 +46,12 @@ public class ManagementDomain implements IManagementDomain {
         this.batchDataHandler = bdh;
         this.searchDataHandler = sdh;
         this.managementData = mdh;
+    }
+
+    public ManagementDomain(TestDatabase testDatabase) {
+        this.batchDataHandler = new BatchDataHandler(testDatabase);
+        this.searchDataHandler = new SearchDataHandler();
+        this.managementData = new BatchDataHandler();
     }
 
     /**
