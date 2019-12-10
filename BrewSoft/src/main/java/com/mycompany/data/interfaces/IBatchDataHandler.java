@@ -2,6 +2,7 @@ package com.mycompany.data.interfaces;
 
 import com.mycompany.crossCutting.objects.Batch;
 import com.mycompany.crossCutting.objects.BatchReport;
+import com.mycompany.crossCutting.objects.BeerTypes;
 import com.mycompany.crossCutting.objects.MachineHumiData;
 import com.mycompany.crossCutting.objects.MachineState;
 import com.mycompany.crossCutting.objects.MachineTempData;
@@ -29,4 +30,6 @@ public interface IBatchDataHandler {
     public void editQueuedBatch(Batch batch);
 
     public List getAcceptedCount(LocalDate dateofcompleation);
+    
+    public List<BeerTypes> getBeerTypes();
 }

@@ -34,7 +34,7 @@ public class BrewWorker_UI_Controller implements Initializable {
 
     //Label Machine specific
     @FXML
-    private Label lbl_StopReason, lbl_State, lbl_MaintenancePercent;
+    private Label lbl_StopReason, lbl_State, lbl_productType;
 
     //ProgressBar
     @FXML
@@ -68,7 +68,6 @@ public class BrewWorker_UI_Controller implements Initializable {
         Consumer<String> batchIdUpdater = text -> Platform.runLater(new Runnable() {
             @Override
             public void run() {
-                System.out.println("Batch ID: " + text);
                 lbl_BatchID.setText(text);
             }
         });
@@ -87,7 +86,7 @@ public class BrewWorker_UI_Controller implements Initializable {
 
         Consumer<String> maintenanceCounterUpdater = text -> Platform.runLater(() -> {
             pb_Maintenance.setProgress(Double.valueOf(text) / 30000);
-            lbl_MaintenancePercent.setText(String.valueOf((Double.valueOf(text) / 30000) * 100) + "%");
+            //lbl_MaintenancePercent.setText(String.valueOf((Double.valueOf(text) / 30000) * 100) + "%");
         });
 
         Consumer<String> acceptableUpdater = text -> Platform.runLater(() -> lbl_Acceptable.setText(text));
@@ -126,8 +125,10 @@ public class BrewWorker_UI_Controller implements Initializable {
 
         if (event.getSource() == btn_Start) {
             controls.startProduction();
+            lbl_productType.setText(subscriber.getCurrentProductType());
         } else if (event.getSource() == btn_Reset) {
             controls.resetMachine();
+            lbl_productType.setText("");
         } else if (event.getSource() == btn_Clear) {
             controls.clearState();
         } else if (event.getSource() == btn_Stop) {

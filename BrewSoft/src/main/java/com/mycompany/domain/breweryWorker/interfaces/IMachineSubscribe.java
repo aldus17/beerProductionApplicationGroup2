@@ -16,6 +16,8 @@ public interface IMachineSubscribe {
     public String stopReasonTranslator(String stopReason);
 
     public void stoppedproduction(int productionlistid);
+    
+    public String getCurrentProductType();
 
     // Node names production materials.
     public final static String BARLEY_NODENAME = "Barley";
