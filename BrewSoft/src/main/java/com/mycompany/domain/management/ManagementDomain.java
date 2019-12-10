@@ -40,6 +40,13 @@ public class ManagementDomain implements IManagementDomain {
         this.searchDataHandler = new SearchDataHandler();
         this.managementData = new BatchDataHandler(); // missing suitable class
     }
+    
+    //Used in tests 
+    public ManagementDomain(BatchDataHandler bdh, SearchDataHandler sdh, BatchDataHandler mdh){
+        this.batchDataHandler = bdh;
+        this.searchDataHandler = sdh;
+        this.managementData = mdh;
+    }
 
     public ManagementDomain(TestDatabase testDatabase) {
         this.batchDataHandler = new BatchDataHandler(testDatabase);

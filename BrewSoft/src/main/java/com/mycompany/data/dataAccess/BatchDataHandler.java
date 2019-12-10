@@ -29,6 +29,10 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
         dbConnection = new TestDatabase();
     }
 
+    public BatchDataHandler(TestDatabase testDatabase) {
+        dbConnection = testDatabase;
+    }
+
     @Override
     public void insertBatchToQueue(Batch batch) {
         Batch batchObject = batch;
@@ -134,7 +138,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     public BatchReport getBatchReportProductionData(int batchID, int machineID) {
         SimpleSet reportSet = dbConnection.query("SELECT pl.batchid,"
                 + "fbi.brewerymachineid, fbi.deadline, fbi.dateofcreation,"
-                + "fbi.dateofcompletion, pt.productname, fbi.totalcount,"
+                + "fbi.dateofcompletion, pt.productname, fbi.totalcount, "
                 + "fbi.defectcount, fbi.acceptedcount "
                 + "FROM finalbatchinformation AS fbi, productionlist AS pl, producttype AS pt "
                 + "WHERE fbi.productionlistid = pl.productionlistid "
@@ -262,15 +266,15 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
     public List getAcceptedCount(LocalDate dateofcompleation) {
         List list = new ArrayList<>();
         SimpleSet set;
-        set = dbConnection.query("SELECT fbi.productid, fbi.acceptedcount,"
-                + "pt.idealcycletime FROM finalbatchinformation AS fbi,"
-                + "producttype AS pt WHERE fbi.dateofcompletion = ? AND"
+        set = dbConnection.query("SELECT fbi.productid, fbi.acceptedcount, "
+                + "pt.idealcycletime FROM finalbatchinformation AS fbi, "
+                + "producttype AS pt WHERE fbi.dateofcompletion = ? AND "
                 + "fbi.productid = pt.productid", dateofcompleation);
 
         for (int i = 0; i < set.getRows(); i++) {
             list.add(new OeeObject(
                     (int) set.get(i, "productid"),
-                    (int) set.get(i, "acceptedcount"),
+                    Float.parseFloat(String.valueOf(set.get(i, "acceptedcount"))),
                     (double) set.get(i, "idealcycletime")));
         }
         return list;

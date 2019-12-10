@@ -26,7 +26,9 @@
                   <Button fx:id="btn_Start" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="279.0" text="Start" VBox.vgrow="NEVER" />
                   <Button fx:id="btn_Reset" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="309.0" text="Reset" VBox.vgrow="NEVER" />
                   <Button fx:id="btn_Clear" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="338.0" text="Clear" VBox.vgrow="NEVER" />
-                  <Region prefHeight="205.0" prefWidth="271.0" VBox.vgrow="ALWAYS" />
+                  <Label prefHeight="87.0" prefWidth="271.0" text="Product type:" />
+                  <Label fx:id="lbl_productType" prefHeight="104.0" prefWidth="271.0" />
+                  <Region prefHeight="75.0" prefWidth="271.0" VBox.vgrow="ALWAYS" />
                   <Button fx:id="btn_Stop" mnemonicParsing="false" onAction="#OnControlAction" prefHeight="120.0" prefWidth="549.0" text="Stop" VBox.vgrow="NEVER">
                      <VBox.margin>
                         <Insets />
@@ -59,19 +61,19 @@
                           </rowConstraints>
                            <children>
                               <Label text="Barley:" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
-                              <Label fx:id="lbl_Barley" text="BarleyV" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_Barley" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
                               <Label text="Hops:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
-                              <Label fx:id="lbl_Hops" text="HopsV" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                              <Label fx:id="lbl_Hops" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
                               <Label text="Malt:" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
-                              <Label fx:id="lbl_Malt" text="MaltV" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                              <Label fx:id="lbl_Malt" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
                               <Label text="Wheat:" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
-                              <Label fx:id="lbl_Wheat" text="WheatV" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                              <Label fx:id="lbl_Wheat" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
                               <Label text="Yeast:" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM" />
-                              <Label fx:id="lbl_Yeast" text="YeastV" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                              <Label fx:id="lbl_Yeast" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP" />
                            </children>
                            <VBox.margin>
                               <Insets />
@@ -94,12 +96,12 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label text="Temprature:" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
+                              <Label text="Temperature:" GridPane.halignment="CENTER" GridPane.valignment="BOTTOM">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_Temprature" text="TempV" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_Temprature" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
@@ -109,7 +111,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_BatchID" text="BatchV" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_BatchID" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
@@ -119,7 +121,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_Produced" text="ProducedV" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_Produced" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
@@ -129,7 +131,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_Humidity" text="HumidV" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_Humidity" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
@@ -139,7 +141,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_TotalProducts" text="TotalV" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_TotalProducts" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
@@ -149,7 +151,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_Acceptable" text="AcceptableV" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_Acceptable" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
@@ -159,7 +161,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_Vibration" text="VibrationV" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_Vibration" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
@@ -169,7 +171,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_ProductsPrMinute" text="PPMV" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_ProductsPrMinute" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
@@ -179,7 +181,7 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_Defect" text="DefectV" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_Defect" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
@@ -204,17 +206,17 @@
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_StopReason" text="StopV" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_StopReason" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_State" text="StateV" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_State" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
                               </Label>
-                              <Label fx:id="lbl_MaintenancePercent" text="MaintenanceV" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="TOP">
+                              <Label fx:id="lbl_MaintenancePercent" visible="false" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="7" GridPane.valignment="TOP">
                                  <GridPane.margin>
                                     <Insets />
                                  </GridPane.margin>
