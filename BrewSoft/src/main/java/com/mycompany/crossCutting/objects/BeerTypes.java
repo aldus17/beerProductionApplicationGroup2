@@ -1,5 +1,8 @@
 package com.mycompany.crossCutting.objects;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 public class BeerTypes {
 
     private int indexnumber;
@@ -28,6 +31,11 @@ public class BeerTypes {
         return this.typeName;
     }
     
+    public StringProperty typeNameProperty() {
+        return new SimpleStringProperty(this.typeName);
+    }
+    
+    @Override
     public String toString() {
         return this.typeName;
     }
