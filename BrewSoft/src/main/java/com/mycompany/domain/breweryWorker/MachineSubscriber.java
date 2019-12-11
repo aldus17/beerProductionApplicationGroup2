@@ -89,7 +89,7 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     private Batch batch;
     private Machine machineObj;
-    
+
     public MachineSubscriber(Machine machineObj) {
         mconn = new MachineConnection(machineObj.getHostname(), machineObj.getPort());
         mconn.connect();
@@ -104,7 +104,6 @@ public class MachineSubscriber implements IMachineSubscribe {
 
     @Override
     public void subscribe() {
-
         List<MonitoredItemCreateRequest> requestList = new ArrayList();
         requestList.add(new MonitoredItemCreateRequest(readValueId(batchIdNode), MonitoringMode.Reporting, monitoringParameters()));
         requestList.add(new MonitoredItemCreateRequest(readValueId(totalProductsNode), MonitoringMode.Reporting, monitoringParameters()));
@@ -187,7 +186,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         if (checkHumidity != humidityValue || checkTemperatur != temperaturValue) {
             checkHumidity = humidityValue;
             checkTemperatur = temperaturValue;
-            msdh.insertProductionInfo(batch.getProductionListID(), 1, humidityValue, temperaturValue);
+            msdh.insertProductionInfo(batch.getProductionListID(), machineObj.getMachineID(), humidityValue, temperaturValue);
         }
     }
 
@@ -197,14 +196,14 @@ public class MachineSubscriber implements IMachineSubscribe {
 
         if (checkCurrentState != currentStateValue) {
             checkCurrentState = currentStateValue;
-            msdh.insertTimesInStates(batch.getProductionListID(), 1, currentStateValue);
+            msdh.insertTimesInStates(batch.getProductionListID(), machineObj.getMachineID(), currentStateValue);
         }
     }
-    
+
     // TODO Insert machine ID and Production List ID
     public void sendStopDuingProduction() {
         if (StopReasonID != 0) {
-            msdh.insertStopsDuringProduction(batch.getProductionListID(), 1, StopReasonID);
+            msdh.insertStopsDuringProduction(batch.getProductionListID(), machineObj.getMachineID(), StopReasonID);
         }
     }
 
@@ -212,7 +211,7 @@ public class MachineSubscriber implements IMachineSubscribe {
     public void completedBatch() {
         if (batch.getTotalAmount() <= this.productionCountValue) {
             msdh.changeProductionListStatus(batch.getProductionListID(), "Completed");
-            msdh.insertFinalBatchInformation(batch.getProductionListID(), 1, batch.getDeadline(),
+            msdh.insertFinalBatchInformation(batch.getProductionListID(), machineObj.getMachineID(), batch.getDeadline(),
                     batch.getDateofCreation(), batch.getType(),
                     totalProductValue, defectCountValue, acceptableCountValue);
 
@@ -307,7 +306,7 @@ public class MachineSubscriber implements IMachineSubscribe {
         IBatchDataHandler bdh = new BatchDataHandler();
         return bdh.getBeerTypes().get(this.batch.getType()).getTypeName();
     }
-    
+
     // TODO Get data from database.
     @Override
     public String stopReasonTranslator(String stopReason) {
