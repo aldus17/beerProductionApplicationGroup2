@@ -31,8 +31,9 @@ public class UIBatch {
         this.calulateProductionTime = new SimpleStringProperty(calulateProductionTime);
     }
 
-    public UIBatch(String BatchID, String type, String dateofCreation,
+    public UIBatch(int productionListID, String BatchID, String type, String dateofCreation,
             String deadline, String speedforProduction, String totalAmount) {
+        this.productionListID = new SimpleStringProperty(String.valueOf(productionListID));
         this.BatchID = new SimpleStringProperty(BatchID);
         this.type = new SimpleStringProperty(type);
         this.dateofCreation = new SimpleStringProperty(dateofCreation);
@@ -104,5 +105,9 @@ public class UIBatch {
 
     public StringProperty CalulateProductionTime() {
         return calulateProductionTime;
+    }
+    
+    public String toString() {
+        return this.BatchID.getValueSafe()+" : "+ this.dateofCreation.getValueSafe()+" : "+ this.productionListID.getValueSafe();
     }
 }

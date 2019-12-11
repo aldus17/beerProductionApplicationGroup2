@@ -348,7 +348,7 @@ public class ManagementController implements Initializable {
 
         tc_CompletedBatches_batchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
         tc_CompletedBatches_MacineID.setCellValueFactory(callData -> callData.getValue().getMachineID());
-        tc_CompletedBatches_Type.setCellValueFactory(callData -> callData.getValue().getType());
+        tc_CompletedBatches_Type.setCellValueFactory(callData -> beerTypes.get(Integer.parseInt(callData.getValue().getType().getValueSafe())).typeNameProperty());
         tc_CompletedBatches_DateOfCreation.setCellValueFactory(callData -> callData.getValue().getDateofCreation());
         tc_CompletedBatches_Deadline.setCellValueFactory(callData -> callData.getValue().getDeadline());
         tc_CompletedBatches_DateOfCompletion.setCellValueFactory(callData -> callData.getValue().getDateofCompletion());
@@ -363,7 +363,7 @@ public class ManagementController implements Initializable {
         tw_SearchTableProductionQueue.setItems(queuedBatcheObservableList);
 
         tc_ProductionQueue_BatchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
-        tc_ProductionQueue_Type.setCellValueFactory(callData -> callData.getValue().getType());
+        tc_ProductionQueue_Type.setCellValueFactory(callData -> beerTypes.get(Integer.parseInt(callData.getValue().getType().getValueSafe())).typeNameProperty());
         tc_ProductionQueue_DateOfCreation.setCellValueFactory(callData -> callData.getValue().getDateofCreation());
         tc_ProductionQueue_Deadline.setCellValueFactory(callData -> callData.getValue().getDeadline());
         tc_ProductionQueue_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
@@ -377,7 +377,7 @@ public class ManagementController implements Initializable {
         tc_CreatBatchOrder_BatchID.setCellValueFactory(callData -> callData.getValue().getBatchID());
         tc_CreatBatchOrder_DateofCreation.setCellValueFactory(callData -> callData.getValue().getDateofCreation());
         tc_CreatBatchOrder_Amount.setCellValueFactory(callData -> callData.getValue().getTotalAmount());
-        tc_CreatBatchOrder_Type.setCellValueFactory(callData -> callData.getValue().getType());
+        tc_CreatBatchOrder_Type.setCellValueFactory(callData -> beerTypes.get(Integer.parseInt(callData.getValue().getType().getValueSafe())).typeNameProperty());
         tc_CreatBatchOrder_Deadline.setCellValueFactory(callData -> callData.getValue().getDeadline());
         tc_CreatBatchOrder_SpeedForProduction.setCellValueFactory(callData -> callData.getValue().getSpeedforProduction());
         tc_CreatBatchOrder_ProductionTime.setCellValueFactory(callData -> callData.getValue().CalulateProductionTime());
@@ -449,6 +449,7 @@ public class ManagementController implements Initializable {
         }
         for (Batch b : queuedBathchesList) {
             queuedBatcheObservableList.add(new UIBatch(
+                    b.getProductionListID(),
                     String.valueOf(b.getBatchID()),
                     String.valueOf(b.getType()),
                     b.getDateofCreation(),
