@@ -22,8 +22,9 @@
 // * @author Glumby
 // */
 //public class InsertBatchToQueueTest {
-//    
+//
 //    TestDatabase db = new TestDatabase();
+//    BatchDataHandler batchDataHandler = new BatchDataHandler(db);
 //
 //    public InsertBatchToQueueTest() {
 //    }
@@ -55,8 +56,7 @@
 //    public void testInsertBatchToQueue() {
 //        // Block that inserts to test database //
 //        Batch insertedBatch = new Batch(1, 1, 100, "2019-12-03", 100.0f);
-//        BatchDataHandler instance = new BatchDataHandler(db);
-//        instance.insertBatchToQueue(insertedBatch);
+//        batchDataHandler.insertBatchToQueue(insertedBatch);
 //
 //        //Block that retrieves the inserted from test database //
 //        SimpleSet batchSet = db.query("SELECT * FROM productionlist");
@@ -72,8 +72,5 @@
 //        }
 //        assertEquals(insertedBatch, retrievedBatch);
 //    }
-//    
-//    
-//    
-//}
 //
+//}

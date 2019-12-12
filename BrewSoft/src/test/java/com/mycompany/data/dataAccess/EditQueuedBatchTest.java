@@ -68,7 +68,6 @@
 //        instance.insertBatchToQueue(batch_1);
 //        
 //        //Block that alters the batch in the database, based on productionlistID 1
-//        //Does not alter dateofcreation(last field in batch), so that has been left empty.
 //        Batch batch_edit = new Batch(1, 1, 5, 200, "2019-12-03", 25.0f, String.valueOf(LocalDate.now()));
 //        instance.editQueuedBatch(batch_edit);
 //        
@@ -86,20 +85,9 @@
 //                    String.valueOf(batchSet.get(i, "dateofcreation"))
 //            );
 //        } 
-//        if(retrievedBatch.getType() == batch_edit.getType()){
-//            assertEquals(batch_edit.getProductionListID(), retrievedBatch.getProductionListID());
-//            assertEquals(batch_edit.getBatchID(), retrievedBatch.getBatchID());
-//            assertEquals(batch_edit.getType(), retrievedBatch.getType());
-//            assertEquals(batch_edit.getTotalAmount(), retrievedBatch.getTotalAmount());
-//            assertEquals(batch_edit.getDeadline(), retrievedBatch.getDeadline());
-//            assertEquals(batch_edit.getSpeedforProduction(), retrievedBatch.getSpeedforProduction(),1f);
-//            assertEquals(batch_edit.getDateofCreation(), retrievedBatch.getDateofCreation());
-//        } else {
-//            fail("The batch was not edited correctly");
+//        assertEquals(batch_edit, retrievedBatch);
 //        }
-//
 //    }
 //
 //
 //    
-//}
