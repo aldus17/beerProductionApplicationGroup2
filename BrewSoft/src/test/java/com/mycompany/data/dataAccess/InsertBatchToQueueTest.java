@@ -70,12 +70,10 @@
 //                    Float.parseFloat(String.valueOf(batchSet.get(i, "speed")))
 //            );
 //        }
-// 
-//        assertEquals(insertedBatch.getBatchID(), retrievedBatch.getBatchID());
-//        assertEquals(insertedBatch.getType(), retrievedBatch.getType());
-//        assertEquals(insertedBatch.getTotalAmount(), retrievedBatch.getTotalAmount());
-//        assertEquals(insertedBatch.getDeadline(), retrievedBatch.getDeadline());
-//        assertEquals(insertedBatch.getSpeedforProduction(), retrievedBatch.getSpeedforProduction(), 1f);
+//        assertEquals(insertedBatch, retrievedBatch);
 //    }
+//    
+//    
+//    
 //}
 //

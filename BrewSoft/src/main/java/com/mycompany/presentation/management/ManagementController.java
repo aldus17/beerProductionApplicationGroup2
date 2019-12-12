@@ -529,7 +529,7 @@ public class ManagementController implements Initializable {
                 String lowerCaseFilter = newValue.toLowerCase();
                 if (batchfinal.getBatchID().getValue().toLowerCase().contentEquals(lowerCaseFilter)) {
                     return true;
-                } else if (batchfinal.getDeadline().getValue().toLowerCase().contains(lowerCaseFilter)) {
+                } else if (batchfinal.getDateofCompletion().getValue().toLowerCase().contains(lowerCaseFilter)) {
                     return true;
                 }
                 return false; // Does not match.
@@ -624,7 +624,7 @@ public class ManagementController implements Initializable {
     private void GeneratingBatchreportActionn(ActionEvent event) {
         Stage primaryStage = new Stage();
 
-        if (event.getSource() == btn_generateBatchreport) {
+        if (event.getSource() == btn_generateBatchreport && !tw_SearchTableCompletedBatches.getSelectionModel().isEmpty()) {
 
             int index = tw_SearchTableCompletedBatches.getSelectionModel().getSelectedIndex();
             UIBatch batch = tw_SearchTableCompletedBatches.getItems().get(index);
