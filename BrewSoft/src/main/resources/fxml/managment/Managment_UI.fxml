@@ -100,7 +100,7 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="ap_CompletedBatchesLayout" layoutX="10.0" layoutY="10.0" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="ap_CompletedBatchesLayout" layoutX="10.0" layoutY="10.0" prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <GridPane prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <columnConstraints>
@@ -135,8 +135,8 @@
                                     <Insets top="10.0" />
                                  </GridPane.margin>
                               </TableView>
-                              <TextField fx:id="text_SearchCompletedBarches" prefHeight="25.0" prefWidth="947.0" promptText="Search Batch ID / Deadline" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                              <Button fx:id="btn_generateBatchreport" mnemonicParsing="false" onAction="#GeneratingBatchreportActionn" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <TextField fx:id="text_SearchCompletedBarches" prefHeight="25.0" prefWidth="947.0" promptText="Search Batch ID / Date of completion" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                              <Button fx:id="btn_generateBatchreport" mnemonicParsing="false" onAction="#GeneratingBatchreportActionn" text="Generate Batchreport" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                               <Label text="Completed Batches" GridPane.columnIndex="1" GridPane.columnSpan="2">
                                  <font>
                                     <Font size="18.0" />
@@ -146,7 +146,7 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="ap_CreateBatchOrder" layoutY="5.0" prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="ap_CreateBatchOrder" layoutY="5.0" prefHeight="882.0" prefWidth="1210.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <GridPane prefHeight="882.0" prefWidth="1210.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
