@@ -7,9 +7,10 @@
 //import java.util.Collections;
 //import java.util.Comparator;
 //import java.util.List;
+//import static org.hamcrest.Matchers.containsInAnyOrder;
 //import org.junit.After;
 //import org.junit.AfterClass;
-//import static org.junit.Assert.assertEquals;
+//import static org.junit.Assert.assertThat;
 //import static org.junit.Assert.fail;
 //import org.junit.Before;
 //import org.junit.BeforeClass;
@@ -63,7 +64,8 @@
 //        System.out.println("####Actual####: " + Arrays.toString(actualList.toArray()));
 //
 //        if (!actualList.isEmpty()) {
-//            assertEquals(Arrays.toString(expectedList.toArray()), Arrays.toString(actualList.toArray()));
+////            assertEquals(Arrays.toString(expectedList.toArray()), Arrays.toString(actualList.toArray()));
+//            assertThat(actualList, containsInAnyOrder(new MachineState(6, "10:43:31"), new MachineState(17, "11:03:34"), new MachineState(15, "11:03:47"), new MachineState(4, "11:03:48"), new MachineState(6, "11:05:22")));
 //        } else {
 //            fail("The lists are empty or the states do not exist in the database");
 //        }
