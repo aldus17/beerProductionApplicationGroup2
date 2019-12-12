@@ -310,7 +310,7 @@ public class ManagementController implements Initializable {
         if (!amounttoProduce.toString().isEmpty() && !typeofProduct.toString().isEmpty() && !speed.toString().isEmpty() && !deadline.isEmpty()) {
             lbl_CreateBatchOrder_error.setText("");
             if (Float.valueOf(amounttoProduce) >= 0.0f && Float.valueOf(amounttoProduce) < 65535.0f) {
-                managementDomain.createBatch(new Batch(-1, typeofProduct, amounttoProduce, deadline, speed));
+                managementDomain.createBatch(new Batch(typeofProduct, amounttoProduce, deadline, speed));
                 updateQueuedArrayList();
                 updateObservableProductionList(productionListDate);
 
