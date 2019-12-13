@@ -100,12 +100,10 @@ public class ManagementController implements Initializable {
     private TableColumn<UIBatch, String> tc_CompletedBatches_DefectAmount;
     @FXML
     private TextField text_SearchCompletedBarches;
-//    private Button btn_SearchCompletedBatches;
-//    private Button btn_generateBatch;
     @FXML
     private TextField textf_CreateBatchOrder_AmountToProduces;
     @FXML
-    private TextField textf_CreateBatchOrder_Speed;
+    private TextField tf_SpeedCreateBatchOrder;
     @FXML
     private DatePicker dp_CreateBatchOrder;
     @FXML
@@ -166,8 +164,6 @@ public class ManagementController implements Initializable {
     private ArrayList<Batch> completedBatchList;
     private LocalDate productionListDate;
     private UIBatch selectedQueuedBatch;
-//    private RadioButton rb_QueuedBatchID;
-//    private RadioButton rb_QueuedDeadline;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -202,6 +198,9 @@ public class ManagementController implements Initializable {
 
         cb_beerType.setItems(beerTypesObservableList);
         cb_beertypeCreateBatch.setItems(beerTypesObservableList);
+        cb_beertypeCreateBatch.setValue(beerTypesObservableList.get(0));
+        tf_SpeedCreateBatchOrder.setText(String.valueOf(beerTypesObservableList.get(0).getProductionSpeed()));
+
         //Sets values in the text fields on the edit page in the system
         tw_SearchTableProductionQueue.getSelectionModel().selectedItemProperty().addListener(new ChangeListener() {
             @Override
@@ -268,7 +267,7 @@ public class ManagementController implements Initializable {
                             cb_beertypeCreateBatch.getSelectionModel().select(5);
                         }
                         textf_CreateBatchOrder_AmountToProduces.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getTotalAmount().getValue());
-                        textf_CreateBatchOrder_Speed.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getSpeedforProduction().getValue());
+                        tf_SpeedCreateBatchOrder.setText(tw_CreateBatchOrder_BatchesOnSpecificDay.getSelectionModel().getSelectedItem().getSpeedforProduction().getValue());
                     }
                 }
             });
@@ -280,18 +279,6 @@ public class ManagementController implements Initializable {
         }
     }
 
-//    private void OnSearchAction(ActionEvent event) {
-//        queuedBatcheObservableList.clear();
-//        if (event.getSource() == btn_SearchCompletedBatches) {
-//            SearchData sd = new SearchData(text_SearchCompletedBarches.getText(), 0.0f);
-//            batches = managementDomain.batchObjects("CompletedBatches", sd);
-//            tw_SearchTableCompletedBatches.refresh();
-//        }
-//        if (event.getSource() == btn_SearchProductionQueue) {
-//            updateObservableQueueudList();
-//        }
-//
-//    }
     @FXML
     private void GetOrdersForSpecificDay(ActionEvent event) {
         productionListObservableList.clear();
@@ -302,30 +289,35 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void CreateBatchAction(ActionEvent event) {
-        Integer typeofProduct = cb_beertypeCreateBatch.getSelectionModel().getSelectedItem().getIndexNumber();
-        Integer amounttoProduce = Integer.parseInt(textf_CreateBatchOrder_AmountToProduces.getText());
-        Float speed = Float.parseFloat(textf_CreateBatchOrder_Speed.getText());
+        Integer typeofProduct = null;
+        Integer amounttoProduce = null;
+        Float speed = null;
         String deadline = dp_CreateBatchOrder.getValue().toString();
 
-        if (!amounttoProduce.toString().isEmpty() && !typeofProduct.toString().isEmpty() && !speed.toString().isEmpty() && !deadline.isEmpty()) {
-            lbl_CreateBatchOrder_error.setText("");
-            if (Float.valueOf(amounttoProduce) >= 0.0f && Float.valueOf(amounttoProduce) < 65535.0f) {
+        try {
+            amounttoProduce = Integer.parseInt(textf_CreateBatchOrder_AmountToProduces.getText());
+        } catch (NumberFormatException e1) {
+            textf_CreateBatchOrder_AmountToProduces.setText("Enter valid input");
+            amounttoProduce = null;
+        }
+        try {
+            speed = Float.parseFloat(tf_SpeedCreateBatchOrder.getText());
+        } catch (NumberFormatException e3) {
+            tf_SpeedCreateBatchOrder.setText("Enter valid input");
+            speed = null;
+        }
+        if (speed != null && amounttoProduce != null) {
+            if (Integer.valueOf(amounttoProduce) >= 0 && Integer.valueOf(amounttoProduce) < 65535) {
                 managementDomain.createBatch(new Batch(typeofProduct, amounttoProduce, deadline, speed));
                 updateQueuedArrayList();
                 updateObservableProductionList(productionListDate);
-
-            } else {
-                JOptionPane.showMessageDialog(null, "Invalid number: Cannot exceed 65535");
             }
-        } else {
-            lbl_CreateBatchOrder_error.setText("Make sure no fields are empty");
-            lbl_CreateBatchOrder_error.setTextFill(Color.web("#fc0303"));
         }
-
     }
 
     @FXML
-    private void GenerateOEEAction(ActionEvent event) {
+    private void GenerateOEEAction(ActionEvent event
+    ) {
         LocalDate dateToCreateOEE = dp_ShowOEE.getValue();
         if (dateToCreateOEE != null) {
             String oee = managementDomain.calculateOEE(dateToCreateOEE, 28800);
@@ -386,11 +378,11 @@ public class ManagementController implements Initializable {
     @FXML
     private void toggleSpeed(ActionEvent event) {
         if (toggleSpeedBtn.isSelected()) {
-            textf_CreateBatchOrder_Speed.setEditable(true);
-            textf_CreateBatchOrder_Speed.setDisable(false);
+            tf_SpeedCreateBatchOrder.setEditable(true);
+            tf_SpeedCreateBatchOrder.setDisable(false);
         } else {
-            textf_CreateBatchOrder_Speed.setEditable(false);
-            textf_CreateBatchOrder_Speed.setDisable(true);
+            tf_SpeedCreateBatchOrder.setEditable(false);
+            tf_SpeedCreateBatchOrder.setDisable(true);
         }
     }
 
@@ -494,24 +486,42 @@ public class ManagementController implements Initializable {
     @FXML
     private void onCompleteEditActionHandler(ActionEvent event) {
         UIBatch oldBatch = selectedQueuedBatch;
-        Batch newBatch = new Batch(
-                Integer.parseInt(oldBatch.getProductionListID().getValue()),
-                Integer.parseInt(oldBatch.getBatchID().getValue()),
-                cb_beerType.getSelectionModel().getSelectedItem().getIndexNumber(),
-                Integer.parseInt(tf_AmountToProduceEditBatch.getText()),
-                dp_EditBatch.getValue().toString(),
-                Float.parseFloat(tf_SpeedEditBatch.getText()),
-                oldBatch.getDateofCreation().getValue());
+        Integer amounttoProduce = null;
+        Float speed = null;
+        try {
+            amounttoProduce = Integer.parseInt(tf_AmountToProduceEditBatch.getText());
+        } catch (NumberFormatException e1) {
+            tf_AmountToProduceEditBatch.setText("Enter valid input");
+            amounttoProduce = null;
+        }
+        try {
+            speed = Float.parseFloat(tf_SpeedEditBatch.getText());
+        } catch (NumberFormatException e3) {
+            tf_SpeedCreateBatchOrder.setText("Enter valid input");
+            speed = null;
+        }
+        Batch newBatch = null;
+        if (speed != null && amounttoProduce != null) {
+            if (Integer.valueOf(amounttoProduce) >= 0 && Integer.valueOf(amounttoProduce) < 65535) {
+                newBatch = new Batch(
+                        Integer.parseInt(oldBatch.getProductionListID().getValue()),
+                        Integer.parseInt(oldBatch.getBatchID().getValue()),
+                        cb_beerType.getSelectionModel().getSelectedItem().getIndexNumber(),
+                        Integer.parseInt(tf_AmountToProduceEditBatch.getText()),
+                        dp_EditBatch.getValue().toString(),
+                        Float.parseFloat(tf_SpeedEditBatch.getText()),
+                        oldBatch.getDateofCreation().getValue());
 
-        managementDomain.editQueuedBatch(newBatch);
-        updateQueuedArrayList();
-        updateObservableProductionList(productionListDate);
-        updateObservableQueueudList();
-//        rb_QueuedBatchID.setSelected(false);
-//        rb_QueuedDeadline.setSelected(false);
-        text_SearchProductionQueue.clear();
-        enableSearchQueuedList();
-        setVisibleAnchorPane(ap_ProductionQueueLayout);
+                managementDomain.editQueuedBatch(newBatch);
+                updateQueuedArrayList();
+                updateObservableProductionList(productionListDate);
+                updateObservableQueueudList();
+                text_SearchProductionQueue.clear();
+                enableSearchQueuedList();
+                setVisibleAnchorPane(ap_ProductionQueueLayout);
+            }
+        }
+
     }
 
     private void enableSearchCompletedList() {
@@ -529,16 +539,14 @@ public class ManagementController implements Initializable {
                 String lowerCaseFilter = newValue.toLowerCase();
                 if (batchfinal.getBatchID().getValue().toLowerCase().contentEquals(lowerCaseFilter)) {
                     return true;
-                } else if (batchfinal.getDateofCompletion().getValue().toLowerCase().contains(lowerCaseFilter)) {
+                } else if (batchfinal.getDateofCompletion().getValue().toLowerCase().contentEquals(lowerCaseFilter)) {
                     return true;
                 }
                 return false; // Does not match.
             });
         });
-
         // 3. Wrap the FilteredList in a SortedList.
         SortedList<UIBatch> sortedData = new SortedList<>(filteredData);
-
         // 4. Bind the SortedList comparator to the TableView comparator.
         sortedData.comparatorProperty().bind(tw_SearchTableCompletedBatches.comparatorProperty());
 
@@ -564,19 +572,16 @@ public class ManagementController implements Initializable {
                 String lowerCaseFilter = newValue.toLowerCase();
                 if (batch.getBatchID().getValue().toLowerCase().contentEquals(lowerCaseFilter)) {
                     return true;
-                } else if (batch.getDeadline().getValue().toLowerCase().contains(lowerCaseFilter)) {
+                } else if (batch.getDeadline().getValue().toLowerCase().contentEquals(lowerCaseFilter)) {
                     return true;
                 }
                 return false; // Does not match.
             });
         });
-
         // 3. Wrap the FilteredList in a SortedList.
         SortedList<UIBatch> sortedData = new SortedList<>(filteredData);
-
         // 4. Bind the SortedList comparator to the TableView comparator.
         sortedData.comparatorProperty().bind(tw_SearchTableProductionQueue.comparatorProperty());
-
         // 5. Add sorted (and filtered) data to the table.
         tw_SearchTableProductionQueue.setItems(sortedData);
     }
@@ -608,7 +613,7 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void comboboxAction(ActionEvent event) {
-        textf_CreateBatchOrder_Speed.setText(String.valueOf(cb_beertypeCreateBatch.getSelectionModel().getSelectedItem().getProductionSpeed()));
+        tf_SpeedCreateBatchOrder.setText(String.valueOf(cb_beertypeCreateBatch.getSelectionModel().getSelectedItem().getProductionSpeed()));
 
     }
 
@@ -650,11 +655,15 @@ public class ManagementController implements Initializable {
                             Integer.valueOf(batch.getMachineID().getValue()));
 
                     ibrg.savePDF(doc, fileChooser.getInitialFileName(), fileChooser.getInitialDirectory().getAbsolutePath());
+
                 }
             } catch (IOException ex) {
-                Logger.getLogger(ManagementController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ManagementController.class
+                        .getName()).log(Level.SEVERE, null, ex);
+
             } catch (NullPointerException ex) {
-                Logger.getLogger(ManagementController.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(ManagementController.class
+                        .getName()).log(Level.SEVERE, null, ex);
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Batch selection error");
                 alert.setHeaderText("Specified batch does not contain machine information properties");
