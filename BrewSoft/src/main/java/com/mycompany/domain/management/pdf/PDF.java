@@ -66,6 +66,7 @@ public class PDF implements IBatchReportGenerate {
         BatchReport batchRep = batchDataHandler.getBatchReportProductionData(batchID, machineID);
         List<MachineTempData> mtd = new ArrayList<>();
         List<MachineHumiData> mhd = new ArrayList<>();
+
         mtd = batchDataHandler.getMachineTempData(prodListID, machineID);
         mhd = batchDataHandler.getMachineHumiData(prodListID, machineID);
         ManagementDomain managementDomain = new ManagementDomain();
