@@ -289,7 +289,7 @@ public class ManagementController implements Initializable {
 
     @FXML
     private void CreateBatchAction(ActionEvent event) {
-        Integer typeofProduct = null;
+        Integer typeofProduct = cb_beertypeCreateBatch.getSelectionModel().getSelectedIndex();
         Integer amounttoProduce = null;
         Float speed = null;
         String deadline = dp_CreateBatchOrder.getValue().toString();
@@ -307,7 +307,7 @@ public class ManagementController implements Initializable {
             speed = null;
         }
         if (speed != null && amounttoProduce != null) {
-            if (Integer.valueOf(amounttoProduce) >= 0 && Integer.valueOf(amounttoProduce) < 65535) {
+            if (amounttoProduce >= 0 && amounttoProduce < 65535) {
                 managementDomain.createBatch(new Batch(typeofProduct, amounttoProduce, deadline, speed));
                 updateQueuedArrayList();
                 updateObservableProductionList(productionListDate);
