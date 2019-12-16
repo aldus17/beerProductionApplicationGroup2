@@ -12,8 +12,6 @@ import com.mycompany.data.dataAccess.Connect.SimpleSet;
 import com.mycompany.data.dataAccess.Connect.TestDatabase;
 import com.mycompany.data.interfaces.IBatchDataHandler;
 import com.mycompany.data.interfaces.IManagementData;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -244,7 +242,7 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             for (int i = 0; i < prodInfoDataSet.getRows(); i++) {
                 machineHumiDataList.add(machineHumiData = new MachineHumiData(
                         (int) prodInfoDataSet.get(i, "brewerymachineid"),
-                        round((double) prodInfoDataSet.get(i, "humidity"), 3))
+                        (double) prodInfoDataSet.get(i, "humidity"))
                 );
             }
             return machineHumiDataList;
@@ -338,15 +336,6 @@ public class BatchDataHandler implements IBatchDataHandler, IManagementData {
             ));
         }
         return completedbatches;
-    }
-
-    public static double round(double value, int places) {
-        if (places < 0) {
-            throw new IllegalArgumentException();
-        }
-        BigDecimal bd = BigDecimal.valueOf(value);
-        bd = bd.setScale(places, RoundingMode.HALF_UP);
-        return bd.doubleValue();
     }
 
 }

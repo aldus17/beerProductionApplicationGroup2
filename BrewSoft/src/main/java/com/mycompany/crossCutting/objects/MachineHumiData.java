@@ -1,34 +1,20 @@
 package com.mycompany.crossCutting.objects;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class MachineHumiData {
 
     private int machineID;
     private double humidity;
-    private List<Object> machineHumiDataObjList;
 
     public MachineHumiData() {
-        this.machineHumiDataObjList = new ArrayList<>();
     }
 
     public MachineHumiData(int machineID, double humidity) {
         this.machineID = machineID;
         this.humidity = humidity;
-        this.machineHumiDataObjList = new ArrayList<>();
-    }
 
-    public List<Object> getMachineHumiDataObjList() {
-        return machineHumiDataObjList;
-    }
-
-    public boolean addMachineHumiDataObjList(Object o) {
-        return machineHumiDataObjList.add(o);
-    }
-
-    public void setMachineHumiDataObjList(List<Object> list) {
-        this.machineHumiDataObjList = list;
     }
 
     public int getMachineID() {
@@ -36,7 +22,16 @@ public class MachineHumiData {
     }
 
     public double getHumidity() {
-        return humidity;
+        return round(humidity, 3);
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) {
+            throw new IllegalArgumentException();
+        }
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
     @Override
