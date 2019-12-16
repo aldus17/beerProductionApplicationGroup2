@@ -31,7 +31,8 @@
 //public class CreateBatchTest {
 //
 //    TestDatabase db = new TestDatabase();
-//    ManagementDomain mmd = new ManagementDomain(new BatchDataHandler(db), new SearchDataHandler(), new BatchDataHandler(db));
+//    ManagementDomain managementDomain = new ManagementDomain(new BatchDataHandler(db), new SearchDataHandler(), new BatchDataHandler(db));
+//    BatchDataHandler batchDataHandler = new BatchDataHandler(db);
 //
 //    public CreateBatchTest() {
 //    }
@@ -55,14 +56,14 @@
 //        db.queryUpdate("DELETE FROM Productionlist;");
 //        db.queryUpdate("ALTER SEQUENCE productionlist_productionlistid_seq RESTART;");
 //    }
-//    
-//     /**
+//
+//    /**
 //     * Test of createBatch method with empty database
 //     */
 //    @Test
 //    public void testCreateBatch() {
 //        int expectedBatchID = 0;
-//        mmd.createBatch(new Batch(-1, 2, 8000, "2019-12-08", 100.0f));
+//        managementDomain.createBatch(new Batch(2, 8000, "2019-12-08", 100.0f));
 //        SimpleSet set = db.query("SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1");
 //        Batch batch = null;
 //        for (int i = 0; i < set.getRows(); i++) {
@@ -82,10 +83,10 @@
 //     */
 //    @Test
 //    public void testCreateBatch_Mid() {
-//        BatchDataHandler b = new BatchDataHandler(db);
-//        b.insertBatchToQueue(new Batch(800, 2, 20000, "2019-12-08", 100.0f));
+//        batchDataHandler.insertBatchToQueue(new Batch(800, 2, 20000, "2019-12-08", 100.0f));
 //        int expectedBatchID = 801;
-//        mmd.createBatch(new Batch(-1, 2, 8000, "2019-12-08", 100.0f));
+//        managementDomain.createBatch(new Batch(2, 8000, "2019-12-08", 100.0f));
+//
 //        SimpleSet set = db.query("SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1");
 //        Batch batch = null;
 //        for (int i = 0; i < set.getRows(); i++) {
@@ -99,16 +100,19 @@
 //        }
 //        assertEquals(expectedBatchID, batch.getBatchID());
 //    }
-//    
-//     /**
+//
+//    /**
 //     * Test of createBatch method edge case
 //     */
 //    @Test
 //    public void testCreateBatch_EdgeCase() {
-//        BatchDataHandler b = new BatchDataHandler(db);
-//        b.insertBatchToQueue(new Batch(65535, 2, 20000, "2019-12-08", 100.0f));
-//        int expectedBatchID = 0;
-//        mmd.createBatch(new Batch(-1, 2, 8000, "2019-12-08", 100.0f));
+//        //Insert a dummy batch directly to the empty database.
+//        batchDataHandler.insertBatchToQueue(new Batch(65535, 2, 20000, "2019-12-08", 100.0f));
+//
+//        //Create a new batch using create batch method.
+//        managementDomain.createBatch(new Batch(2, 8000, "2019-12-08", 100.0f));
+//
+//        //Get the created batch from the database.
 //        SimpleSet set = db.query("SELECT * FROM productionlist ORDER BY productionlistID DESC limit 1");
 //        Batch batch = null;
 //        for (int i = 0; i < set.getRows(); i++) {
@@ -120,6 +124,8 @@
 //                    Float.parseFloat(String.valueOf(set.get(i, "speed")))
 //            );
 //        }
+//        //Assert that the id of the batch pulled from the database is 0.
+//        int expectedBatchID = 0;
 //        assertEquals(expectedBatchID, batch.getBatchID());
 //    }
 //

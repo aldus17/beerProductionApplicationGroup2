@@ -1,9 +1,11 @@
 package com.mycompany.crossCutting.objects;
 
+import java.util.Objects;
+
 public class Batch {
 
     private int productionListID;
-    private final int BatchID;
+    private int BatchID;
     private int MachineID;
     private final int type;
     private String dateofCreation;
@@ -17,6 +19,14 @@ public class Batch {
     public Batch(int batchID, int type, int totalAmount,
             String deadline, float speedforProduction) {
         this.BatchID = batchID;
+        this.type = type;
+        this.totalAmount = totalAmount;
+        this.deadline = deadline;
+        this.speedforProduction = speedforProduction;
+    }
+
+    public Batch(int type, int totalAmount,
+            String deadline, float speedforProduction) {
         this.type = type;
         this.totalAmount = totalAmount;
         this.deadline = deadline;
@@ -124,5 +134,31 @@ public class Batch {
         int productionTime = (int) (totalAmount / speedforProduction);
 
         return productionTime;
+    }
+
+    //Test equal, override equals() and hashCode()
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Batch batch = (Batch) o;
+        if (BatchID == batch.BatchID && type == batch.type && totalAmount == batch.totalAmount && Objects.equals(deadline, batch.deadline) && speedforProduction == batch.speedforProduction) {
+            return true;
+        }
+        if (BatchID == batch.BatchID && MachineID == batch.MachineID && type == batch.type && Objects.equals(dateofCreation, batch.dateofCreation) && Objects.equals(deadline, batch.deadline) && Objects.equals(dateofCompletion, batch.dateofCompletion) && speedforProduction == batch.speedforProduction && totalAmount == batch.totalAmount && acceptedcount == batch.acceptedcount && defectAmount == batch.defectAmount) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 71 * hash + this.BatchID;
+        return hash;
     }
 }

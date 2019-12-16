@@ -46,3 +46,15 @@ BrewSoft/target/surefire-reports/TEST-com.mycompany.domain.management.Management
 BrewSoft/target/surefire-reports/com.mycompany.domain.management.CreateBatchTest.txt
 
 BrewSoft/target/surefire-reports/TEST-com.mycompany.domain.management.CreateBatchTest.xml
+
+BrewSoft/target/surefire-reports/TEST-com.mycompany.data.dataAccess.InsertBatchToQueueTest.xml
+
+BrewSoft/target/surefire-reports/com.mycompany.data.dataAccess.InsertBatchToQueueTest.txt
+
+BrewSoft/target/surefire-reports/com.mycompany.data.dataAccess.EditQueuedBatchTest.txt
+
+BrewSoft/target/surefire-reports/com.mycompany.data.dataAccess.GetLatestBatchIDTest.txt
+
+BrewSoft/target/surefire-reports/TEST-com.mycompany.data.dataAccess.EditQueuedBatchTest.xml
+
+BrewSoft/target/surefire-reports/TEST-com.mycompany.data.dataAccess.GetLatestBatchIDTest.xml

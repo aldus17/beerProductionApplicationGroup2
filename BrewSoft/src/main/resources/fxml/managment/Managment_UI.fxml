@@ -135,8 +135,8 @@
                                     <Insets top="10.0" />
                                  </GridPane.margin>
                               </TableView>
-                              <TextField fx:id="text_SearchCompletedBarches" prefHeight="25.0" prefWidth="947.0" promptText="Search Batch ID / Deadline" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                              <Button fx:id="btn_generateBatchreport" mnemonicParsing="false" onAction="#GeneratingBatchreportActionn" text="Generate Batchreport" GridPane.columnIndex="2" GridPane.rowIndex="4" />
+                              <TextField fx:id="text_SearchCompletedBarches" prefHeight="25.0" prefWidth="947.0" promptText="Search Batch ID / Date of completion" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                              <Button fx:id="btn_generateBatchreport" mnemonicParsing="false" onAction="#GeneratingBatchreportActionn" text="Generate Batchreport" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="4" />
                               <Label text="Completed Batches" GridPane.columnIndex="1" GridPane.columnSpan="2">
                                  <font>
                                     <Font size="18.0" />
@@ -175,9 +175,18 @@
                               <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <TextField fx:id="textf_CreateBatchOrder_AmountToProduces" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                              <DatePicker fx:id="dp_CreateBatchOrder" onAction="#GetOrdersForSpecificDay" GridPane.columnIndex="2" GridPane.rowIndex="8" />
-                              <Button mnemonicParsing="false" onAction="#CreateBatchAction" text="Create" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+                              <TextField fx:id="textf_CreateBatchOrder_AmountToProduces" prefWidth="289.0" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                 <GridPane.margin>
+                                    <Insets top="5.0" />
+                                 </GridPane.margin></TextField>
+                              <DatePicker fx:id="dp_CreateBatchOrder" editable="false" onAction="#GetOrdersForSpecificDay" GridPane.columnIndex="2" GridPane.rowIndex="8">
+                                 <GridPane.margin>
+                                    <Insets top="22.0" />
+                                 </GridPane.margin></DatePicker>
+                              <Button mnemonicParsing="false" onAction="#CreateBatchAction" text="Create" GridPane.columnIndex="2" GridPane.rowIndex="10">
+                                 <GridPane.margin>
+                                    <Insets top="27.0" />
+                                 </GridPane.margin></Button>
                               <TableView fx:id="tw_CreateBatchOrder_BatchesOnSpecificDay" prefHeight="777.0" prefWidth="743.0" GridPane.columnIndex="4" GridPane.rowIndex="2" GridPane.rowSpan="12">
                                 <columns>
                                   <TableColumn fx:id="tc_CreatBatchOrder_BatchID" prefWidth="75.0" text="Batch ID" />
@@ -203,11 +212,17 @@
                                     <Insets left="60.0" />
                                  </GridPane.margin>
                               </Label>
-                              <ComboBox fx:id="cb_beertypeCreateBatch" onAction="#comboboxAction" prefHeight="31.0" prefWidth="260.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <ComboBox fx:id="cb_beertypeCreateBatch" onAction="#comboboxAction" prefHeight="31.0" prefWidth="289.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                               <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="6">
                                  <children>
-                                    <TextField fx:id="textf_CreateBatchOrder_Speed" disable="true" editable="false" prefHeight="25.0" prefWidth="198.0" />
-                                    <CheckBox fx:id="toggleSpeedBtn" mnemonicParsing="false" onAction="#toggleSpeed" text="Set speed" />
+                                    <TextField fx:id="tf_SpeedCreateBatchOrder" disable="true" editable="false" prefHeight="31.0" prefWidth="132.0">
+                                       <HBox.margin>
+                                          <Insets top="15.0" />
+                                       </HBox.margin></TextField>
+                                    <CheckBox fx:id="toggleSpeedBtn" mnemonicParsing="false" onAction="#toggleSpeed" text="Set speed">
+                                       <HBox.margin>
+                                          <Insets left="5.0" top="20.0" />
+                                       </HBox.margin></CheckBox>
                                  </children>
                               </HBox>
                            </children>
@@ -279,10 +294,22 @@
                               <Label text="Amount to produce" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Label text="Speed" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                               <Label text="Deadline" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                              <DatePicker fx:id="dp_EditBatch" prefWidth="296.0" GridPane.columnIndex="2" GridPane.rowIndex="8" />
-                              <TextField fx:id="tf_SpeedEditBatch" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-                              <TextField fx:id="tf_AmountToProduceEditBatch" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-                              <Button mnemonicParsing="false" onAction="#onCompleteEditActionHandler" text="Complete Edit" GridPane.columnIndex="2" GridPane.rowIndex="10" />
+                              <DatePicker fx:id="dp_EditBatch" editable="false" prefWidth="296.0" GridPane.columnIndex="2" GridPane.rowIndex="8">
+                                 <GridPane.margin>
+                                    <Insets top="15.0" />
+                                 </GridPane.margin></DatePicker>
+                              <TextField fx:id="tf_SpeedEditBatch" GridPane.columnIndex="2" GridPane.rowIndex="6">
+                                 <GridPane.margin>
+                                    <Insets top="10.0" />
+                                 </GridPane.margin></TextField>
+                              <TextField fx:id="tf_AmountToProduceEditBatch" GridPane.columnIndex="2" GridPane.rowIndex="4">
+                                 <GridPane.margin>
+                                    <Insets top="5.0" />
+                                 </GridPane.margin></TextField>
+                              <Button mnemonicParsing="false" onAction="#onCompleteEditActionHandler" text="Complete Edit" GridPane.columnIndex="2" GridPane.rowIndex="10">
+                                 <GridPane.margin>
+                                    <Insets top="20.0" />
+                                 </GridPane.margin></Button>
                               <Label text="Edit selected Batch" GridPane.columnIndex="1" GridPane.columnSpan="2">
                                  <font>
                                     <Font size="18.0" />
